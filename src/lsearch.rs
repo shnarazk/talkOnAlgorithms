@@ -1,6 +1,6 @@
 /// `[T]`に対して条件`c`を満たす要素を線形探索し、あれば`true`を返す。
 /// ```
-/// use crate::talk2021::search::*;
+/// use crate::toa::lsearch::*;
 ///
 /// let vec: Vec<i32> = vec![1, 4, 8, 9, -1, -2, 8, 10];
 /// let result = lsearch(&vec, |i| { *i == 8i32 });
