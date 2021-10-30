@@ -274,3 +274,14 @@ TSWLatexianTemp*
 
 # Makeindex log files
 *.lpz
+
+
+# Added by cargo
+
+/target
+
+# For emacs
+*~
+
+# For numbering
+commitid.tex

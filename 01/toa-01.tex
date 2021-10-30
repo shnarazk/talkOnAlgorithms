@@ -1,0 +1,228 @@
+\NeedsTeXFormat{LaTeX2e}
+%\PassOptionsToClass{handout}{beamer}
+\documentclass{beamer}
+\usepackage{beamerPack}
+\usepackage[boxed,ruled,vlined]{algorithm2e}
+\usepackage{bm}
+\usepackage[01]{../lecture}
+\subtitle{}
+\begin{document}
+
+\begin{frame}[fragile]{}
+\titlepage
+\end{frame}
+
+\section{Intro}		%%%%%%%%
+\subsection{}
+
+\begin{frame}[fragile]{Outline}{}
+\begin{itemize}\itemsep8pt
+\item 代表的な検索アルゴリズム
+\item 基礎的な計算量の理論
+\item 代表的な整列アルゴリズム
+\item アルゴリズム設計論
+\item 線形計画法
+\end{itemize}
+\end{frame}
+
+\begin{frame}[fragile]{設定}{}
+
+\begin{exampleblock}{ハードウェア}
+\begin{itemize}%\itemsep8pt
+\item 単一CPU
+\item メモリのアクセス速度一定（キャッシュなし）
+\item 機械語を実行
+\end{itemize}
+\end{exampleblock}
+
+\begin{exampleblock}{プログラミング言語}
+\begin{itemize}%\itemsep8pt
+\item 配列型{\tt Vec}を有すること
+\begin{itemize}%\itemsep8pt
+\item アクセス速度一定
+\item 添字は0から始まる（従って最後の要素の添字は長さ-1）
+\end{itemize}
+\item 数学的帰納法の直接翻訳として再帰呼出しできること
+\item 型の明示
+\item 実行前に機械語に変換
+\end{itemize}
+\end{exampleblock}
+\end{frame}
+
+\section{Search}		%%%%%%%%
+\subsection{}
+
+\begin{frame}[fragile]{検索}{search}
+\begin{block}{検索}
+\begin{itemize}%\itemsep8pt
+\item 
+メモリに置かれたデータの中からある条件を満たす要素があるかどうかを判定する
+\item[$\to$]
+有限長の配列の中からある条件を満たす要素があるかどうかを判定
+\end{itemize}
+\end{block}
+探索とは違うのか？
+
+返値の型が指定されてない？
+\begin{alertblock}{alert}
+\end{alertblock}
+\end{frame}
+
+\section{Linear}		%%%%%%%%
+\subsection{}
+
+\begin{frame}[fragile]{何かの配列の中に条件を満たすものがあるか}{1}
+\scalebox{0.9}{
+\begin{algorithm}[H]
+\KwIn{v: Vec}
+\KwIn{条件: 要素を等しい、等しくないに二分判定する何か}
+\KwOut{発見または失敗}
+\SetKwComment{Comment}{}{}
+\BlankLine
+i = 0\Comment*{\sl\small\color[gray]{0.5} 添字}
+\While{iが要素数より小さい} {
+  \If{v[i]が条件を満たす}{
+    Return{発見}
+  }
+  i += 1\;
+}
+\Return{失敗}\;
+\caption[page]{線形探索}
+\end{algorithm}
+}
+\end{frame}
+
+\begin{frame}[fragile]{尺度}{}
+\begin{itemize}%\itemsep8pt
+\item 停止性
+\item 正確さ（完全性）
+\item 適用範囲
+\item 速度
+\end{itemize}
+
+\vfill
+アルゴリズムの定義は「有限時間で停止するプログラム」
+\end{frame}
+
+\begin{frame}[fragile]{TypeScriptで実装}{\href{https://replit.com/@shnarazk/LinearSearchInTypeScript}{replit.com/@shnarazk/LinearSearchInTypeScript}}
+\begin{codeof}{language=C}{bsearch}
+function bsearch<T> (v: Array<T>, c: (e:T) => boolean): boolean {
+  let i = 0
+  while (i < v.length) {
+    if (c(v[i])) { return true }
+    i += 1
+  }
+  return false
+}
+
+const vec = [1, 4, 8, 9, -1, -2, 8, 10]
+
+// test case 1
+function equal_8 (i: number): boolean { return i === 8 }
+console.log(lsearch(vec, equal_8))
+\end{codeof}
+\end{frame}
+
+\begin{frame}[fragile]{チェックリスト}{\href{https://replit.com/@shnarazk/LinearSearchInTypeScript}{replit.com/@shnarazk/LinearSearchInTypeScript}}
+
+\begin{enumerate}\itemsep8pt
+\item 指定アイテム（例えば3）だけでなく、条件検索（例えば偶数）も探せること
+\item 特定の型（例えばNumber）だけでなく、別の型（例えばString）にも適用できること
+\end{enumerate}
+\end{frame}
+
+\begin{frame}[fragile]{Rustで実装}{}
+\begin{codeof}{language=Rust}{lsearch.rs}
+fn lsearch<T>(v: &[T], c: impl Fn(&T) -> bool) -> bool {
+    let mut i = 0;
+    while i < v.len() {
+        if c(&v[i]) { return true; }
+        i += 1;
+    }
+    false
+}
+
+fn main() {
+    let vec: Vec<i32> = vec![1, 4, 8, 9, -1, -2, 8, 10];
+    // test case 1
+    fn equal_8 (i: &i32) -> bool { *i == 8 }
+    dbg!(lsearch(&vec, &equal_8));
+    // test case 2
+    fn equal_7 (i: &i32) -> bool { *i == 7 }
+    dbg!(lsearch(&vec, &equal_7));
+}
+\end{codeof}
+\end{frame}
+
+\begin{frame}[fragile]{関数型よりの実装}{}
+\begin{codeof}{language=Rust}{lsearch.rs}
+/// ```
+/// use crate::project1::main::lsearch;
+/// let vec: Vec<i32> = vec![1, 4, 8, 9, -1, -2, 8, 10];
+/// fn equal_8 (i: &i32) -> bool { *i == 8 }
+/// assert_eq!(lsearch(&vec, &equal_8), true);
+/// ```
+fn lsearch<T>(v: &[T], c: &dyn Fn(&T) -> bool) -> bool {
+    v.iter().any(|x| c(x)); // TypeScriptならsome
+}
+\end{codeof}
+\vfill
+プログラム設計論的には使うべき便利な関数があるが、その実装を知らないと計算量の判断ができないので、ここではあまり使わないことにする（自動並列化や逆順走査の可能性）。
+\end{frame}
+
+\section{Binary}		%%%%%%%%
+\subsection{}
+
+\begin{frame}[fragile]{何かの整列ずみ配列の中に条件を満たすものがあるか}{2}
+\scalebox{0.9}{
+\begin{algorithm}[H]
+\KwIn{v: Vec、（前提条件）要素は小さい順に整列ずみ}
+\KwIn{条件: 要素を小さい、等しい、大きいに三分判定}
+\KwOut{発見または失敗}
+\SetKwComment{Comment}{}{}
+\BlankLine
+i = 0\Comment*{\sl\small\color[gray]{0.5}検索範囲の左の添字}
+j = z.len() - 1\Comment*{\sl\small\color[gray]{0.5}検索範囲の右の添字}
+\While{i <= j} {
+  \If{ v[(i + j) / 2]の判断結果が「等しい」}{
+    Return{発見}
+  }
+  \eIf{v[(i + j) / 2]の判断結果が「小さい」}{
+    i = (i + j) / 2 + 1\Comment*{\sl\small\color[gray]{0.5}検索範囲の左半分を破棄}
+  }{
+    j = (i + j) / 2 - 1\Comment*{\sl\small\color[gray]{0.5}検索範囲の右半分を破棄}
+  }
+}
+\Return{失敗}\;
+\caption[page]{二分探索}
+\end{algorithm}
+}
+\end{frame}
+
+\begin{frame}[fragile]{比較}{}
+
+\begin{tabular}[h]{|l|p{0.35\textwidth}|p{0.35\textwidth}|}
+尺度 & 線形探索 & 二分探索 \\\hline
+停止性 & 問題ない(配列長さが上限) & 問題ない($j - i$は単調減少で0以下で終了) \\
+完全性 & 全ての要素を調べているので問題ない & 前提条件より導出可能 \\
+適用範囲 & 同一性判定できること & 全順序が備わっていること＋配列が整列ずみ \\
+速度 & 説得力のある定義が必要 & -- \\
+\end{tabular}
+\vfill
+プログラマとしては利用可能かどうかを考慮する必要があり、その上で速度に対して考慮する必要がある。
+\end{frame}
+
+\section{Hash}		%%%%%%%%
+\subsection{}
+
+\begin{frame}[fragile]{二分探索は最速か}{}
+\begin{itemize}\itemsep20pt%[<+->]
+\item ハッシュ表を使えばより高速
+\item 正確にはハッシュ表というデータ構造{\footnotemark}とハッシュ関数のペア
+\item 速度の点では有利だが別の観点で不利
+\end{itemize}
+\vfill
+\footnotetext[1]{配列で実現できるので、ここまでの言語の前提条件から逸脱していない}
+\end{frame}
+
+\end{document}
