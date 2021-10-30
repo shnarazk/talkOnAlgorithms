@@ -15,7 +15,7 @@
 \section{Intro}		%%%%%%%%
 \subsection{}
 
-\begin{frame}[fragile]{Outline}{}
+\begin{frame}[fragile]{計画}{}
 \begin{itemize}\itemsep8pt
 \item 代表的な検索アルゴリズム
 \item 基礎的な計算量の理論
@@ -71,11 +71,11 @@
 \section{Linear}		%%%%%%%%
 \subsection{}
 
-\begin{frame}[fragile]{何かの配列の中に条件を満たすものがあるか}{1}
+\begin{frame}[fragile]{何かの配列の中から条件を満たすものを探す}{}
 \scalebox{0.9}{
 \begin{algorithm}[H]
-\KwIn{v: Vec}
-\KwIn{条件: 要素を等しい、等しくないに二分判定する何か}
+\KwIn{v: \texttt{Vec<T>}}
+\KwIn{条件 --- 要素を等しい、等しくないに二分判定する関数}
 \KwOut{発見または失敗}
 \SetKwComment{Comment}{}{}
 \BlankLine
@@ -92,7 +92,7 @@ i = 0\Comment*{\sl\small\color[gray]{0.5} 添字}
 }
 \end{frame}
 
-\begin{frame}[fragile]{尺度}{}
+\begin{frame}[fragile]{評価尺度}{}
 \begin{itemize}%\itemsep8pt
 \item 停止性
 \item 正確さ（完全性）
@@ -156,12 +156,6 @@ fn main() {
 
 \begin{frame}[fragile]{関数型よりの実装}{}
 \begin{codeof}{language=Rust}{lsearch.rs}
-/// ```
-/// use crate::project1::main::lsearch;
-/// let vec: Vec<i32> = vec![1, 4, 8, 9, -1, -2, 8, 10];
-/// fn equal_8 (i: &i32) -> bool { *i == 8 }
-/// assert_eq!(lsearch(&vec, &equal_8), true);
-/// ```
 fn lsearch<T>(v: &[T], c: &dyn Fn(&T) -> bool) -> bool {
     v.iter().any(|x| c(x)); // TypeScriptならsome
 }
@@ -173,11 +167,11 @@ fn lsearch<T>(v: &[T], c: &dyn Fn(&T) -> bool) -> bool {
 \section{Binary}		%%%%%%%%
 \subsection{}
 
-\begin{frame}[fragile]{何かの整列ずみ配列の中に条件を満たすものがあるか}{2}
+\begin{frame}[fragile]{何かの整列ずみ配列の中から条件を満たすものを探す}{}
 \scalebox{0.9}{
 \begin{algorithm}[H]
-\KwIn{v: Vec、（前提条件）要素は小さい順に整列ずみ}
-\KwIn{条件: 要素を小さい、等しい、大きいに三分判定}
+\KwIn{v: \texttt{Vec<T>} ---（前提条件）要素は小さい順に整列ずみ}
+\KwIn{条件 --- 要素を小さい、等しい、大きいに三分判定}
 \KwOut{発見または失敗}
 \SetKwComment{Comment}{}{}
 \BlankLine
@@ -199,17 +193,20 @@ j = z.len() - 1\Comment*{\sl\small\color[gray]{0.5}検索範囲の右の添字}
 }
 \end{frame}
 
-\begin{frame}[fragile]{比較}{}
+\begin{frame}[fragile]{検討}{}
 
-\begin{tabular}[h]{|l|p{0.35\textwidth}|p{0.35\textwidth}|}
-尺度 & 線形探索 & 二分探索 \\\hline
-停止性 & 問題ない(配列長さが上限) & 問題ない($j - i$は単調減少で0以下で終了) \\
-完全性 & 全ての要素を調べているので問題ない & 前提条件より導出可能 \\
-適用範囲 & 同一性判定できること & 全順序が備わっていること＋配列が整列ずみ \\
-速度 & 説得力のある定義が必要 & -- \\
+{\fontsize{8}{9}\selectfont
+\begin{tabular}[h]{|p{0.12\textwidth}|p{0.4\textwidth}|p{0.4\textwidth}|}
+\CH 尺度 & 線形探索 & 二分探索 \\\hline
+\CL 停止性 & 配列長さが繰り返し上限 & 検索範囲$j - i$は単調減少、かつ0で終了 \\
+\CL 完全性 & 全ての要素を調べているので問題ない & 前提条件より導出可能 \\
+\CL 適用対象\footnotemark & 同一性判定できること & 全順序であること、かつ配列が整列ずみ \\
+\CL 速度 & 説得力のある定義が必要 & -- \\
 \end{tabular}
+}
 \vfill
 プログラマとしては利用可能かどうかを考慮する必要があり、その上で速度に対して考慮する必要がある。
+\footnotetext[1]{要素の型Tに課せられた制約}
 \end{frame}
 
 \section{Hash}		%%%%%%%%
