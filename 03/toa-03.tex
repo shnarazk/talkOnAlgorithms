@@ -3,11 +3,7 @@
 \documentclass{beamer}
 \usepackage{beamerPack}
 \usepackage[boxed,ruled,vlined]{algorithm2e}
-\usepackage[02]{../lecture}
-\usepackage[usestackEOL]{stackengine}[2013-10-15]
-\def\x{\hspace{4.1ex}}    %BETWEEN TWO 1-DIGIT NUMBERS
-\def\y{\hspace{3.4ex}}  %BETWEEN 1 AND 2 DIGIT NUMBERS
-\def\z{\hspace{2.7ex}}    %BETWEEN TWO 2-DIGIT NUMBERS
+\usepackage[03]{../lecture}
 \subtitle{}
 \begin{document}
 
@@ -15,86 +11,239 @@
 \titlepage
 \end{frame}
 
-\section{algorithm design}		%%%%%%%%
+\section{sort}		%%%%%%%%
 \subsection{}
 
-\begin{frame}[fragile]{帰納法とループ}{与えられた数式からプログラムへ}
-\begin{align*}
-Fib(0) =& 1\\
-Fib(1) =& 1\\
-Fib(n) =& Fib(n - 1) + Fib(n - 2)\\
-\end{align*}
+\begin{frame}[fragile]{整列}{}
+\begin{itemize}\itemindent15mm\labelsep10mm
+\item[初期状態]入力: 配列\texttt{VecT}
 
-\begin{align*}
-A(0, n) =& n + 1\\
-A(m + 1, 0) =& A(m, 1)\\
-A(m + 1, n + 1) =& A(m, A(m + 1, n))
-\end{align*}
-\end{frame}
-
-\begin{frame}[fragile]{再帰とループ}{与えられた問題からプログラムへ}
-\stackMath
-\Longstack[l]{
-n=0\\
-n=1\\
-n=2\\
-n=3\\
-n=4\\
-n=5\\
-n=6\qquad\ \\
-}
-\Longstack{
-1\\
-1\x 1\\
-1\x 2\x 1\\
-1\x 3\x 3\x 1\\
-1\x 4\x 6\x 4\x 1\\
-1\x 5\y 10\z 10\y 5\x 1\\
-1\x 6\y 15\z 20\z 15\y 6\x 1\\
-1\x 7\x 21\z 35\z 35\z 21\y 7\x 1\\
-}
-
-$n = 23$, 左から11番目の数は？
-\end{frame}
-
-
-\begin{frame}[fragile]{Pascalの三角形}{北東＋北西に等しい}
-
-\begin{align*}
-P(n,k) &= P(n-1, k - 1) + P(n - 1, k)
-\end{align*}
-
-\begin{center}
-\rotatebox{-45}{
+\medskip
 \scalebox{0.6}{
-\begin{tikzpicture}[cell/.style = {rectangle,draw=gray,semithick,minimum size=1cm,outer sep=0mm}]
-\foreach \i [count=\j from 0] in {1, 1, 1, 1, 1,  1, 1, 1, 1}
-    \node[cell] at (\j,  0) {\rotatebox{45}{$\i$}};
-\foreach \i [count=\j from 0] in {1, 2, 3, 4, 5,  6, 7, 8}
-    \node[cell] at (\j, -1) {\rotatebox{45}{$\i$}};
-\foreach \i [count=\j from 0] in {1, 3, 6, 10,15,21,28}
-    \node[cell] at (\j, -2) {\rotatebox{45}{$\i$}};
-\foreach \i [count=\j from 0] in {1, 4, 10,20,35,56}
-    \node[cell] at (\j, -3) {\rotatebox{45}{$\i$}};
-\foreach \i [count=\j from 0] in {1, 5, 15,35,70}
-    \node[cell] at (\j, -4) {\rotatebox{45}{$\i$}};
-\foreach \i [count=\j from 0] in {1, 6, 21,56}
-    \node[cell] at (\j, -5) {\rotatebox{45}{$\i$}};
-\foreach \i [count=\j from 0] in {1, 7, 28}
-    \node[cell] at (\j, -6) {\rotatebox{45}{$\i$}};
-\foreach \i [count=\j from 0] in {1, 8}
-    \node[cell] at (\j, -7) {\rotatebox{45}{$\i$}};
-\foreach \i [count=\j from 0] in {1}
-    \node[cell] at (\j, -8) {\rotatebox{45}{$\i$}};
+\begin{tikzpicture}[
+    , cell/.style = {rectangle,draw=gray,semithick,minimum size=1cm,outer sep = 0mm,label=below:v{[\j]}}
+]
+\foreach \i [count=\j from 0] in {4, -1, 2, 8, 7, 2, 5, 0, 1}
+    \node[cell] at (\j, 0) {$\i$};
 \end{tikzpicture}
 }
+\item[最終状態]出力: 整列ずみの配列\texttt{VecT}
+
+\medskip
+\scalebox{0.6}{
+\begin{tikzpicture}[
+    , cell/.style = {rectangle,draw=gray,semithick,minimum size=1cm,outer sep = 0mm}
+]
+\foreach \i [count=\j from 0] in {-1, 0, 1, 2, 2, 4, 5, 7, 8}
+    \node[cell] at (\j, 0) {$\i$};
+\end{tikzpicture}
 }
-\end{center}
+\end{itemize}
+全ての要素に順序がつけられること：全順序性が必要。
+\vfill
+\begin{block}{安定なソート}
+順序が同じ要素は整列後も元の順序を保つ
+\end{block}
+
+氏名順に並んでいた学生データの配列を成績順にソート
 \end{frame}
 
-\begin{frame}[fragile]{}{}
-線形再帰ならループと再帰の記述の手間は同じ（実行時間も同じ）。
-問題は線形でない場合：スタックを使って自分で機械語実行過程のシミュレーションを書けるならOK。
+\section{bubble sort}		%%%%%%%%
+\subsection{}
+
+\begin{frame}[fragile]{bubble sort}{}
+\scalebox{0.5}{
+\begin{tikzpicture}[xshift=0.15\textwidth
+    , cell/.style = {rectangle,draw=gray,semithick,minimum size=1cm,outer sep = 0mm}
+]
+\foreach \i [count=\j from 0] in {4, -1, 2, 8, 7, 2, 5, 0, 1}
+    \node[cell] at (\j, 0) {$\i$};
+\node at (10, 0) {$\longrightarrow$};
+\foreach \i [count=\j from 0] in {-1, 0, 1, 2, 2, 4, 5, 7, 8}
+    \node[cell] at (\j + 12, 0) {$\i$};
+\end{tikzpicture}
+}
+
+\vfill
+適切な中間目標を設定せよ
+
+\pause
+\vfill
+先頭の1個が整列している
+
+\vfill
+\scalebox{0.6}{
+\begin{tikzpicture}[cell/.style = {rectangle,draw=gray,semithick,minimum size=1cm,outer sep = 0mm}]
+\foreach \i [count=\j from 0] in {-1, 0, 1, 2, 2, 4, 5, 7, 8}
+    \node[cell] at (\j, 0) {$\i$};
+\end{tikzpicture}
+}
+{\tiny 中間目標になってない}
+
+\medskip
+\scalebox{0.6}{
+\begin{tikzpicture}[cell/.style = {rectangle,draw=gray,semithick,minimum size=1cm,outer sep = 0mm}]
+\foreach \i [count=\j from 0] in {-1, 0, 0, 0, 0, 0, 0, 0, 0}
+    \node[cell] at (\j, 0) {$\i$};
+\end{tikzpicture}
+}
+{\tiny 次のステップにいけない}
+
+\medskip
+\scalebox{0.6}{
+\begin{tikzpicture}[cell/.style = {rectangle,draw=gray,semithick,minimum size=1cm,outer sep = 0mm}]
+\foreach \i [count=\j from 0] in {-1, X, X, X, X, X, X, X, X}
+    \node[cell] at (\j, 0) {$\i$};
+\end{tikzpicture}
+}
+{\tiny $X$は-1以外の要素のどれか}
+\end{frame}
+
+\begin{frame}[fragile]{bubble sort}{}
+
+\begin{enumerate}%\itemsep8pt
+\item
+対象範囲$[0, N)$に対して、最も小さな要素を範囲の最初の位置に、それ以外の要素をそれ以降の範囲$[1, N)$に置く
+\item
+対象範囲$[1, N)$に対して、最も小さな要素を範囲の最初の位置に、それ以外の要素をそれ以降の範囲$[2, N)$に置く
+\item
+対象範囲$[2, N)$に対して、最も小さな要素を範囲の最初の位置に、それ以外の要素をそれ以降の範囲$[3, N)$に置く
+\item
+対象範囲$[N, N)$にはデータは存在しないので終了
+\end{enumerate}
+\end{frame}
+
+\begin{frame}[fragile]{bubble sort}{}
+\begin{algorithm}[H]
+\KwIn{v: \texttt{Vec<T>}--対象配列}
+\KwIn{start: Int -- 対象範囲の下限}
+\KwIn{end: Int -- 対象範囲の上界}
+\SetKwComment{Comment}{}{}
+\BlankLine
+i = 0\Comment*{\sl\small\color[gray]{0.5} 添字}
+\While{i < end}{
+  x = 範囲内で最も小さな要素(start, end)\;
+  xとv[start]を入れ替え\;
+  i += 1\;
+}
+\caption[page]{再帰を使わないアイデア}
+\end{algorithm}
+
+xだけでなくその添字も必要
+\begin{itemize}%\itemsep8pt
+\item 添字を返す
+\item 最小値を返すのではなく、並び替えも途中でする
+\end{itemize}
+\end{frame}
+
+\begin{frame}[fragile]{bubble sort in TypeScript}{}
+
+\begin{codeof}{language=C}{bsort.ts}
+function bsort<T>(v: Array<T>) {
+  let last_index = v.length - 1
+  for (let i = 0; 0 < last_index; i++) {
+    for (let j = last_index; i < j; j--) {
+      if (v[j] > v[j - 1]) {
+        v[j]とv[j -1]を入れ替え // v.swap(j, j - 1)
+      }
+    }
+  }
+}
+\end{codeof}
+\end{frame}
+
+\begin{frame}[fragile]{bubble sortの評価}{}
+対象範囲$[0, N)$に対して、最も小さな要素を範囲の最初の位置に、それ以外の要素をそれ以降の範囲$[1, N)$に置く
+
+対象範囲を変えて繰り返す
+→範囲は1ずつ減る：N個のデータならN回繰り返し
+
+
+対象範囲の中で最も小さな要素を範囲の最初の位置に置く
+→対象範囲をrとするとこの操作は比較をr回繰り返す
+
+\begin{align*}
+最悪比較回数 &= N + (N - 1) + (N - 2) + (N - 3) + \cdots + 1 \\
+&= \Sigma_{n=1}^{N}N \\
+&= \frac{(N-1)N}{2} \\
+&= \frac{1}{2}N^2 - \frac{1}{2}N \\
+&= O(N^2)
+\end{align*}
+
+\end{frame}
+
+\begin{frame}[fragile]{bubble sortの計算量評価}{}
+a
+\end{frame}
+
+\section{quick sort}		%%%%%%%%
+\subsection{}
+
+\begin{frame}[fragile]{quick sort}{}
+\scalebox{0.5}{
+\begin{tikzpicture}[xshift=0.15\textwidth
+    , cell/.style = {rectangle,draw=gray,semithick,minimum size=1cm,outer sep = 0mm}
+]
+\foreach \i [count=\j from 0] in {4, -1, 2, 8, 7, 2, 5, 0, 1}
+    \node[cell] at (\j, 0) {$\i$};
+\node at (10, 0) {$\longrightarrow$};
+\foreach \i [count=\j from 0] in {-1, 0, 1, 2, 2, 4, 5, 7, 8}
+    \node[cell] at (\j + 12, 0) {$\i$};
+\end{tikzpicture}
+}
+
+\vfill
+適切な中間目標を設定せよ
+
+\pause
+\vfill
+N/2個のソート問題ふたつに帰着させる。
+
+\begin{itemize}%\itemsep8pt
+\item 他方のどの要素よりも小さい要素だけからなる配列
+\item 他方のどの要素よりも大きい要素だけからなる配列
+\end{itemize}
+それぞれを整列、順につなげば全体が整列
+\end{frame}
+
+\begin{frame}[fragile]{quick sort in TypeScript}{}
+\end{frame}
+
+\begin{frame}[fragile]{quick sortの計算量評価}{最悪計算量、最良計算量、平均計算量}
+a
+\end{frame}
+
+\begin{frame}[fragile]{quick sortの計算量評価}{前処理をした場合の最悪計算量}
+a
+\end{frame}
+
+\begin{frame}[fragile]{sortの比較}{}
+a
+\end{frame}
+
+\begin{frame}[fragile]{より速いsort}{}
+a
+\end{frame}
+
+\begin{frame}[fragile]{その他のsort:merge sort}{}
+a
+\end{frame}
+
+\begin{frame}[fragile]{その他のsort:heap sort}{}
+a
+\end{frame}
+
+\begin{frame}[fragile]{実装に関する蛇足}{}
+
+sort関数は多くの言語で標準ライブラリ中に存在
+
+多くの場合クイックソート、一部では何かを嫌ってヒープソート（キャッシュのヒット率？？）。
+
+？？を嫌って要素数が極めて少ない時はバブルソートを使う。
+
+上位N個までのソートが欲しい。言語によっては提供。
+安定版、非安定版も言語によっては両方提供。
+
 \end{frame}
 
 \end{document}
