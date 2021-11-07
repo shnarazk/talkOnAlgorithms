@@ -82,7 +82,7 @@
 i = 0\Comment*{\sl\small\color[gray]{0.5} 添字}
 \While{iが要素数より小さい} {
   \If{v[i]が条件を満たす}{
-    Return{発見}
+    \Return{発見}
   }
   i += 1\;
 }
@@ -179,7 +179,7 @@ i = 0\Comment*{\sl\small\color[gray]{0.5}検索範囲の左の添字}
 j = z.len() - 1\Comment*{\sl\small\color[gray]{0.5}検索範囲の右の添字}
 \While{i <= j} {
   \If{ v[(i + j) / 2]の判断結果が「等しい」}{
-    Return{発見}
+    \Return{発見}
   }
   \eIf{v[(i + j) / 2]の判断結果が「小さい」}{
     i = (i + j) / 2 + 1\Comment*{\sl\small\color[gray]{0.5}検索範囲の左半分を破棄}

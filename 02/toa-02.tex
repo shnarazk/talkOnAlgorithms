@@ -15,66 +15,196 @@
 \subsection{}
 
 \begin{frame}[fragile]{計算時間の定義}{}
-if文の回数
+ハードウェアや記述言語ではなくアルゴリズムの優劣を評価
+\begin{itemize}%\itemsep8pt
+\item if文の実行回数
+\item 代入文の実行回数 -- 入力データに強く依存
+\item 繰り返し文（の終了条件判定）の実行回数 -- この問題では馬鹿にならない
+\end{itemize}
+
+\begin{itemize}\itemsep8pt
+\item 簡単のため最悪評価で考える
+\item データの大きさ（個数）$N$を考慮する
+\end{itemize}
+
+\vfill
+従って、大きさ$N$のデータに対する比較文の実行回数$X$を比較
 \end{frame}
 
-\begin{frame}[fragile]{計算時間の定義}{}
-最悪評価
+\begin{frame}[fragile]{時間計算量、空間計算量}{}
+\begin{block}{時間計算量}
+絶対時間ではなく回数を基準として計算の実行に必要な時間
+\end{block}
+\begin{block}{空間計算量}
+その計算を実行するために必要なメモリ量。
+Byteではなく要素型Tの大きさを基準とする（長さNの配列の空間計算量はN）
+\end{block}
 \end{frame}
 
-\begin{frame}[fragile]{計算時間の定義}{}
-データの大きさ（個数）N
+\begin{frame}[fragile]{二分探索における時間計算量1}{}
+
+\begin{exampleblock}{線形探索の時間計算量と空間計算量}
+\begin{itemize}%\itemsep8pt
+\item 繰り返し文の本体を$N$回繰り返し、その度に1回の比較を実行するから時間計算量は$N$
+\item データの大きさ$N$に対し長さ$N$の配列が必要になるから空間計算量は$N$
+\end{itemize}
+\end{exampleblock}
 \end{frame}
 
-\begin{frame}[fragile]{計算時間の定義}{}
-長さNの配列から最悪
+\begin{frame}[fragile]{二分探索における空間計算量:帰納法版}{}
+
+\begin{codeof}{language=Rust}{再帰版bsearch}
+fn lsearch<T>(v: &[T], c: ...) -> bool {
+   if 長さが0なら { return false; } 
+   if 先頭が条件cを満たすなら { return true; }
+   bsearch(v[1..], c) // 先頭以外すなわちN-1個を対象に調べる
+}
+\end{codeof}
+
+大きさ$N-1$のデータに対する時間計算量$T_{N-1}$に1回の比較を追加したものが大きさ$N$の時間計算量$T_{N}$。
+
+\begin{align*}
+T_{N} = T_{N-1} + 1
+\end{align*}
+
+従って漸化式を解くと（あるいは帰納法を使うと）時間計算量は$N$。
 \end{frame}
 
-\begin{frame}[fragile]{時間計算量、空間計算量1}{}
-長さNの配列から最悪
-\end{frame}
-
-\begin{frame}[fragile]{時間計算量、空間計算量2}{}
-N個のデータから検索する状況においてどれほどのメモリが必要か
-\end{frame}
-
-\begin{frame}[fragile]{線形探索における時間計算量1}{}
-\end{frame}
-
-\begin{frame}[fragile]{線形探索における空間計算量2}{}
-\end{frame}
-
-
-\begin{frame}[fragile]{二分探索における時間計算量2}{}
-\end{frame}
-
-\begin{frame}[fragile]{二分探索における空間計算量4}{}
-\end{frame}
-
-\begin{frame}[fragile]{二分探索における空間計算量5}{}
+\begin{frame}[fragile]{二分探索における空間計算量2}{}
+補足?
 \end{frame}
 
 \section{$O$-notation}		%%%%%%%%
 \subsection{}
 
-\begin{frame}[fragile]{big-$O$ notation}{}
-a
+\begin{frame}[fragile]{$O$記法}{}
+線形探索の時間計算量が$N$ならより速い探索として$0.9N$や$0.1N^2$などが望まれる？
+
+Nに対する変化がより重要：係数ではなく次数に注目するための一種の正規化
+
+\vfill
+実数値関数 f(x) と g(x) に対し、
+
+\begin{align*}
+\exists x_{0}, \exists M > 0,  \forall x > x_{0} : |f(x)| < M | g(x) |
+\end{align*}
+が成立するとき（またその時に限り）、
+
+\begin{align*}
+f(x) &= O(g(x))
+\end{align*}
 \end{frame}
 
 \begin{frame}[fragile]{$O$-記法の解釈}{}
-a
+
+\begin{itemize}%\itemsep8pt
+\item $f$は$g$で上から抑えられる -- 理論的上限を表明
+\item $x_0$ -- データ数が小さいうちは気にしない
+\item $M$が適当に設定できる -- 係数ではなく次数が大事
+\end{itemize}
+
+\begin{align*}
+1.5 x & = O(x) \\
+\sum_{1}^{N} N & = O(N^2) \\
+1.5x^2 + 2x & = O(x^2 + x) \\
+         & = O(x^2) \\
+2.14x^3 & \approx O(x^3)
+\end{align*}
+最後のは間違い。近似関係ではなく等値関係。
+
 \end{frame}
 
-\begin{frame}[fragile]{$\Sigma(-)$, $\Omega(-)$}{}
-a
+\begin{frame}[fragile]{$\Omega(-)$, $\Theta(-)$}{}
+\begin{align*}
+\exists x_{0}, \exists M > 0,  \forall x > x_{0} : |f(x)| > M | g(x) |
+\end{align*}
+が成立するとき（またその時に限り）、
+
+\begin{align*}
+f(x) &= \Omega(g(x))
+\end{align*}
+
+\vfill
+\begin{align*}
+f(x) = O(g(x)) && f(x) = \Omega(g(x))
+\end{align*}
+が成立するとき（またその時に限り）、
+
+\begin{align*}
+f(x) &= \Theta(g(x))
+\end{align*}
 \end{frame}
 
-\begin{frame}[fragile]{検索アルゴリズムの計算量のオーダー}{}
-a
+\begin{frame}[fragile]{線形探索の計算量}{}
+
+\begin{itemize}%\itemsep8pt
+\item 線形探索の時間計算量は$O(N)$である。
+\item 線形探索の時間計算量のオーダーは$N$である。
+\item 線形探索の空間計算量は$O(N)$である\footnotemark。
+\end{itemize}
+
+\footnotetext[1]{添字のためなどにローカル変数をいくつか定義しても$N + 1 = O(N)$。}
+
 \end{frame}
 
-\begin{frame}[fragile]{検索アルゴリズムの計算量のオーダー}{}
-a
+\begin{frame}[fragile]{二分探索の計算量}{}
+\scalebox{0.7}{
+\begin{algorithm}[H]
+\SetKwComment{Comment}{}{}
+\BlankLine
+i = 0; j = z.len() - 1\Comment*{\sl\small\color[gray]{0.5}検索範囲}
+\While{i <= j} {
+  \If{ v[(i + j) / 2]が等しい}{
+    \Return{発見}
+  }
+  \eIf{v[(i + j) / 2]が小さい}{
+    i = (i + j) / 2 + 1\Comment*{\sl\small\color[gray]{0.5}検索範囲の左半分を破棄}
+  }{
+    j = (i + j) / 2 - 1\Comment*{\sl\small\color[gray]{0.5}検索範囲の右半分を破棄}
+  }
+}
+\Return{失敗}\;
+\caption[page]{二分探索}
+\end{algorithm}
+}
+
+\vfill
+
+\begin{itemize}%\itemsep8pt
+\item データの大きさが$N$の場合の繰り返し回数\footnotemark: $\log_{2}(N)$
+\item 各繰り返しの中で実行する条件比較は2回=$O(1)$回
+\end{itemize}
+\end{frame}
+
+\begin{frame}[fragile]{代表的探索の計算量}{}
+
+{%\fontsize{9}{10}\selectfont
+\begin{tabular}[h]{|c|r|r|r|}
+\CH アルゴリズム & （最悪）時間計算量 & 最良時間-- & 空間-- \\\hline
+\CL 線形探索 & $O(N)$ & $O(1)$ & $O(N)$ \\
+\CL 二分探索 & $O(\log(N))$ & $O(1)$ & $O(N)$ \\
+\end{tabular}
+}
+
+\end{frame}
+
+\begin{frame}[fragile]{より速い探索}{}
+
+一般には無理。
+
+\begin{block}{並列探索}
+データをパーティショニング。固定のM台使用するなら$O(N/M) = O(N)$。
+データの大きさに合わせて増加させるなら$O(N)$以下が可能。
+\end{block}
+
+\begin{block}{ハッシュ表とハッシュ関数}
+\begin{itemize}%\itemsep8pt
+\item 時間計算量は$O(1)$
+\item 空間計算量は$O(データの潜在的総数)$
+\end{itemize}
+\end{block}
+
+二分探索は速いが、計算量が大きな前処理が必要。なんとかならないか：赤黒木などの〇〇木
 \end{frame}
 
 \end{document}
