@@ -9,7 +9,9 @@
 pub fn lsearch<T>(v: &[T], c: impl Fn(&T) -> bool) -> bool {
     let mut i = 0;
     while i < v.len() {
-        if c(&v[i]) { return true }
+        if c(&v[i]) {
+            return true;
+        }
         i += 1;
     }
     false
@@ -22,7 +24,9 @@ mod test {
     #[test]
     fn lsearch_test1() {
         let vec: Vec<i32> = vec![1, 4, 8, 9, -1, -2, 8, 10];
-        fn equal_8 (i: &i32) -> bool { *i == 8 }
+        fn equal_8(i: &i32) -> bool {
+            *i == 8
+        }
         assert_eq!(lsearch(&vec, equal_8), true);
     }
     #[test]

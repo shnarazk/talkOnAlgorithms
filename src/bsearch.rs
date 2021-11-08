@@ -16,12 +16,8 @@ pub fn bsearch<T>(v: &[T], c: impl Fn(&T) -> Ordering) -> bool {
         let mid = (i + j) / 2;
         match c(&v[mid]) {
             Ordering::Equal => return true,
-            Ordering::Less => {
-                j = mid - 1;
-            }
-            Ordering::Greater => {
-                i = mid + 1;
-            }
+            Ordering::Less => j = mid - 1,
+            Ordering::Greater => i = mid + 1,
         }
     }
     false
@@ -35,7 +31,9 @@ mod test {
     fn bsearch_test1() {
         // let vec: Vec<i32> = vec![1, 4, 8, 9, -1, -2, 8, 10];
         let vec: Vec<i32> = vec![-2, -1, 1, 4, 8, 8, 9, 10];
-        fn equal_8 (i: &i32) -> Ordering { 8.cmp(i) }
+        fn equal_8(i: &i32) -> Ordering {
+            8.cmp(i)
+        }
         assert_eq!(bsearch(&vec, equal_8), true);
     }
     #[test]
