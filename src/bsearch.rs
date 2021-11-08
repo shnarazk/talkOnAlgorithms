@@ -1,6 +1,6 @@
 use std::cmp::Ordering;
 
-/// `[T]`に対して条件`c`を満たす要素を線形探索し、あれば`true`を返す。
+/// `v: [T]`に対して条件`c`を満たす要素を2分探索し、あれば`true`を返す。
 /// ```
 /// use crate::toa::bsearch::bsearch;
 ///
