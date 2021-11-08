@@ -1,9 +1,9 @@
 /// `[T]`に対して条件`c`を満たす要素を線形探索し、あれば`true`を返す。
 /// ```
-/// use crate::toa::lsearch::*;
+/// use crate::toa::lsearch::lsearch;
 ///
 /// let vec: Vec<i32> = vec![1, 4, 8, 9, -1, -2, 8, 10];
-/// let result = lsearch(&vec, |i| { *i == 8i32 });
+/// let result = lsearch(&vec, |i| *i == 8i32);
 /// assert_eq!(result, true);
 /// ```
 pub fn lsearch<T>(v: &[T], c: impl Fn(&T) -> bool) -> bool {
@@ -28,6 +28,6 @@ mod test {
     #[test]
     fn lsearch_test2() {
         let vec: Vec<i32> = vec![1, 4, 8, 9, -1, -2, 8, 10];
-        assert_eq!(lsearch(&vec, |i| { *i == 7i32 }), false);
+        assert_eq!(lsearch(&vec, |i| *i == 7i32), false);
     }
 }
