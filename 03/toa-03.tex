@@ -209,16 +209,86 @@ N/2個のソート問題ふたつに帰着させる。
 \begin{frame}[fragile]{quick sort in TypeScript}{}
 \end{frame}
 
+\begin{frame}[fragile]{quick sort in Rust/1}{}
+\begin{codeof}{language=Rust}{quick sort}
+fn sort_on<T: Ord>(v: &mut [T], l: usize, r: usize) {
+    長さ2以下の場合の処理は省略;
+    v.swap((l + r) / 2, l);
+    let (m, mut i, mut j) = (l, l + 1, r);
+    while i <= j {
+        while v[i] <= v[m] && i < r {i += 1;}
+        while v[m] < v[j] && l < j {j -= 1;}
+
+        v.swap(i, j);
+        i += 1;
+        j -= 1;
+    }
+    v.swap(m, j);
+    sort_on(v, l, i - 1);
+    sort_on(v, j + 1, r);
+}
+\end{codeof}
+\end{frame}
+
+\begin{frame}[fragile]{quick sort in Rust/2}{}
+\begin{codeof}{language=Rust}{quick sort}
+pub fn qsort<T: Ord + Clone + Debug>(v: &mut [T]) {
+    sort_on(v, 0, v.len() - 1);
+}
+\end{codeof}
+
+\begin{itemize}%\itemsep8pt
+\item 原典：情報科学辞典、岩波書店（思い出せる限り参考にした）
+\item Wikipediaは関数に頼っているので使えない
+\item Knuth: TAOCPは難読
+\end{itemize}
+\end{frame}
+
 \begin{frame}[fragile]{quick sortの計算量評価}{最悪計算量、最良計算量、平均計算量}
 a
 \end{frame}
 
 \begin{frame}[fragile]{quick sortの計算量評価}{前処理をした場合の最悪計算量}
-a
+\[
+O(N)
+\]
+\end{frame}
+
+\begin{frame}[fragile]{marginal caseへの対応}{}
+\begin{codeof}{language=Rust}{quick sort}
+fn sort_on<T: Ord>(v: &mut [T], l: usize, r: usize) {
+    ...
+    while i < j {
+        ...
+        if j <= i {
+            if i == l + 1 {
+                return sort_on(v, l + 1, r);
+            }
+            if j == r {
+                v.swap(m, r);
+                return sort_on(v, l, r - 1);
+            }
+            break;
+        }
+        v.swap(i, j);
+        ...
+\end{codeof}
 \end{frame}
 
 \begin{frame}[fragile]{sortの比較}{}
-a
+
+
+{%\fontsize{9}{10}\selectfont
+\begin{tabular}[h]{|c|r|r|}
+\CH アルゴリズム & （最悪）時間計算量& 空間-- \\\hline
+\CL バブルソート & $O(N^2)$ & $O(N)$ \\
+\CL クイックソート & $O(N\log(N))$ & $O(N)$ \\
+\end{tabular}
+}
+
+\vfill
+クイックソートは$O(N^2)$では？ $O(N)$の前処理でほぼ対応できる。
+
 \end{frame}
 
 \begin{frame}[fragile]{より速いsort}{}
