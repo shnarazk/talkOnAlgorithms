@@ -34,8 +34,8 @@ use std::fmt::Debug;
 /// assert_eq!(vec, sorted);
 ///```
 pub fn qsort<T: Ord + Clone + Debug>(v: &mut [T]) {
-    fn sort_range<T: Ord + Clone + Debug>(v: &mut [T], left: usize, right: usize) {
-        if !(left < right) {
+    fn sort_range<T: Ord + Debug>(v: &mut [T], left: usize, right: usize) {
+        if left >= right {
             return;
         }
         if left + 1 == right {
@@ -44,68 +44,60 @@ pub fn qsort<T: Ord + Clone + Debug>(v: &mut [T]) {
             }
             return;
         }
-        let mid = v[(left + right) / 2].clone();
-        let (mut i, mut j) = (left, right);
-        while i < j {
+        v.swap((left + right) / 2, left);
+        let (mid, mut i, mut j) = (left, left + 1, right);
+        while i <= j {
             println!(
                 "-args/{:?} {:?} | {:?} | {:?}",
-                mid,
+                &v[mid],
                 &v[..left],
                 &v[left..=right],
                 &v[right + 1..]
             );
-            while v[i] < mid {
-                assert!(v[left..=i].iter().all(|x| *x < mid));
-                if i == right {
-                    break;
-                }
+            while v[i] <= v[mid] && i < right {
                 i += 1;
             }
             println!(
                 "-head/{:?} {:?} | {:?} i={}, j={} | {:?}",
-                mid,
+                v[mid],
                 &v[..left],
                 &v[left..=i],
                 i,
                 j,
                 &v[right + 1..]
             );
-            while mid <= v[j] {
-                assert!(v[j..=right].iter().all(|x| mid <= *x));
-                if j == left {
-                    break;
-                }
+            while v[mid] < v[j] && left < j {
                 j -= 1;
             }
             println!(
                 "-tail/{:?} {:?} | {:?} i={}, j={} | {:?}",
-                mid,
+                v[mid],
                 &v[..left],
                 &v[j..=right],
                 i,
                 j,
                 &v[right + 1..]
             );
-            dbg!(left, right);
             if j <= i {
-                if i == left {
-                    v.swap(left, (left + right) / 2);
+                if i == left + 1 {
                     println!(
-                        "shift>/{:?} {:?} | {:?} | {:?}",
-                        mid,
+                        "shift</{:?} {:?} | {:?} {:?} | {:?}",
+                        &v[mid],
                         &v[..left],
-                        &v[left..=right],
+                        &v[left..=left],
+                        &v[left + 1..=right],
                         &v[right + 1..]
                     );
                     return sort_range(v, left + 1, right);
                 }
                 if j == right {
-                    v.swap((left + right) / 2, right);
+                    v.swap(mid, right);
                     println!(
-                        "shift</{:?} {:?} | {:?} | {:?}",
-                        mid,
+                        "shift</{:?} {:?} | {:?} {:?} | {:?}",
+                        &v[mid],
                         &v[..left],
-                        &v[left..=right],
+                        &v[left..right],
+                        &v[right..=right],
                         &v[right + 1..]
                     );
                     return sort_range(v, left, right - 1);
@@ -115,15 +107,25 @@ pub fn qsort<T: Ord + Clone + Debug>(v: &mut [T]) {
             v.swap(i, j);
             println!(
                 "-swap/{:?} {:?} | {:?} | {:?}",
-                mid,
+                &v[mid],
                 &v[..left],
                 &v[left..=right],
                 &v[right + 1..]
             );
             i += 1;
             j -= 1;
-            dbg!((i, j));
+            println!("loop(i = {}, j = {})", i, j);
         }
+        v.swap(mid, j);
+        println!(
+            "eloop/{:?} {:?} | {:?} | {:?} i = {}, j = {}",
+            &v[mid],
+            &v[..left],
+            &v[left..=right],
+            &v[right + 1..],
+            i,
+            j
+        );
         sort_range(v, left, i - 1);
         sort_range(v, j + 1, right);
     }
@@ -132,7 +134,7 @@ pub fn qsort<T: Ord + Clone + Debug>(v: &mut [T]) {
 
 pub fn wrong_qsort<T: Ord>(v: &mut [T]) {
     fn sort_range<T: Ord>(v: &mut [T], left: usize, right: usize) {
-        if !(left < right) {
+        if left >= right {
             return;
         }
         let mid = (left + right) / 2;
@@ -141,7 +143,7 @@ pub fn wrong_qsort<T: Ord>(v: &mut [T]) {
             while v[i] < v[mid] {
                 i += 1;
             }
-            while v[mid] < v[i] {
+            while v[mid] < v[j] {
                 j -= 1;
             }
             if i < j {
