@@ -48,7 +48,7 @@
 氏名順に並んでいた学生データの配列を成績順にソート
 \end{frame}
 
-\section{bubble sort}		%%%%%%%%
+\section{バブルソート}		%%%%%%%%
 \subsection{}
 
 \begin{frame}[fragile]{bubble sort}{}
@@ -69,37 +69,39 @@
 
 \pause
 \vfill
-先頭の1個が整列している
+先頭の1個が要件を満たしている
 
 \vfill
 \scalebox{0.6}{
 \begin{tikzpicture}[cell/.style = {rectangle,draw=gray,semithick,minimum size=1cm,outer sep = 0mm}]
 \foreach \i [count=\j from 0] in {-1, 0, 1, 2, 2, 4, 5, 7, 8}
     \node[cell] at (\j, 0) {$\i$};
+\node[anchor=west] at (9,0) {中間目標になってない};
 \end{tikzpicture}
 }
-{\tiny 中間目標になってない}
 
 \medskip
 \scalebox{0.6}{
 \begin{tikzpicture}[cell/.style = {rectangle,draw=gray,semithick,minimum size=1cm,outer sep = 0mm}]
 \foreach \i [count=\j from 0] in {-1, 0, 0, 0, 0, 0, 0, 0, 0}
     \node[cell] at (\j, 0) {$\i$};
+\node[anchor=west] at (9,0) {次のステップにいけない};
 \end{tikzpicture}
 }
-{\tiny 次のステップにいけない}
 
 \medskip
 \scalebox{0.6}{
 \begin{tikzpicture}[cell/.style = {rectangle,draw=gray,semithick,minimum size=1cm,outer sep = 0mm}]
 \foreach \i [count=\j from 0] in {-1, X, X, X, X, X, X, X, X}
     \node[cell] at (\j, 0) {$\i$};
+\node[anchor=west] at (9,0) {$X$は-1以外のもとからあった要素};
 \end{tikzpicture}
 }
-{\tiny $X$は-1以外の要素のどれか}
 \end{frame}
 
-\begin{frame}[fragile]{bubble sort}{}
+\begin{frame}[fragile]{バブルソートの構造}{}
+
+並びの順に、要件を満たす範囲（区間）を拡大、対象範囲を縮小
 
 \begin{enumerate}%\itemsep8pt
 \item
@@ -108,9 +110,13 @@
 対象範囲$[1, N)$に対して、最も小さな要素を範囲の最初の位置に、それ以外の要素をそれ以降の範囲$[2, N)$に置く
 \item
 対象範囲$[2, N)$に対して、最も小さな要素を範囲の最初の位置に、それ以外の要素をそれ以降の範囲$[3, N)$に置く
+\item[$\vdots$]
 \item
 対象範囲$[N, N)$にはデータは存在しないので終了
 \end{enumerate}
+
+\vfill
+1ステップごとに終了範囲は1拡大、対象範囲は1減少
 \end{frame}
 
 \begin{frame}[fragile]{bubble sort}{}
@@ -204,6 +210,11 @@ N/2個のソート問題ふたつに帰着させる。
 \item 他方のどの要素よりも大きい要素だけからなる配列
 \end{itemize}
 それぞれを整列、順につなげば全体が整列
+
+
+\vfill
+1ステップごとに範囲が半分の副問題を2つ生成
+
 \end{frame}
 
 \begin{frame}[fragile]{quick sort in TypeScript}{}
