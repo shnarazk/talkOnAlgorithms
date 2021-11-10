@@ -48,7 +48,7 @@
 氏名順に並んでいた学生データの配列を成績順にソート
 \end{frame}
 
-\section{バブルソート}		%%%%%%%%
+\section{bubble sort}		%%%%%%%%
 \subsection{}
 
 \begin{frame}[fragile]{bubble sort}{}
@@ -119,7 +119,7 @@
 1ステップごとに終了範囲は1拡大、対象範囲は1減少
 \end{frame}
 
-\begin{frame}[fragile]{bubble sort}{}
+\begin{frame}[fragile]{バブルソート}{}
 \begin{algorithm}[H]
 \KwIn{v: \texttt{Vec<T>}--対象配列}
 \KwIn{start: Int -- 対象範囲の下限}
@@ -128,22 +128,40 @@
 \BlankLine
 i = 0\Comment*{\sl\small\color[gray]{0.5} 添字}
 \While{i < end}{
-  x = 範囲内で最も小さな要素(start, end)\;
-  xとv[start]を入れ替え\;
+   区間(i, end)内で最も小さな要素とv[start]を入れ替え\;
   i += 1\;
 }
 \caption[page]{再帰を使わないアイデア}
 \end{algorithm}
 
-xだけでなくその添字も必要
-\begin{itemize}%\itemsep8pt
-\item 添字を返す
-\item 最小値を返すのではなく、並び替えも途中でする
-\end{itemize}
+実際に入れ替えるにはxの添字が必要になるだろう
+\end{frame}
+
+\begin{frame}[fragile]{バブルソート2}{}
+\begin{algorithm}[H]
+\KwIn{v: \texttt{Vec<T>}--対象配列}
+\KwIn{start: Int -- 対象範囲の下限}
+\KwIn{end: Int -- 対象範囲の上界}
+\SetKwComment{Comment}{}{}
+\BlankLine
+\For{i を0 からend の直前まで}{
+    \For{j を end の直前から i + 1まで}{
+    \If{v[j] < v[j-1]}{
+    v[j] と v[j-1] とを入れ替える\;
+    }
+   }
+}
+\caption[page]{入れ替えの具体化}
+\end{algorithm}
+\vfill
+if文, for文、代入文。
 \end{frame}
 
 \begin{frame}[fragile]{bubble sort in TypeScript}{}
+TODO
+\end{frame}
 
+\begin{frame}[fragile]{bubble sort in Rust}{}
 \begin{codeof}{language=C}{bsort.ts}
 function bsort<T>(v: Array<T>) {
   let last_index = v.length - 1
