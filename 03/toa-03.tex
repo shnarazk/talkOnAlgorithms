@@ -270,48 +270,61 @@ fn partition<T: Ord>(v: &mut [T], beg: usize, end: usize) -> usize {
 ループ終了時に$i = end$なら全ての要素がv[end-1]以下である。
 これはv[end - 1]が最大値であることを意味する。
 従って、次の範囲は[beg, end - 1]でよい。
-
 \end{frame}
+
+\section{summary}		%%%%%%%%
+\subsection{}
 
 \begin{frame}[fragile]{sortの比較}{}
 
-
 {%\fontsize{9}{10}\selectfont
-\begin{tabular}[h]{|c|r|r|}
-\CH アルゴリズム & （最悪）時間計算量& 空間-- \\\hline
-\CL バブルソート & $O(N^2)$ & $O(N)$ \\
-\CL クイックソート & $O(N\log(N))$ & $O(N)$ \\
+\begin{tabular}[h]{|l|r|r|r|}
+\CH アルゴリズム & （最悪）時間--& 空間-- & 安定 \\
+\CL バブルソート & $O(N^2)$ & $O(1)$ & ?\\
+\CL クイックソート & $O(N\log(N))$ & $O(\log(N))$ & \\
+\CL ヒープソート & $O(N\log(N))$ & $O(\log(N))$ & \checkmark \\
+\CL マージソート & $O(N\log(N))$ & $O(\log(N))$ & \checkmark \\
 \end{tabular}
 }
 
 \vfill
 クイックソートは$O(N^2)$では？ $O(N)$の前処理でほぼ対応できる。
-
 \end{frame}
 
-\begin{frame}[fragile]{より速いsort}{}
-a
+\begin{frame}[fragile]{ヒープソート}{}
+データ構造ヒープにデータを登録、ヒープから整列されて出力
+
+安定ソート
+\vfill
+追加の処理をしなくても最悪時間計算量は$O(N\log(N))$
 \end{frame}
 
-\begin{frame}[fragile]{その他のsort:merge sort}{}
-a
+\begin{frame}[fragile]{マージソート}{}
+データを二分。再帰的に処理して整列する、それぞれストリームとみなして一つに整流。
+
+安定ソート
+
+\vfill
+追加の処理をしなくても最悪時間計算量は$O(N\log(N))$
 \end{frame}
 
-\begin{frame}[fragile]{その他のsort:heap sort}{}
-a
+\begin{frame}[fragile]{追補}{}
+\begin{itemize}\itemsep8pt
+\item 多くの言語で標準ライブラリ化。多くの場合クイックソート、ただし各種改良が導入されている
+\begin{itemize}%\itemsep8pt
+\item 要素数が極めて少ない時はバブルソートを使う
+\item スタックの消費を嫌って途中からヒープソート（キャッシュのヒット率？？）
+\end{itemize}
+\vfill 上位N個までのソートが欲しい。言語によっては提供
+\item 安定版、非安定版も言語によっては両方提供。
+\end{itemize}
 \end{frame}
 
-\begin{frame}[fragile]{実装に関する蛇足}{}
-
-sort関数は多くの言語で標準ライブラリ中に存在
-
-多くの場合クイックソート、一部では何かを嫌ってヒープソート（キャッシュのヒット率？？）。
-
-？？を嫌って要素数が極めて少ない時はバブルソートを使う。
-
-上位N個までのソートが欲しい。言語によっては提供。
-安定版、非安定版も言語によっては両方提供。
-
+\begin{frame}[fragile]{Summany}{}
+\begin{itemize}%\itemsep8pt
+\item 中間目標の設定・理解がアルゴリズム設計・高速化において重要
+\item 問題の持つ帰納的構造を再帰的構造を持つプログラムに転移
+\end{itemize}
 \end{frame}
 
 \end{document}

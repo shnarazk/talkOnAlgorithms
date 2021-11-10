@@ -35,9 +35,9 @@
 \begin{block}{時間計算量}
 絶対時間ではなく回数を基準として計算の実行に必要な時間
 \end{block}
-\begin{block}{空間計算量}
-その計算を実行するために必要なメモリ量。
-Byteではなく要素型Tの大きさを基準とする（長さNの配列の空間計算量はN）
+\begin{block}{（追加）空間計算量}
+その計算を実行するために必要なメモリ量。ただしデータそのものは含めないことが多い（追加で必要な分だけを対象）。
+Byte数よりも個数が単位に使われる。
 \end{block}
 \end{frame}
 
@@ -46,12 +46,12 @@ Byteではなく要素型Tの大きさを基準とする（長さNの配列の�
 \begin{exampleblock}{線形探索の時間計算量と空間計算量}
 \begin{itemize}%\itemsep8pt
 \item 繰り返し文の本体を$N$回繰り返し、その度に1回の比較を実行するから時間計算量は$N$
-\item データの大きさ$N$に対し長さ$N$の配列が必要になるから空間計算量は$N$
+\item データそのもの以外にローカル変数が1個。
 \end{itemize}
 \end{exampleblock}
 \end{frame}
 
-\begin{frame}[fragile]{二分探索における空間計算量:帰納法版}{}
+\begin{frame}[fragile]{二分探索における時間計算量:帰納法版}{}
 
 \begin{codeof}{language=Rust}{再帰版bsearch}
 fn lsearch<T>(v: &[T], c: ...) -> bool {
@@ -70,7 +70,7 @@ T_{N} = T_{N-1} + 1
 従って漸化式を解くと（あるいは帰納法を使うと）時間計算量は$N$。
 \end{frame}
 
-\begin{frame}[fragile]{二分探索における空間計算量2}{}
+\begin{frame}[fragile]{二分探索における空間計算量}{}
 補足?
 \end{frame}
 
@@ -140,7 +140,7 @@ f(x) &= \Theta(g(x))
 \begin{itemize}%\itemsep8pt
 \item 線形探索の時間計算量は$O(N)$である。
 \item 線形探索の時間計算量のオーダーは$N$である。
-\item 線形探索の空間計算量は$O(N)$である\footnotemark。
+\item 線形探索の空間計算量は$O(1)$である\footnotemark。
 \end{itemize}
 
 \footnotetext[1]{添字のためなどにローカル変数をいくつか定義しても$N + 1 = O(N)$。}
@@ -173,6 +173,7 @@ i = 0; j = z.len() - 1\Comment*{\sl\small\color[gray]{0.5}検索範囲}
 \begin{itemize}%\itemsep8pt
 \item データの大きさが$N$の場合の繰り返し回数\footnotemark: $\log_{2}(N)$
 \item 各繰り返しの中で実行する条件比較は2回=$O(1)$回
+\item ローカル変数が二つ
 \end{itemize}
 \end{frame}
 
@@ -180,12 +181,11 @@ i = 0; j = z.len() - 1\Comment*{\sl\small\color[gray]{0.5}検索範囲}
 
 {%\fontsize{9}{10}\selectfont
 \begin{tabular}[h]{|c|r|r|r|}
-\CH アルゴリズム & （最悪）時間計算量 & 最良時間-- & 空間-- \\\hline
-\CL 線形探索 & $O(N)$ & $O(1)$ & $O(N)$ \\
-\CL 二分探索 & $O(\log(N))$ & $O(1)$ & $O(N)$ \\
+\CH アルゴリズム & （最悪）時間計算量 & 最良時間-- & 空間-- \\
+\CL 線形探索 & $O(N)$ & $O(1)$ & $O(1)$ \\
+\CL 二分探索 & $O(\log(N))$ & $O(1)$ & $O(1)$ \\
 \end{tabular}
 }
-
 \end{frame}
 
 \begin{frame}[fragile]{より速い探索}{}
