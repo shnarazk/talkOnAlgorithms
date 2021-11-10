@@ -211,37 +211,36 @@ N/2個のソート問題ふたつに帰着させる。
 
 \begin{frame}[fragile]{quick sort in Rust/1}{}
 \begin{codeof}{language=Rust}{quick sort}
-fn sort_on<T: Ord>(v: &mut [T], l: usize, r: usize) {
-    長さ2以下の場合の処理は省略;
-    v.swap((l + r) / 2, l);
-    let (m, mut i, mut j) = (l, l + 1, r);
-    while i <= j {
-        while v[i] <= v[m] && i < r {i += 1;}
-        while v[m] < v[j] && l < j {j -= 1;}
-
-        v.swap(i, j);
-        i += 1;
-        j -= 1;
+/// v[beg..end]で最後の要素v[end - 1]以下の要素を[0..i]に移動
+/// 注意：[b..e]はeを含まない（bは下限、eは上界）
+fn partition<T: Ord>(v: &mut [T], beg: usize, end: usize) -> usize {
+    let mut i = beg;
+    for j in beg..end {
+        if v[j] <= v[end - 1] {
+            v.swap(i, j);
+            i += 1;
+        }
     }
-    v.swap(m, j);
-    sort_on(v, l, i - 1);
-    sort_on(v, j + 1, r);
+    i
 }
 \end{codeof}
 \end{frame}
 
 \begin{frame}[fragile]{quick sort in Rust/2}{}
 \begin{codeof}{language=Rust}{quick sort}
-pub fn qsort<T: Ord + Clone + Debug>(v: &mut [T]) {
-    sort_on(v, 0, v.len() - 1);
+pub fn qsort<T: Ord>(v: &mut [T]) {
+    sort(v, 0, v.len());
+}
+
+fn sort<T: Ord>(v: &mut [T], beg: usize, end: usize) {
+    if beg + 1 >= end {
+        return;
+    }
+    let p = partition(v, beg, end); // assert!(0 < end);
+    sort(v, beg, p);
+    sort(v, p, end);
 }
 \end{codeof}
-
-\begin{itemize}%\itemsep8pt
-\item 原典：情報科学辞典、岩波書店（思い出せる限り参考にした）
-\item Wikipediaは関数に頼っているので使えない
-\item Knuth: TAOCPは難読
-\end{itemize}
 \end{frame}
 
 \begin{frame}[fragile]{quick sortの計算量評価}{最悪計算量、最良計算量、平均計算量}
@@ -256,23 +255,22 @@ O(N)
 
 \begin{frame}[fragile]{marginal caseへの対応}{}
 \begin{codeof}{language=Rust}{quick sort}
-fn sort_on<T: Ord>(v: &mut [T], l: usize, r: usize) {
-    ...
-    while i < j {
-        ...
-        if j <= i {
-            if i == l + 1 {
-                return sort_on(v, l + 1, r);
-            }
-            if j == r {
-                v.swap(m, r);
-                return sort_on(v, l, r - 1);
-            }
-            break;
+fn partition<T: Ord>(v: &mut [T], beg: usize, end: usize) -> usize {
+    let mut i = beg;
+    for j in beg..end {
+        if v[j] <= v[end - 1] {
+            v.swap(i, j);
+            i += 1;
         }
-        v.swap(i, j);
-        ...
+    }
+    i.min(end - 1)
+}
 \end{codeof}
+
+ループ終了時に$i = end$なら全ての要素がv[end-1]以下である。
+これはv[end - 1]が最大値であることを意味する。
+従って、次の範囲は[beg, end - 1]でよい。
+
 \end{frame}
 
 \begin{frame}[fragile]{sortの比較}{}

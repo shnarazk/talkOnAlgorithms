@@ -33,8 +33,29 @@ use std::fmt::Debug;
 /// qsort(&mut vec);
 /// assert_eq!(vec, sorted);
 ///```
-pub fn qsort<T: Ord + Clone + Debug>(v: &mut [T]) {
-    sort_on(v, 0, v.len() - 1);
+pub fn qsort<T: Clone + Ord + Debug>(v: &mut [T]) {
+    // sort_on(v, 0, v.len() - 1);
+    sort(v, 0, v.len());
+}
+
+fn partition<T: Ord>(v: &mut [T], beg: usize, end: usize) -> usize {
+    let mut i = beg;
+    for j in beg..end {
+        if v[j] <= v[end - 1] {
+            v.swap(i, j);
+            i += 1;
+        }
+    }
+    i.min(end - 1)
+}
+
+fn sort<T: Clone + Ord>(v: &mut [T], beg: usize, end: usize) {
+    if beg + 1 >= end {
+        return;
+    }
+    let p = partition(v, beg, end); // assert!(0 < end);
+    sort(v, beg, p);
+    sort(v, p, end);
 }
 
 fn sort_on<T: Ord + Debug>(v: &mut [T], left: usize, right: usize) {
