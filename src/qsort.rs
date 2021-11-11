@@ -2,40 +2,17 @@ use std::fmt::Debug;
 
 ///
 ///```
-/// use crate::toa::qsort::qsort;
+/// use crate::toa::qsort::*;
 ///
-/// let mut vec: Vec<i32> = vec![-1, 4, 8, 1, 10, 8, -2, 9];
-/// let  sorted: Vec<i32> = vec![-2, -1, 1, 4, 8, 8, 9, 10];
-/// qsort(&mut vec);
-/// assert_eq!(vec, sorted);
-/// let mut vec: Vec<i32> = vec![-1, 4, 8, 1, 10, 8, -2];
-/// let  sorted: Vec<i32> = vec![-2, -1, 1, 4, 8, 8, 10];
-/// qsort(&mut vec);
-/// assert_eq!(vec, sorted);
-/// let mut vec: Vec<i32> = vec![1, 1];
-/// let  sorted: Vec<i32> = vec![1, 1];
-/// qsort(&mut vec);
-/// assert_eq!(vec, sorted);
-/// let mut vec: Vec<i32> = vec![1];
-/// let  sorted: Vec<i32> = vec![1];
-/// qsort(&mut vec);
-/// assert_eq!(vec, sorted);
-/// let mut vec: Vec<i32> = vec![1, 2, 3, 4, 5];
-/// let  sorted: Vec<i32> = vec![1, 2, 3, 4, 5];
-/// qsort(&mut vec);
-/// assert_eq!(vec, sorted);
-/// let mut vec: Vec<i32> = vec![5, 4, 3, 2, 1];
-/// let  sorted: Vec<i32> = vec![1, 2, 3, 4, 5];
-/// qsort(&mut vec);
-/// assert_eq!(vec, sorted);
-/// let mut vec: Vec<i32> = vec![1 ,2, 3, 1, 2, 3, 4, 5, 1, 2, 3];
-/// let  sorted: Vec<i32> = vec![1, 1, 1, 2, 2, 2, 3, 3, 3, 4, 5];
-/// qsort(&mut vec);
-/// assert_eq!(vec, sorted);
+/// check_implementation(qsort, vec![-1, 4, 8, 1, 10, 8, -2, 9]);
+/// check_implementation(qsort, vec![1, 1]);
+/// check_implementation(qsort, vec![1]);
+/// check_implementation(qsort, vec![1, 2, 3, 4, 5]);
+/// check_implementation(qsort, vec![5, 4, 3, 2, 1]);
+/// check_implementation(qsort, vec![1 ,2, 3, 1, 2, 3, 4, 5, 1, 2, 3]);
 ///```
-pub fn qsort<T: Clone + Ord + Debug>(v: &mut [T]) {
-    // sort_on(v, 0, v.len() - 1);
-    sort(v, 0, v.len());
+pub fn qsort<T: Ord + Debug>(v: &mut [T]) {
+     sort_on(v, 0, v.len());
 }
 
 fn partition<T: Ord>(v: &mut [T], beg: usize, end: usize) -> usize {
@@ -49,16 +26,25 @@ fn partition<T: Ord>(v: &mut [T], beg: usize, end: usize) -> usize {
     i.min(end - 1)
 }
 
-fn sort<T: Clone + Ord>(v: &mut [T], beg: usize, end: usize) {
+fn sort_on<T: Ord>(v: &mut [T], beg: usize, end: usize) {
     if beg + 1 >= end {
         return;
     }
     let p = partition(v, beg, end); // assert!(0 < end);
-    sort(v, beg, p);
-    sort(v, p, end);
+    sort_on(v, beg, p);
+    sort_on(v, p, end);
 }
 
-fn sort_on<T: Ord + Debug>(v: &mut [T], left: usize, right: usize) {
+pub fn check_implementation<T: Copy + Ord + Debug, V: AsRef<[T]>>(f: impl Fn(&mut [T]), v: V)
+{
+    let mut v1 = v.as_ref().iter().copied().collect::<Vec<T>>();
+    let mut v2 = v.as_ref().iter().copied().collect::<Vec<T>>();
+    f(&mut v1);
+    v2.sort();
+    assert_eq!(v1, v2);
+}
+
+fn _sort_on<T: Ord + Debug>(v: &mut [T], left: usize, right: usize) {
     if left >= right {
         return;
     }
@@ -112,7 +98,7 @@ fn sort_on<T: Ord + Debug>(v: &mut [T], left: usize, right: usize) {
                     &v[left + 1..=right],
                     &v[right + 1..]
                 );
-                return sort_on(v, left + 1, right);
+                return _sort_on(v, left + 1, right);
             }
             if j == right {
                 v.swap(mid, right);
@@ -124,7 +110,7 @@ fn sort_on<T: Ord + Debug>(v: &mut [T], left: usize, right: usize) {
                     &v[right..=right],
                     &v[right + 1..]
                 );
-                return sort_on(v, left, right - 1);
+                return _sort_on(v, left, right - 1);
             }
             break;
         }
@@ -150,8 +136,8 @@ fn sort_on<T: Ord + Debug>(v: &mut [T], left: usize, right: usize) {
         i,
         j
     );
-    sort_on(v, left, i - 1);
-    sort_on(v, j + 1, right);
+    _sort_on(v, left, i - 1);
+    _sort_on(v, j + 1, right);
 }
 
 #[allow(dead_code)]
