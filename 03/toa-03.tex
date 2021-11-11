@@ -51,7 +51,7 @@
 \section{bubble sort}		%%%%%%%%
 \subsection{}
 
-\begin{frame}[fragile]{bubble sort}{}
+\begin{frame}[fragile]{バブルソート}{}
 \scalebox{0.5}{
 \begin{tikzpicture}[xshift=0.15\textwidth
     , cell/.style = {rectangle,draw=gray,semithick,minimum size=1cm,outer sep = 0mm}
@@ -67,7 +67,6 @@
 \vfill
 適切な中間目標を設定せよ
 
-\pause
 \vfill
 先頭の1個が要件を満たしている
 
@@ -138,6 +137,13 @@ i = 0\Comment*{\sl\small\color[gray]{0.5} 添字}
 \end{frame}
 
 \begin{frame}[fragile]{バブルソート2}{}
+\begin{tikzpicture}[
+    overlay
+    , xshift=0.5\textwidth
+]
+\draw[draw=blue!4,fill=blue!4,rounded corners=3,anchor=west] (-5,-4.6) rectangle ++(+7, +1.8) {};
+\end{tikzpicture}
+
 \begin{algorithm}[H]
 \KwIn{v: \texttt{Vec<T>}--対象配列}
 \KwIn{start: Int -- 対象範囲の下限}
@@ -154,14 +160,10 @@ i = 0\Comment*{\sl\small\color[gray]{0.5} 添字}
 \caption[page]{入れ替えの具体化}
 \end{algorithm}
 \vfill
-if文, for文、代入文。
+if文, for文、代入文。検索と同じくif文の実行回数で評価。
 \end{frame}
 
-\begin{frame}[fragile]{bubble sort in TypeScript}{}
-TODO
-\end{frame}
-
-\begin{frame}[fragile]{bubble sort in Rust}{}
+\begin{frame}[fragile]{バブルソートTypeScript版}{}
 \begin{codeof}{language=C}{bsort.ts}
 function bsort<T>(v: Array<T>) {
   let last_index = v.length - 1
@@ -176,7 +178,30 @@ function bsort<T>(v: Array<T>) {
 \end{codeof}
 \end{frame}
 
-\begin{frame}[fragile]{bubble sortの評価}{}
+\begin{frame}[fragile]{バブルソートRust版}{}
+\begin{codeof}{language=Rust}{bsort.rs}
+///```
+/// use crate::toa::bsort::bsort;
+///
+/// let mut v = vec![-1i32, 4, 8, 1, 10, 8, -2, 9];
+/// let mut ans = vec.clone();
+/// bsort(&mut v);
+/// ans.sort();
+/// assert_eq!(v, ans);
+///```
+pub fn bsort<T: Ord>(v: &mut [T]) {
+    for i in 0..v.len() {
+        for j in ((i + 1)..v.len()).rev() {
+            if v[j] < v[j - 1] {
+                v.swap(j, j - 1);
+            }
+        }
+    }
+}
+\end{codeof}
+\end{frame}
+
+\begin{frame}[fragile]{バブルソートの評価}{}
 対象範囲$[0, N)$に対して、最も小さな要素を範囲の最初の位置に、それ以外の要素をそれ以降の範囲$[1, N)$に置く
 
 対象範囲を変えて繰り返す
@@ -196,14 +221,20 @@ function bsort<T>(v: Array<T>) {
 
 \end{frame}
 
-\begin{frame}[fragile]{bubble sortの計算量評価}{}
-a
+\begin{frame}[fragile]{バブルソートの計算量評価}{}
+最悪時間計算量$O(N)$（最良も同じ）
+
+\vfill
+空間計算量：$O(1)$
+
+\vfill
+安定ソート（順番の入れ替えが起きるのは順序関係が満たされてない場合のみ）
 \end{frame}
 
 \section{quick sort}		%%%%%%%%
 \subsection{}
 
-\begin{frame}[fragile]{quick sort}{}
+\begin{frame}[fragile]{第2のソートアルゴリズム：クイックソート}{}
 \scalebox{0.5}{
 \begin{tikzpicture}[xshift=0.15\textwidth
     , cell/.style = {rectangle,draw=gray,semithick,minimum size=1cm,outer sep = 0mm}
@@ -219,7 +250,6 @@ a
 \vfill
 適切な中間目標を設定せよ
 
-\pause
 \vfill
 N/2個のソート問題ふたつに帰着させる。
 
@@ -232,13 +262,28 @@ N/2個のソート問題ふたつに帰着させる。
 
 \vfill
 1ステップごとに範囲が半分の副問題を2つ生成
-
 \end{frame}
 
-\begin{frame}[fragile]{quick sort in TypeScript}{}
+
+\begin{frame}[fragile]{}{}
+TODO
+
+
+\[
+\left(\frac{N}{2}\right)^k + \left(\frac{N}{2}\right)^k < N^k
+\]
+
+が成立する$k$とは?
+
+実際には2つに分割するためのコスト、2つの部分解を合成するコストも考慮する必要がある。
 \end{frame}
 
-\begin{frame}[fragile]{quick sort in Rust/1}{}
+
+\begin{frame}[fragile]{クイックソートTypeScript版}{}
+TODO
+\end{frame}
+
+\begin{frame}[fragile]{クイックソートRust版}{}
 \begin{codeof}{language=Rust}{quick sort}
 /// v[beg..end]で最後の要素v[end - 1]以下の要素を[0..i]に移動
 /// 注意：[b..e]はeを含まない（bは下限、eは上界）
@@ -255,7 +300,7 @@ fn partition<T: Ord>(v: &mut [T], beg: usize, end: usize) -> usize {
 \end{codeof}
 \end{frame}
 
-\begin{frame}[fragile]{quick sort in Rust/2}{}
+\begin{frame}[fragile]{クイックソートRust版/2}{}
 \begin{codeof}{language=Rust}{quick sort}
 pub fn qsort<T: Ord>(v: &mut [T]) {
     sort(v, 0, v.len());
@@ -272,17 +317,17 @@ fn sort<T: Ord>(v: &mut [T], beg: usize, end: usize) {
 \end{codeof}
 \end{frame}
 
-\begin{frame}[fragile]{quick sortの計算量評価}{最悪計算量、最良計算量、平均計算量}
+\begin{frame}[fragile]{クイックソートの計算量評価}{最悪計算量、最良計算量、平均計算量}
 a
 \end{frame}
 
-\begin{frame}[fragile]{quick sortの計算量評価}{前処理をした場合の最悪計算量}
+\begin{frame}[fragile]{クイックソートの計算量評価}{前処理をした場合の最悪計算量}
 \[
 O(N)
 \]
 \end{frame}
 
-\begin{frame}[fragile]{marginal caseへの対応}{}
+\begin{frame}[fragile]{見落としやすい状況への対応}{}
 \begin{codeof}{language=Rust}{quick sort}
 fn partition<T: Ord>(v: &mut [T], beg: usize, end: usize) -> usize {
     let mut i = beg;
@@ -304,7 +349,7 @@ fn partition<T: Ord>(v: &mut [T], beg: usize, end: usize) -> usize {
 \section{summary}		%%%%%%%%
 \subsection{}
 
-\begin{frame}[fragile]{sortの比較}{}
+\begin{frame}[fragile]{ソートアルゴリズムの比較}{}
 
 {%\fontsize{9}{10}\selectfont
 \begin{tabular}[h]{|l|r|r|r|}
@@ -349,7 +394,7 @@ fn partition<T: Ord>(v: &mut [T], beg: usize, end: usize) -> usize {
 \end{itemize}
 \end{frame}
 
-\begin{frame}[fragile]{Summany}{}
+\begin{frame}[fragile]{ここまでの振り返り}{}
 \begin{itemize}%\itemsep8pt
 \item 中間目標の設定・理解がアルゴリズム設計・高速化において重要
 \item 問題の持つ帰納的構造を再帰的構造を持つプログラムに転移
