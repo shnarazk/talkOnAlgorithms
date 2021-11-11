@@ -11,7 +11,7 @@ use std::fmt::Debug;
 /// check_implementation(qsort, vec![5, 4, 3, 2, 1]);
 /// check_implementation(qsort, vec![1 ,2, 3, 1, 2, 3, 4, 5, 1, 2, 3]);
 ///```
-pub fn qsort<T: Ord + Debug>(v: &mut [T]) {
+pub fn qsort<T: Ord>(v: &mut [T]) {
      sort_on(v, 0, v.len());
 }
 
