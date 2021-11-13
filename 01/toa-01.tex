@@ -55,7 +55,7 @@
 \begin{frame}[fragile]{検索}{search}
 \begin{block}{検索}
 \begin{itemize}%\itemsep8pt
-\item 
+\item
 メモリに置かれたデータの中からある条件を満たす要素があるかどうかを判定する
 \item[$\to$]
 有限長の配列の中からある条件を満たす要素があるかどうかを判定
@@ -192,6 +192,51 @@ j = z.len() - 1\Comment*{\sl\small\color[gray]{0.5}検索範囲の右の添字}
 \end{algorithm}
 }
 \end{frame}
+
+\begin{frame}[fragile]{二分探索のTypeScriptによる実装}{}
+\begin{codeof}{language=C}{bsearch.ts}
+type Ord = -1 | 0 | 1
+function bsearch<T>(v:Array<T>, c:(e:T): Ord):boolean {
+  let (i, j) = (0, v.length - 1)
+  while (i <= j) {
+    const mid = (i + j) 2
+    match (c(v[mid])) {
+      case -1: i = mid + 1; break
+      case 0: return true
+      case 1: j = mid - 1
+  }
+  return false
+}
+// test run 1
+const vec = [1, 4, 8, 9, -1, -2, 8, 10]
+function eq8 (i: number): Ord { return Math.sign(i-8) }
+console.log(bsearch(vec, eq8))
+\end{codeof}
+\end{frame}
+
+\begin{frame}[fragile]{二分探索のRustによる実装}{}
+\begin{codeof}{language=C}{bsearch.rs}
+use std::cmp::Ordering;
+/// ```
+/// use crate::toa::bsearch::bsearch;
+/// let vec: Vec<i32> = vec![-2, -1, 1, 4, 8, 8, 9, 10];
+/// assert_eq!(bsearch(&vec, |i| 8i32.cmp(i)), true);
+/// ```
+pub fn bsearch<T>(v: &[T], c: impl Fn(&T) -> Ordering) -> bool {
+    let (mut i, mut j) = (0,  v.len() - 1);
+    while i < j {
+        let mid = (i + j) / 2;
+        match c(&v[mid]) {
+            Ordering::Less => j = mid - 1,
+            Ordering::Equal => return true,
+            Ordering::Greater => i = mid + 1,
+        }
+    }
+    false
+}
+\end{codeof}
+\end{frame}
+
 
 \begin{frame}[fragile]{検討}{}
 
