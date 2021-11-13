@@ -1,8 +1,15 @@
-function bsearch<T> (v: Array<T>, c: (e:T) => boolean): boolean {
+function bsearch<T> (v: Array<T>, c: (e:T) => number): boolean {
   let i = 0
-  while (i < v.length) {
-    if (c(v[i])) { return true }
-    i += 1
+  let j = v.length - 1;
+  while (i <= j) {
+    match (c(v[i])) {
+      case -1:
+        i = (i + j) 2 + 1;
+        break
+      case 0:
+        return true
+      case 1:
+        j = (i + j) 2 - 1;
 }
   return false
 }
@@ -10,9 +17,9 @@ function bsearch<T> (v: Array<T>, c: (e:T) => boolean): boolean {
 const vec = [1, 4, 8, 9, -1, -2, 8, 10]
 
 // test run 1
-function equal_8 (i: number): boolean { return i === 8 }
+function equal_8 (i: number): number { return i - 8 }
 console.log(bsearch(vec, equal_8))
 
 // test run 2
-function equal_7 (i: number): boolean { return i === 7 }
-console.log(bsearch(vec, equal_7))
+console.log(bsearch(vec, (i: number): number  => { return i - 7 }))
+x
