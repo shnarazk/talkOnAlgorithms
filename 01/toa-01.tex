@@ -120,10 +120,10 @@ function lsearch<T> (v: Array<T>, c: (e:T) => boolean): boolean {
   while (i < v.length) {
     if (c(v[i])) { return true }
     i += 1
+}
 
+// test
 const vec = [1, 4, 8, 9, -1, -2, 8, 10]
-
-// test case 1
 function equal_8 (i: number): boolean { return i === 8 }
 console.log(lsearch(vec, equal_8))
 \end{codeof}
