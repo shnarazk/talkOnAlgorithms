@@ -83,7 +83,7 @@ $\to$配列の中からある条件を満たす要素の存在を判定
 \end{codeof}
 \end{frame}
 
-\section{Linear}		%%%%%%%%
+\section{Linear search}		%%%%%%%%
 \subsection{}
 
 \begin{frame}[fragile]{探索アルゴリズム1：一つずつ調べる}{}
@@ -131,7 +131,7 @@ console.log(lsearch(vec, equal_8))
 
 \begin{frame}[fragile]{チェックリスト}{}
 
-\begin{enumerate}\itemsep8pt
+\begin{enumerate}\itemsep20pt
 \item アイテム指定（例えば3）だけでなく、条件指定（例えば偶数）もできること
 \item 特定の型（例えばnumber）だけでなく、別の型（例えばstring）にも適用できること
 \item 探索目的が場所（添字）の報告なら、大きな変更なく対応できること
@@ -147,7 +147,7 @@ console.log(lsearch(vec, equal_8))
 \item 速度
 \end{itemize}
 \vfill
-本当はアルゴリズムの段階で考えるべき
+本来はアルゴリズムの段階で考えるべき
 
 {\fontsize{8}{9}\selectfont
 \begin{tabular}[h]{|p{0.12\textwidth}|p{0.6\textwidth}}
@@ -159,7 +159,7 @@ console.log(lsearch(vec, equal_8))
 \end{tabular}
 }
 \vfill
-プログラマとしては利用可能かどうかを考慮する必要があり、その上で速度に対して考慮する必要がある。
+利用可能かどうかを考慮した後に速度
 \footnotetext[1]{要素の型Tに課せられた制約}
 \end{frame}
 
@@ -183,7 +183,7 @@ fn lsearch<T>(v: &[T], c: impl Fn(&T) -> bool) -> bool {
 \end{codeof}
 \end{frame}
 
-\section{Binary}		%%%%%%%%
+\section{Binary search}		%%%%%%%%
 \subsection{}
 
 
@@ -193,10 +193,22 @@ fn lsearch<T>(v: &[T], c: impl Fn(&T) -> bool) -> bool {
 1ステップで複数個縮小できないか
 \vfill
 ある範囲に対して代表する要素を与え、それを調べることでその範囲を全て調べたことにできればよい
-\vfill
-そのために前提条件（前処理）を導入
-\vfill
-前提条件：データは順序を持つ、それに従い配列は整列ずみ
+
+\begin{center}
+\scalebox{0.6}{
+\begin{tikzpicture}[
+    , cell/.style = {rectangle,draw=gray,semithick,minimum size=1cm,outer sep = 0mm}
+]
+\draw[draw=blue,fill=blue,rounded corners=3,anchor=west,opacity=0.1] (-1,2.1) rectangle ++(4.5,1.6) {};
+\draw[draw=green,fill=green,rounded corners=3,anchor=west,opacity=0.1] (3.4,-0.9) rectangle ++(5.6,1.6) {};
+\draw[draw=blue,fill=blue,rounded corners=3,anchor=west,opacity=0.1] (-1,-0.7) rectangle ++(5.6,1.6) {};
+\foreach \i [count=\j from 0] in {4, -1, 2, 5, 2, 8, 0, 7, 1}
+    \node[cell] at (\j, 3) {$\i$};
+\foreach \i [count=\j from 0] in {-1, 0, 1, 2, 2, 4, 5, 7, 8}
+    \node[cell] at (\j, 0) {$\i$};
+\end{tikzpicture}
+}
+\end{center}
 \end{frame}
 
 \begin{frame}[fragile]{探索アルゴリズム2: 探索範囲を半分}{}
@@ -228,8 +240,8 @@ j = z.len() - 1\Comment*{\sl\small\color[gray]{0.5}探索範囲の右の添字}
 \begin{frame}[fragile]{二分探索のTypeScriptによる実装}{\href{https://replit.com/@shnarazk/BinarySearchInTypeScript}{replit.com/@shnarazk/BinarySearchInTypeScript}}
 \begin{codeof}{language=C}{bsearch (index.ts)}
 type Ord = -1 | 0 | 1 // 小さい/等しい/大きい、に対応
-                                                                                   
-function bsearch<T>(v:Array<T>, c:(e:T) => Ord): boolean { 
+
+function bsearch<T>(v:Array<T>, c:(e:T) => Ord): boolean {
   let i: number = 0
   let j: number  = v.length - 1
   while (i <= j) {
@@ -289,20 +301,22 @@ pub fn bsearch<T>(v: &[T], c: impl Fn(&T) -> Ordering) -> bool {
 \footnotetext[1]{iは単調増加、jは単調減少}
 \end{frame}
 
-\section{Hash}		%%%%%%%%
+\section{appendix}		%%%%%%%%
 \subsection{}
 
-\begin{frame}[fragile]{二分探索以外の高速探索}{}
+\begin{frame}[fragile]{その他の探索}{}
 \begin{itemize}\itemsep20pt%[<+->]
-\item ハッシュ表を使えばより高速
+\item ハッシュ表
 \begin{itemize}%\itemsep8pt
+\item 特定の探索条件に対して二分探索より高速
 \item 正確にはハッシュ表というデータ構造{\footnotemark}とハッシュ関数のペア
 \item 速度の点では有利だが別の観点で不利
 \item Python: Dictionary, JavaScript: Object
 \end{itemize}
 \item データ分布の偏りを利用するもの
+\item 設定の違い：木探索、グラフ探索、ヒューリスティックスなど
 \end{itemize}
-\footnotetext[1]{配列で実現できるので、ここまでの言語の前提条件から逸脱していない}
+\footnotetext[1]{配列で実現可能}
 \end{frame}
 
 \end{document}
