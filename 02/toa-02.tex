@@ -152,15 +152,15 @@ f(x) &= \Theta(g(x))
 \begin{algorithm}[H]
 \SetKwComment{Comment}{}{}
 \BlankLine
-i = 0; j = z.len() - 1\Comment*{\sl\small\color[gray]{0.5}検索範囲}
+i = 0; j = z.len() - 1\Comment*{\sl\small\color[gray]{0.5}探索範囲}
 \While{i <= j} {
   \If{ v[(i + j) / 2]が等しい}{
     \Return{発見}
   }
   \eIf{v[(i + j) / 2]が小さい}{
-    i = (i + j) / 2 + 1\Comment*{\sl\small\color[gray]{0.5}検索範囲の左半分を破棄}
+    i = (i + j) / 2 + 1\Comment*{\sl\small\color[gray]{0.5}探索範囲の左半分を破棄}
   }{
-    j = (i + j) / 2 - 1\Comment*{\sl\small\color[gray]{0.5}検索範囲の右半分を破棄}
+    j = (i + j) / 2 - 1\Comment*{\sl\small\color[gray]{0.5}探索範囲の右半分を破棄}
   }
 }
 \Return{失敗}\;

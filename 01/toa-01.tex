@@ -5,7 +5,7 @@
 \usepackage[boxed,ruled,vlined]{algorithm2e}
 \usepackage{bm}
 \usepackage[01]{../lecture}
-\subtitle{}
+\subtitle{探索}
 \begin{document}
 
 \begin{frame}[fragile]{}
@@ -15,13 +15,21 @@
 \section{Intro}		%%%%%%%%
 \subsection{}
 
-\begin{frame}[fragile]{計画}{}
-\begin{itemize}\itemsep8pt
-\item 代表的な検索アルゴリズム
-\item 基礎的な計算量の理論
+\begin{frame}[fragile]{アウトライン}{}
+トピックス
+\begin{itemize}
+\item 代表的な探索アルゴリズム
+\item 計算量の理論
 \item 代表的な整列アルゴリズム
-\item アルゴリズム設計論
-\item 線形計画法
+\item 共通要素の抽出
+\item 動的計画法
+\end{itemize}
+
+\vfill
+参考文献
+\begin{itemize}
+\item Wikipedia
+\item Donald E. Knuth: The Art of Computer Programming
 \end{itemize}
 \end{frame}
 
@@ -30,20 +38,19 @@
 \begin{exampleblock}{ハードウェア}
 \begin{itemize}%\itemsep8pt
 \item 単一CPU
-\item メモリのアクセス速度一定（キャッシュなし）
+\item メモリのアクセス速度一定
 \item 機械語を実行
 \end{itemize}
 \end{exampleblock}
 
 \begin{exampleblock}{プログラミング言語}
 \begin{itemize}%\itemsep8pt
-\item 配列型{\tt Vec}を有すること
+\item 配列型{\tt Vec<T>}を有する
 \begin{itemize}%\itemsep8pt
+\item 添字は0から始まる自然数（最終要素の添字は長さ-1）
 \item アクセス速度一定
-\item 添字は0から始まる（従って最後の要素の添字は長さ-1）
 \end{itemize}
-\item 数学的帰納法の直接翻訳として再帰呼出しできること
-\item 型の明示
+\item 関数が定義できる、再帰呼出しできる
 \item 実行前に機械語に変換
 \end{itemize}
 \end{exampleblock}
@@ -52,34 +59,42 @@
 \section{Search}		%%%%%%%%
 \subsection{}
 
-\begin{frame}[fragile]{検索}{search}
-\begin{block}{検索}
-\begin{itemize}%\itemsep8pt
-\item
-メモリに置かれたデータの中からある条件を満たす要素があるかどうかを判定する
-\item[$\to$]
-有限長の配列の中からある条件を満たす要素があるかどうかを判定
-\end{itemize}
-\end{block}
-探索とは違うのか？
+\begin{frame}[fragile]{探索}{メモリに置かれたデータの中からある条件を満たす要素があるかどうかを判定}
+$\to$配列の中からある条件を満たす要素の存在を判定
 
-返値の型が指定されてない？
-\begin{alertblock}{alert}
-\end{alertblock}
+\footnotetext[1]{二分検索: 2,550, 二分探索：89,800}
+
+\vfill
+\begin{center}
+\scalebox{0.6}{
+\begin{tikzpicture}[
+    , cell/.style = {rectangle,draw=gray,semithick,minimum size=1cm,outer sep = 0mm,label=below:v{[\j]}}
+]
+\foreach \i [count=\j from 0] in {4, -1, 2, 8, 7, 2, 5, 0, 1}
+    \node[cell] at (\j, 0) {$\i$};
+\end{tikzpicture}
+}
+\end{center}
+
+\vfill
+\begin{codeof}{language=Rust}{ライブラリより（自動並列化や逆順走査の可能性）}
+  x = v.find(...);             // ライブラリ関数find
+  if v.iter().any(|x| c(x)) {  // どれかがtrueになればtrue
+\end{codeof}
 \end{frame}
 
 \section{Linear}		%%%%%%%%
 \subsection{}
 
-\begin{frame}[fragile]{何かの配列の中から条件を満たすものを探す}{}
+\begin{frame}[fragile]{探索アルゴリズム1：一つずつ調べる}{}
 \scalebox{0.9}{
 \begin{algorithm}[H]
 \KwIn{v: \texttt{Vec<T>}}
-\KwIn{条件 --- 要素を等しい、等しくないに二分判定する関数}
+\KwIn{条件 --- 引数を二分判定する関数}
 \KwOut{発見または失敗}
 \SetKwComment{Comment}{}{}
 \BlankLine
-i = 0\Comment*{\sl\small\color[gray]{0.5} 添字}
+i = 0\Comment*{\sl\small\color[gray]{0.5} 添字を表すローカル変数}
 \While{iが要素数より小さい} {
   \If{v[i]が条件を満たす}{
     \Return{発見}
@@ -90,30 +105,21 @@ i = 0\Comment*{\sl\small\color[gray]{0.5} 添字}
 \caption[page]{線形探索}
 \end{algorithm}
 }
-\end{frame}
-
-\begin{frame}[fragile]{評価尺度}{}
-\begin{itemize}%\itemsep8pt
-\item 停止性
-\item 正確さ（完全性）
-\item 適用範囲
-\item 速度
-\end{itemize}
-
 \vfill
-アルゴリズムの定義は「有限時間で停止するプログラム」
+バックボーン
+\begin{itemize}%\itemsep8pt
+\item 1ステップごとに残りが減っていく: $[0, N) \to [1, N) \to \cdots$
+\item 要素数が有限なら有限時間で終了する
+\end{itemize}
 \end{frame}
 
 \begin{frame}[fragile]{TypeScriptで実装}{\href{https://replit.com/@shnarazk/LinearSearchInTypeScript}{replit.com/@shnarazk/LinearSearchInTypeScript}}
-\begin{codeof}{language=C}{bsearch}
-function bsearch<T> (v: Array<T>, c: (e:T) => boolean): boolean {
+\begin{codeof}{language=C}{lsearch}
+function lsearch<T> (v: Array<T>, c: (e:T) => boolean): boolean {
   let i = 0
   while (i < v.length) {
     if (c(v[i])) { return true }
     i += 1
-  }
-  return false
-}
 
 const vec = [1, 4, 8, 9, -1, -2, 8, 10]
 
@@ -123,16 +129,49 @@ console.log(lsearch(vec, equal_8))
 \end{codeof}
 \end{frame}
 
-\begin{frame}[fragile]{チェックリスト}{\href{https://replit.com/@shnarazk/LinearSearchInTypeScript}{replit.com/@shnarazk/LinearSearchInTypeScript}}
+\begin{frame}[fragile]{チェックリスト}{}
 
 \begin{enumerate}\itemsep8pt
-\item 指定アイテム（例えば3）だけでなく、条件検索（例えば偶数）も探せること
-\item 特定の型（例えばNumber）だけでなく、別の型（例えばString）にも適用できること
+\item アイテム指定（例えば3）だけでなく、条件指定（例えば偶数）もできること
+\item 特定の型（例えばnumber）だけでなく、別の型（例えばstring）にも適用できること
+\item 探索目的が場所（添字）の報告なら、大きな変更なく対応できること
 \end{enumerate}
 \end{frame}
 
-\begin{frame}[fragile]{Rustで実装}{}
-\begin{codeof}{language=Rust}{lsearch.rs}
+\begin{frame}[fragile]{アルゴリズムの評価尺度}{}
+
+\begin{itemize}%\itemsep8pt
+\item 停止性（定義「有限時間で停止すること」）
+\item 正確さ（完全性）-- 間違える可能性
+\item 適用範囲\footnotemark
+\item 速度
+\end{itemize}
+\vfill
+本当はアルゴリズムの段階で考えるべき
+
+{\fontsize{8}{9}\selectfont
+\begin{tabular}[h]{|p{0.12\textwidth}|p{0.6\textwidth}}
+\CH 尺度 & 線形探索 \\\hline
+\CL 停止性 & 配列長さが繰り返し上限になっているので問題ない \\
+\CL 完全性 & 全ての要素を調べているので問題ない \\
+\CL 適用対象 & 同一性判定できること  \\
+\CL 速度 & 説得力のある定義が必要  \\
+\end{tabular}
+}
+\vfill
+プログラマとしては利用可能かどうかを考慮する必要があり、その上で速度に対して考慮する必要がある。
+\footnotetext[1]{要素の型Tに課せられた制約}
+\end{frame}
+
+\begin{frame}[fragile]{Rustで実装}{\href{https://replit.com/@shnarazk/LinearSearchInRust\#src/lsearch.rs}{replit.com/@shnarazk/LinearSearchInRust\#src/lsearch.rs}}
+\begin{codeof}{language=Rust}{lsearch (lsearch.rs)}
+/// `v: [T]`に対して条件`c`を満たす要素を線形探索し、...
+/// ```
+/// use crate::toa::lsearch::lsearch;
+///
+/// let vec: Vec<i32> = vec![1, 4, 8, 9, -1, -2, 8, 10];
+/// assert_eq!(lsearch(&vec, |i| *i == 8i32), true);
+/// ```
 fn lsearch<T>(v: &[T], c: impl Fn(&T) -> bool) -> bool {
     let mut i = 0;
     while i < v.len() {
@@ -141,33 +180,26 @@ fn lsearch<T>(v: &[T], c: impl Fn(&T) -> bool) -> bool {
     }
     false
 }
-
-fn main() {
-    let vec: Vec<i32> = vec![1, 4, 8, 9, -1, -2, 8, 10];
-    // test case 1
-    fn equal_8 (i: &i32) -> bool { *i == 8 }
-    dbg!(lsearch(&vec, &equal_8));
-    // test case 2
-    fn equal_7 (i: &i32) -> bool { *i == 7 }
-    dbg!(lsearch(&vec, &equal_7));
-}
 \end{codeof}
-\end{frame}
-
-\begin{frame}[fragile]{関数型よりの実装}{}
-\begin{codeof}{language=Rust}{lsearch.rs}
-fn lsearch<T>(v: &[T], c: &dyn Fn(&T) -> bool) -> bool {
-    v.iter().any(|x| c(x)); // TypeScriptならsome
-}
-\end{codeof}
-\vfill
-プログラム設計論的には使うべき便利な関数があるが、その実装を知らないと計算量の判断ができないので、ここではあまり使わないことにする（自動並列化や逆順走査の可能性）。
 \end{frame}
 
 \section{Binary}		%%%%%%%%
 \subsection{}
 
-\begin{frame}[fragile]{何かの整列ずみ配列の中から条件を満たすものを探す}{}
+
+\begin{frame}[fragile]{別の探索アルゴリズム}{}
+線形探索は探索範囲を調査済みとそうでない部分に分割し、1ステップにつき1つずつ探索範囲を縮小
+\vfill
+1ステップで複数個縮小できないか
+\vfill
+ある範囲に対して代表する要素を与え、それを調べることでその範囲を全て調べたことにできればよい
+\vfill
+そのために前提条件（前処理）を導入
+\vfill
+前提条件：データは順序を持つ、それに従い配列は整列ずみ
+\end{frame}
+
+\begin{frame}[fragile]{探索アルゴリズム2: 探索範囲を半分}{}
 \scalebox{0.9}{
 \begin{algorithm}[H]
 \KwIn{v: \texttt{Vec<T>} ---（前提条件）要素は小さい順に整列ずみ}
@@ -175,47 +207,48 @@ fn lsearch<T>(v: &[T], c: &dyn Fn(&T) -> bool) -> bool {
 \KwOut{発見または失敗}
 \SetKwComment{Comment}{}{}
 \BlankLine
-i = 0\Comment*{\sl\small\color[gray]{0.5}検索範囲の左の添字}
-j = z.len() - 1\Comment*{\sl\small\color[gray]{0.5}検索範囲の右の添字}
+i = 0\Comment*{\sl\small\color[gray]{0.5}探索範囲の左の添字}
+j = z.len() - 1\Comment*{\sl\small\color[gray]{0.5}探索範囲の右の添字}
 \While{i <= j} {
   \If{ v[(i + j) / 2]の判断結果が「等しい」}{
     \Return{発見}
   }
   \eIf{v[(i + j) / 2]の判断結果が「小さい」}{
-    i = (i + j) / 2 + 1\Comment*{\sl\small\color[gray]{0.5}検索範囲の左半分を破棄}
+    i = (i + j) / 2 + 1\Comment*{\sl\small\color[gray]{0.5}探索範囲の左半分を破棄}
   }{
-    j = (i + j) / 2 - 1\Comment*{\sl\small\color[gray]{0.5}検索範囲の右半分を破棄}
+    j = (i + j) / 2 - 1\Comment*{\sl\small\color[gray]{0.5}探索範囲の右半分を破棄}
   }
 }
-\Return{失敗}\;
+\Return{失敗}\Comment*{\sl\small\color[gray]{0.5}なお整数割算の結果は整数を仮定}
 \caption[page]{二分探索}
 \end{algorithm}
 }
 \end{frame}
 
-\begin{frame}[fragile]{二分探索のTypeScriptによる実装}{}
-\begin{codeof}{language=C}{bsearch.ts}
-type Ord = -1 | 0 | 1
-function bsearch<T>(v:Array<T>, c:(e:T): Ord):boolean {
-  let (i, j) = (0, v.length - 1)
+\begin{frame}[fragile]{二分探索のTypeScriptによる実装}{\href{https://replit.com/@shnarazk/BinarySearchInTypeScript}{replit.com/@shnarazk/BinarySearchInTypeScript}}
+\begin{codeof}{language=C}{bsearch (index.ts)}
+type Ord = -1 | 0 | 1 // 小さい/等しい/大きい、に対応
+                                                                                   
+function bsearch<T>(v:Array<T>, c:(e:T) => Ord): boolean { 
+  let i: number = 0
+  let j: number  = v.length - 1
   while (i <= j) {
-    const mid = (i + j) 2
-    match (c(v[mid])) {
-      case -1: i = mid + 1; break
-      case 0: return true
-      case 1: j = mid - 1
+    const mid = Math.floor((i + j) / 2)  // 明示的な整数化
+    switch (c(v[mid])) {
+      case -1: j = mid - 1; break;       // 左半分に行く
+      case  0: return true;
+      case  1: i = mid + 1; break;       // 右半分に行く
+    }
   }
   return false
 }
-// test run 1
-const vec = [1, 4, 8, 9, -1, -2, 8, 10]
-function eq8 (i: number): Ord { return Math.sign(i-8) }
-console.log(bsearch(vec, eq8))
+
+function cond (e: number): Ord { return Math.sign(8-e) }
 \end{codeof}
 \end{frame}
 
-\begin{frame}[fragile]{二分探索のRustによる実装}{}
-\begin{codeof}{language=C}{bsearch.rs}
+\begin{frame}[fragile]{二分探索のRustによる実装}{\href{https://replit.com/@shnarazk/LinearSearchInRust\#src/bsearch.rs}{replit.com/@shnarazk/LinearSearchInRust\#src/bsearch.rs}}
+\begin{codeof}{language=C}{bsearch (bsearch.rs)}
 use std::cmp::Ordering;
 /// ```
 /// use crate::toa::bsearch::bsearch;
@@ -237,33 +270,38 @@ pub fn bsearch<T>(v: &[T], c: impl Fn(&T) -> Ordering) -> bool {
 \end{codeof}
 \end{frame}
 
-
 \begin{frame}[fragile]{検討}{}
 
 {\fontsize{8}{9}\selectfont
 \begin{tabular}[h]{|p{0.12\textwidth}|p{0.4\textwidth}|p{0.4\textwidth}|}
-\CH 尺度 & 線形探索 & 二分探索 \\\hline
-\CL 停止性 & 配列長さが繰り返し上限 & 検索範囲$j - i$は単調減少、かつ0で終了 \\
+\CH 尺度 & 線形探索 & 二分探索 \\
+\CL 停止性 & 配列長さが繰り返し上限 & 探索範囲$j - i$は単調減少\footnotemark、かつ0で終了 \\
 \CL 完全性 & 全ての要素を調べているので問題ない & 前提条件より導出可能 \\
-\CL 適用対象\footnotemark & 同一性判定できること & 全順序であること、かつ配列が整列ずみ \\
-\CL 速度 & 説得力のある定義が必要 & -- \\
+\CL 適用対象 & 同一性判定できること & 全順序であること、かつ配列が整列ずみ \\
+\CL 速度 & 遅そうだが説得力のある定義が必要 & 速そうだが説得力のある定義が必要\\
 \end{tabular}
 }
+
 \vfill
-プログラマとしては利用可能かどうかを考慮する必要があり、その上で速度に対して考慮する必要がある。
-\footnotetext[1]{要素の型Tに課せられた制約}
+条件のバリエーション「最大値の探索」：
+条件が要素間の関係上に定義されるものだからこのフレームワークでは無理
+
+\footnotetext[1]{iは単調増加、jは単調減少}
 \end{frame}
 
 \section{Hash}		%%%%%%%%
 \subsection{}
 
-\begin{frame}[fragile]{二分探索は最速か}{}
+\begin{frame}[fragile]{二分探索以外の高速探索}{}
 \begin{itemize}\itemsep20pt%[<+->]
 \item ハッシュ表を使えばより高速
+\begin{itemize}%\itemsep8pt
 \item 正確にはハッシュ表というデータ構造{\footnotemark}とハッシュ関数のペア
 \item 速度の点では有利だが別の観点で不利
+\item Python: Dictionary, JavaScript: Object
 \end{itemize}
-\vfill
+\item データ分布の偏りを利用するもの
+\end{itemize}
 \footnotetext[1]{配列で実現できるので、ここまでの言語の前提条件から逸脱していない}
 \end{frame}
 
