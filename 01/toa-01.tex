@@ -255,7 +255,7 @@ function bsearch<T>(v:Array<T>, c:(e:T) => Ord): boolean {
   return false
 }
 
-function cond (e: number): Ord { return Math.sign(8-e) }
+function c(e: number): Ord { return Math.sign(8-e) as Ord }
 \end{codeof}
 \end{frame}
 
