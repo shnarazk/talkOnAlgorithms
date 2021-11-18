@@ -106,14 +106,14 @@ i = 0\Comment*{\sl\small\color[gray]{0.5} 添字を表すローカル変数}
 \end{algorithm}
 }
 \vfill
-バックボーン
+背景にあるアイデア
 \begin{itemize}%\itemsep8pt
 \item 1ステップごとに残りが減っていく: $[0, N) \to [1, N) \to \cdots$
-\item 要素数が有限なら有限時間で終了する
+\item 1ステップごとに（範囲を変えて）同じ処理
 \end{itemize}
 \end{frame}
 
-\begin{frame}[fragile]{TypeScriptで実装}{\href{https://replit.com/@shnarazk/LinearSearchInTypeScript}{replit.com/@shnarazk/LinearSearchInTypeScript}}
+\begin{frame}[fragile]{TypeScriptで実装}{\href{https://replit.com/@shnarazk/LinearSearchInTypeScript}{\beamergotobutton{replit.com/@shnarazk/LinearSearchInTypeScript}}}
 \begin{codeof}{language=C}{lsearch}
 function lsearch<T> (v: Array<T>, c: (e:T) => boolean): boolean {
   let i = 0
@@ -141,7 +141,7 @@ console.log(lsearch(vec, equal_8))
 \begin{frame}[fragile]{アルゴリズムの評価尺度}{}
 
 \begin{itemize}%\itemsep8pt
-\item 停止性（定義「有限時間で停止すること」）
+\item 停止性\href{https://ja.wikipedia.org/wiki/アルゴリズム}{\beamergotobutton{アルゴリズムの定義について}}
 \item 正確さ（完全性）-- 間違える可能性
 \item 適用範囲\footnotemark
 \item 速度
@@ -163,7 +163,7 @@ console.log(lsearch(vec, equal_8))
 \footnotetext[1]{要素の型Tに課せられた制約}
 \end{frame}
 
-\begin{frame}[fragile]{Rustで実装}{\href{https://replit.com/@shnarazk/LinearSearchInRust\#src/lsearch.rs}{replit.com/@shnarazk/LinearSearchInRust\#src/lsearch.rs}}
+\begin{frame}[fragile]{Rustで実装}{\href{https://replit.com/@shnarazk/LinearSearchInRust\#src/lsearch.rs}{\beamergotobutton{replit.com/@shnarazk/LinearSearchInRust\#src/lsearch.rs}}}
 \begin{codeof}{language=Rust}{lsearch (lsearch.rs)}
 /// `v: [T]`に対して条件`c`を満たす要素を線形探索し、...
 /// ```
@@ -237,7 +237,7 @@ j = z.len() - 1\Comment*{\sl\small\color[gray]{0.5}探索範囲の右の添字}
 }
 \end{frame}
 
-\begin{frame}[fragile]{二分探索のTypeScriptによる実装}{\href{https://replit.com/@shnarazk/BinarySearchInTypeScript}{replit.com/@shnarazk/BinarySearchInTypeScript}}
+\begin{frame}[fragile]{二分探索のTypeScriptによる実装}{\href{https://replit.com/@shnarazk/BinarySearchInTypeScript}{\beamergotobutton{replit.com/@shnarazk/BinarySearchInTypeScript}}}
 \begin{codeof}{language=C}{bsearch (index.ts)}
 type Ord = -1 | 0 | 1 // 小さい/等しい/大きい、に対応
 
@@ -259,7 +259,7 @@ function cond (e: number): Ord { return Math.sign(8-e) }
 \end{codeof}
 \end{frame}
 
-\begin{frame}[fragile]{二分探索のRustによる実装}{\href{https://replit.com/@shnarazk/LinearSearchInRust\#src/bsearch.rs}{replit.com/@shnarazk/LinearSearchInRust\#src/bsearch.rs}}
+\begin{frame}[fragile]{二分探索のRustによる実装}{\href{https://replit.com/@shnarazk/LinearSearchInRust\#src/bsearch.rs}{\beamergotobutton{replit.com/@shnarazk/LinearSearchInRust\#src/bsearch.rs}}}
 \begin{codeof}{language=C}{bsearch (bsearch.rs)}
 use std::cmp::Ordering;
 /// ```
