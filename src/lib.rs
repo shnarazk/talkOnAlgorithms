@@ -4,6 +4,8 @@ pub mod bsearch;
 pub mod bsort;
 /// 線形探索
 pub mod lsearch;
+/// メモ化の例
+pub mod memo;
 /// クイックソート
 pub mod qsort;
 

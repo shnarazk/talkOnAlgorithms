@@ -9,3 +9,4 @@ description = "A talk on Algorithms"
 repository = "https://github.com/shnarazk/talkOnAlgorithms"
 
 [dependencies]
+lazy_static = "^1.4"

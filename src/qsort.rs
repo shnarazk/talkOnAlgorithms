@@ -12,7 +12,7 @@ use std::fmt::Debug;
 /// check_implementation(qsort, vec![1 ,2, 3, 1, 2, 3, 4, 5, 1, 2, 3]);
 ///```
 pub fn qsort<T: Ord>(v: &mut [T]) {
-     sort_on(v, 0, v.len());
+    sort_on(v, 0, v.len());
 }
 
 fn partition<T: Ord>(v: &mut [T], beg: usize, end: usize) -> usize {
@@ -35,8 +35,7 @@ fn sort_on<T: Ord>(v: &mut [T], beg: usize, end: usize) {
     sort_on(v, p, end);
 }
 
-pub fn check_implementation<T: Copy + Ord + Debug, V: AsRef<[T]>>(f: impl Fn(&mut [T]), v: V)
-{
+pub fn check_implementation<T: Copy + Ord + Debug, V: AsRef<[T]>>(f: impl Fn(&mut [T]), v: V) {
     let mut v1 = v.as_ref().iter().copied().collect::<Vec<T>>();
     let mut v2 = v.as_ref().iter().copied().collect::<Vec<T>>();
     f(&mut v1);

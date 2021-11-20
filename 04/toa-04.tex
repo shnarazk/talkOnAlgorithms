@@ -3,6 +3,7 @@
 \documentclass{beamer}
 \usepackage{beamerPack}
 \usepackage[boxed,ruled,vlined]{algorithm2e}
+\usepackage{setspace}
 \usepackage[04]{../lecture}
 \subtitle{}
 \begin{document}
@@ -79,12 +80,71 @@ Fib(n) = \frac{1}{\sqrt{5}}
 a
 \end{frame}
 
-\begin{frame}[fragile]{メモ化}{}
-a
+\begin{frame}[fragile]{メモ化}{\href{https://ja.wikipedia.org/wiki/メモ化}{\beamergotobutton{wikipedia}}}
+\begin{codeof}{language=Rust}{メモ化の一般形}
+fn foo (問題指定) -> 解の型 {
+  static memo: Hash<問題指定の型, 解の型>;
+  // メモの確認
+  if memo[問題指定]が有効な値を持つ {
+    return memo[問題指定];
+  }
+
+   本来の計算：問題指定から解を求める
+
+  // メモする
+  memo[問題指定] = 解;
+  return 解;
+}
+\end{codeof}
+
+\footnotetext[1]{定型化されているので言語によってはこのコードを自動生成する}
 \end{frame}
 
-\begin{frame}[fragile]{自動メモ化}{}
-a
+\begin{frame}[fragile]{fibに対するメモ化の例}{\href{https://ja.wikipedia.org/wiki/メモ化}{\beamergotobutton{repl it}}}
+\begin{codeof}{language=Rust}{fib (memo.rs)}
+pub fn fib(n: usize) -> usize {
+    if let Ok(hash) = MEMO.read() {
+        if let Some(r) = hash.get(&n) {
+            return *r;
+        }
+    }
+    let n_1 = if n <= 2 { 1 } else { fib(n - 1) };
+    let n_2 = if n <= 2 { 0 } else { fib(n - 2) };
+    let result = n_1 + n_2;
+    if let Ok(mut hash) = MEMO.write() {
+        hash.insert(n, result);
+    }
+    result
+}
+\end{codeof}
+
+\begin{spacing}{0.7}\fontsize{6}{6}\selectfont
+メモは毎回初期化されないようグローバル(static)変数にしたい。
+Rustではグローバル変数への操作は同期操作を使ったスレッド安全なものしか受け付けないので、
+ライブラリのインポートや変数定義（ここでは省略）、アクセス(L.2--6, L.10-12)が面倒になっている。
+\end{spacing}
+\end{frame}
+
+\begin{frame}[fragile]{効果の確認}{}
+
+\begin{codeof}{language=Rust}{}
+fn main() {
+    let n = 46;
+    // mainから1回しか呼ばなくても再帰しているのでメモ化は有効
+    println!("fib({:>2}) = {:>11}", n, fib(n));
+    println!("fib({:>2}) = {:>11}", n, slow_fib(n));
+    // メモに残っているので同じ計算では2回目以降はO(1)
+    for i in 30..=48 {
+        println!("fib({:>2}) = {:>11}", n, fib(n));
+        println!("slw({:>2}) = {:>11}", n, slow_fib(n));
+    }
+    // 引数が違ってもメモに残っているので新規分だけ計算
+    for i in 30..=48 {
+        println!("fib({:>2}) = {:>11}", i, fib(i));
+        println!("slw({:>2}) = {:>11}", i, slow_fib(i));
+    }
+}
+\end{codeof}
 \end{frame}
 
 \end{document}
