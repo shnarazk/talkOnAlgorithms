@@ -77,13 +77,13 @@ i = 0\;
 \end{itemize}
 
 \vfill
-\begin{columns}
-\begin{column}{0.5\textwidth}
+\begin{columns}[T]
+\begin{column}{0.6\textwidth}
 \scalebox{0.7}{
 \setcounter{algocf}{0}
 \begin{algorithm}[H]
 \KwIn{v: \texttt{Vec<T>}}
-\KwIn{条件 --- 引数を二分判定する関数}
+\KwIn{条件}
 \KwOut{発見または失敗}
 \SetKwComment{Comment}{}{}
 i = 0\;
@@ -105,7 +105,7 @@ L3の実行回数はL2の実行回数。
 線形探索の時間計算量は$N$。
 \end{block}
 
-データが増えると比例して時間が掛かる。
+{\fontsize{8}{8}\selectfont 比例関係であることがわかった。}
 
 \medskip
 計算上では。
@@ -184,9 +184,9 @@ $f(x) = O(g(x))$なら$f$は$g$で上から抑えられる、すなわち上限
 \end{align*}
 
 \vfill
-以下は間違い。近似関係ではなく等値関係。
+以下は（ほぼ）間違い。近似関係ではなく等値関係。
 \begin{align*}
-2.14x^3 & \approx O(x^3)
+2.14x^3 \approx O(x^3), &\quad 2.14x^3 \le O(x^3)
 \end{align*}
 \end{frame}
 
@@ -197,10 +197,11 @@ $f(x) = O(g(x))$なら$f$は$g$で上から抑えられる、すなわち上限
 が成立するとき（またその時に限り）、
 
 \begin{align*}
-f(x) &= \Omega(g(x))
+f(x) &= \Omega(g(x)).
 \end{align*}
 
 \vfill
+さらに
 \begin{align*}
 f(x) = O(g(x)) && f(x) = \Omega(g(x))
 \end{align*}
@@ -359,11 +360,6 @@ T(N) = & O(N\log(N))
 \end{frame}
 
 \begin{frame}[fragile]{より速い探索}{}
-\begin{block}{並列探索}
-固定の$M$台使用するなら$O(N/M) = O(N)$。
-データの大きさに合わせて増加させるなら$O(N)$以下が可能。
-\end{block}
-
 \begin{block}{ハッシュ表とハッシュ関数}
 \begin{itemize}%\itemsep8pt
 \item 時間計算量はほぼ$O(1)$
@@ -371,10 +367,15 @@ T(N) = & O(N\log(N))
 \end{itemize}
 \end{block}
 
-\begin{block}{二分探索並に速く、前提条件の計算量を削減}
+\begin{block}{特定の検索に対する高速化(最大値検索)}
 \href{https://ja.wikipedia.org/wiki/赤黒木}{\beamergotobutton{赤黒木}},
 \href{https://ja.wikipedia.org/wiki/トライ_(データ構造)}{\beamergotobutton{トライ木}},
 \href{https://ja.wikipedia.org/wiki/2-3-4木}{\beamergotobutton{2-3-4木}}などの木構造が適している
+\end{block}
+
+\begin{block}{並列探索}
+固定の$M$台使用するなら$O(N/M) = O(N)$。
+データの大きさに合わせて増加させるなら$O(N)$以下が可能。
 \end{block}
 
 \footnotetext[3]{正確には$O(|ハッシュ関数の値域|)$}
