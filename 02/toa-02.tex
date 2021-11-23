@@ -29,7 +29,7 @@ Byte数よりも個数が単位。
 \begin{itemize}%\itemsep8pt
 \item 命令(行)の実行回数で比較(実時間はハードウェア依存)
 \item 最悪の場合を想定(平均は困難)
-\item データの個数に依存するため、$N$の関数として表現
+\item データの個数$N$に依存するため、$N$の関数として表現
 \end{itemize}
 \end{block}
 
@@ -37,6 +37,8 @@ Byte数よりも個数が単位。
 \begin{column}{0.7\textwidth}
 \scalebox{0.8}{
 \begin{algorithm}[H]
+%\TitleOfAlgo{線形探索}
+%\SetAlgoRefName{lsearch}
 \KwIn{v: \texttt{Vec<T>}}
 \KwIn{条件 --- 引数を二分判定する関数}
 \KwOut{発見または失敗}
@@ -49,7 +51,7 @@ i = 0\;
   i += 1\;
 }
 \Return{失敗}\;
-\caption[page]{線形探索}
+\caption{線形探索}
 \end{algorithm}
 }
 \end{column}
@@ -67,7 +69,7 @@ i = 0\;
 \end{columns}
 \end{frame}
 
-\begin{frame}[fragile]{時間計算量の簡略化}{}
+\begin{frame}[fragile]{計算の簡略化:Nに対する変化にのみ注目}{}
 \begin{itemize}%\itemsep8pt
 \item おそらく条件検査(L3)が１番時間が掛かる
 \item L3とL5の実行回数はほぼ一緒
@@ -76,8 +78,9 @@ i = 0\;
 
 \vfill
 \begin{columns}
-\begin{column}{0.7\textwidth}
-\scalebox{0.8}{
+\begin{column}{0.5\textwidth}
+\scalebox{0.7}{
+\setcounter{algocf}{0}
 \begin{algorithm}[H]
 \KwIn{v: \texttt{Vec<T>}}
 \KwIn{条件 --- 引数を二分判定する関数}
@@ -95,12 +98,13 @@ i = 0\;
 \end{algorithm}
 }
 \end{column}
-\begin{column}{0.25\textwidth}
+\begin{column}{0.5\textwidth}
 L3の実行回数はL2の実行回数。
-最悪$N$回。
 
-\medskip
+\begin{block}{}
 線形探索の時間計算量は$N$。
+\end{block}
+
 データが増えると比例して時間が掛かる。
 
 \medskip
@@ -186,21 +190,6 @@ $f(x) = O(g(x))$なら$f$は$g$で上から抑えられる、すなわち上限
 \end{align*}
 \end{frame}
 
-\section{Order of search}		%%%%%%%%
-\subsection{}
-
-\begin{frame}[fragile]{線形探索の計算量}{}
-
-\begin{itemize}\itemsep30pt
-\item 線形探索の時間計算量は$O(N)$である。\footnotemark
-\item 線形探索の空間計算量は$O(1)$である。\footnotemark
-\end{itemize}
-
-\footnotetext[1]{読み方色々：オー、ビッグオー、オーダーなど。}
-\footnotetext[2]{ローカル変数を$X$個定義しても$X = O(1)$。}
-
-\end{frame}
-
 \begin{frame}[fragile]{$\Omega(-)$, $\Theta(-)$}{}
 \begin{align*}
 \exists x_{0}, \exists M > 0,  \forall x > x_{0} : |f(x)| > M | g(x) |
@@ -220,6 +209,23 @@ f(x) = O(g(x)) && f(x) = \Omega(g(x))
 \begin{align*}
 f(x) &= \Theta(g(x))
 \end{align*}
+\end{frame}
+
+\section{Order of search}		%%%%%%%%
+\subsection{}
+
+\begin{frame}[fragile]{線形探索の計算量}{}
+「線形探索の実行時間は$N$」から、
+
+\begin{block}{線形探索の計算量}
+\begin{itemize}\itemsep8pt
+\item 線形探索の時間計算量は$O(N)$\footnotemark
+\item 線形探索の空間計算量は$O(1)$\footnotemark
+\end{itemize}
+\end{block}
+
+\footnotetext[1]{読み方色々：オー、ビッグオー、オーダーなど}
+\footnotetext[2]{（再帰しない関数で）ローカル変数を$X$個定義しても$X = O(1)$}
 \end{frame}
 
 \begin{frame}[fragile]{二分探索の計算量}{}
@@ -246,8 +252,9 @@ i = 0; j = z.len() - 1\Comment*{\sl\small\color[gray]{0.5}探索範囲}
 \vfill
 
 \begin{itemize}%\itemsep8pt
-\item データの大きさが$N$の場合の繰り返し回数\footnotemark: $\log_{2}(N)$
+\item データの大きさが$N$の場合の繰り返し回数: $\log_{2}(N)$
 \item 各繰り返しの中で実行する条件比較は2回=$O(1)$回
+\item $1回あたりO(1) \times 繰り返し回数O(\log(N)) = 計 O(\log(N))$
 \item ローカル変数が二つ
 \end{itemize}
 \end{frame}
@@ -282,22 +289,95 @@ Nに対する全体の計算量 & = 繰り返し回数 \times そこでの計算
 \CL 二分探索 & $O(\log(N))$ & $O(1)$ & $O(1)$ \\
 \end{tabular}
 }
+
+\vfill
+{\fontsize{8}{8}\selectfont
+$O$-記法を使ったことで係数が消えているので、直接の速度比較はできない。
+それぞれが$N$に対してどう変化するのかを言うもの。
+
+逆に$O$-記法での比較が最終目的なら、各行の実行回数を全て数え上げたりしなくてよい。
+}
+\end{frame}
+
+\begin{frame}[fragile]{別解}{再帰$\to$帰納法$\to$数列の一般項}
+\begin{columns}
+\begin{column}{0.5\textwidth}
+\begin{codeof}{language=Rust}{再帰版lsearch}
+fn lsearch(長さ\@N@,c) {
+  c();
+  lsearch(長さ\@N-1@, c);
+}
+\end{codeof}
+\begin{align*}
+T(n) = & O(1) \\
+& + T(n-1)\\
+= & n O(1) \\
+T(N) = & O(N)
+\end{align*}
+
+\end{column}
+\begin{column}{0.5\textwidth}
+\begin{codeof}{language=Rust}{再帰版bsearch}
+fn bsearch(長さ\@$N$@, c) {
+  c();
+  bsearch(長さ\@$N/2$@, c);
+}
+\end{codeof}
+\begin{align*}
+T(n) = & O(1) \\
+& + T(n/2)\\
+= & O(1) O(\log(n)) \\
+T(N) = & O(\log(N))
+\end{align*}
+\end{column}
+\end{columns}
+\end{frame}
+
+\begin{frame}[fragile]{参考}{}
+
+\begin{columns}[T]
+\begin{column}{0.5\textwidth}
+\begin{align*}
+T(n) = & O(n) \\
+& + T(n-1)\\
+= & n + (n - 1) + \cdots + 1 \\
+T(N) = & O(N^2)
+\end{align*}
+\end{column}
+
+\begin{column}{0.5\textwidth}
+\begin{align*}
+T(n) = & O(n) \\
+& + T(n/2) + T(n/2)\\
+= & O(n) + 2T(n/2) \\
+= & O\left(\frac{n}{1} + \frac{2n}{2} + \frac{4n}{4} + \cdots \right) \\
+T(N) = & O(N\log(N))
+\end{align*}
+\end{column}
+\end{columns}
+
 \end{frame}
 
 \begin{frame}[fragile]{より速い探索}{}
-
 \begin{block}{並列探索}
-データをパーティショニング。固定のM台使用するなら$O(N/M) = O(N)$。
+固定の$M$台使用するなら$O(N/M) = O(N)$。
 データの大きさに合わせて増加させるなら$O(N)$以下が可能。
 \end{block}
 
 \begin{block}{ハッシュ表とハッシュ関数}
 \begin{itemize}%\itemsep8pt
-\item 時間計算量は$O(1)$
-\item 空間計算量は$O(データの潜在的総数)$
+\item 時間計算量はほぼ$O(1)$
+\item 空間計算量は$O(データの潜在的総数)$\footnotemark
 \end{itemize}
 \end{block}
 
-二分探索は速いが、計算量が大きな前処理が必要。なんとかならないか：赤黒木, tri-Tree, 3-4-5木などの〇〇木
+\begin{block}{二分探索並に速く、前提条件の計算量を削減}
+\href{https://ja.wikipedia.org/wiki/赤黒木}{\beamergotobutton{赤黒木}},
+\href{https://ja.wikipedia.org/wiki/トライ_(データ構造)}{\beamergotobutton{トライ木}},
+\href{https://ja.wikipedia.org/wiki/2-3-4木}{\beamergotobutton{2-3-4木}}などの木構造が適している
+\end{block}
+
+\footnotetext[3]{正確には$O(|ハッシュ関数の値域|)$}
 \end{frame}
+
 \end{document}
