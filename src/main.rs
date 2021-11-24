@@ -1,8 +1,17 @@
 // use toa::qsort::qsort;
-use toa::memo::*;
+use {std::collections::HashSet, toa::memo::*};
 
 fn main() {
     println!("Hello, world!");
+
+    let mut set: HashSet<usize> = HashSet::new();
+    for i in 0..40 {
+        set.insert(i);
+    }
+    for x in set.iter() {
+        println!("{:?}", x);
+    }
+
     // let mut vec: Vec<i32> = vec![1, 2, 3, 1, 2, 3, 4, 5, 1, 2, 3];
     // qsort(&mut vec);
     // println!("{:?}", &vec);
@@ -11,7 +20,7 @@ fn main() {
     println!("     fib({:>2}) = {:>11}", n, fib(n));
     println!("slow_fib({:>2}) = {:>11}", n, slow_fib(n));
     // メモに残っているので2回目以降はO(1)
-    for i in 30..=48 {
+    for _i in 30..=48 {
         println!("     fib({:>2}) = {:>11}", n, fib(n));
         println!("slow_fib({:>2}) = {:>11}", n, slow_fib(n));
     }
