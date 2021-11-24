@@ -12,6 +12,7 @@ repository = "https://github.com/shnarazk/talkOnAlgorithms"
 lazy_static = "^1.4"
 
 [dev-dependencies]
+rand = "^0.8"
 criterion = "0.3"
 
 [[bench]]

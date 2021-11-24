@@ -8,6 +8,7 @@
 /// ```
 pub fn lsearch<T>(v: &[T], c: impl Fn(&T) -> bool) -> bool {
     let mut i = 0;
+
     while i < v.len() {
         if c(&v[i]) {
             return true;
