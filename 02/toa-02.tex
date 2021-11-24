@@ -3,6 +3,7 @@
 \documentclass{beamer}
 \usepackage{beamerPack}
 \usepackage[boxed,linesnumbered,ruled,vlined]{algorithm2e}
+\usepackage{setspace}
 \usepackage[02]{../lecture}
 \subtitle{}
 \begin{document}
@@ -22,6 +23,9 @@
 その計算を実行するために必要なメモリ量。ただしデータそのものは含めないことが多い。
 Byte数よりも個数が単位。
 \end{block}
+
+\vfill
+ただし定量的な比較が目的でない
 \end{frame}
 
 \begin{frame}[fragile]{時間計算量}{}
@@ -61,9 +65,9 @@ i = 0\;
 \item L1: 1
 \item L2: 最悪N
 \item L3: 最悪N
-\item L4: 1 or 0
+\item L4: 最悪1
 \item L5: 最悪N
-\item L6: 1 or 0
+\item L6: 最悪1
 \end{itemize}
 \end{column}
 \end{columns}
@@ -117,12 +121,34 @@ L3の実行回数はL2の実行回数。
 \subsection{}
 
 \begin{frame}[fragile]{より説明力を持たせたい}{}
+
 \begin{itemize}\itemsep8pt
 \item 理論的に求めた計算量が現実を説明しないかもしれない
 \item あるいはN=100近辺で考える人とN=100,0000,000で考える人で違う印象を持つかもしれない
-\item 重要なのはどんどんデータが増えていった時にどうなるかでは？ スケーラビリティ。
+\item 重要なのはスケーラビリティ
 \item 極限は無限大に飛ばす操作なのでこの文脈では不適切
 \end{itemize}
+\end{frame}
+
+\begin{frame}[fragile]{Criterionで実測}{}
+\begin{center}
+\begin{tikzpicture}
+\node at (0,0) {\pgfimage[width=0.8\pagewidth]{criterion1.png}};
+\end{tikzpicture}
+\end{center}
+
+\begin{spacing}{0.7}
+\fontsize{7}{7}\selectfont
+N=1M個に対し経過時間$100 \mu 秒 = 0.1 m秒$。1GHzのCPU（パイプライン無視して1M命令/1m秒）ならその間に0.1M命令。4GHzまでオーバーブーストかつパイプラインで最低4命令同時実行でようやく桁がギリギリ合うくらいなのだが。。。
+\end{spacing}
+\end{frame}
+
+\begin{frame}[fragile]{さらに余談:\href{https://godbolt.org}{\beamergotobutton{Compiler Explore}}}{}
+\begin{center}
+\begin{tikzpicture}
+\node at (0,0) {\pgfimage[width=0.8\pagewidth]{assembled.png}};
+\end{tikzpicture}
+\end{center}
 \end{frame}
 
 \begin{frame}[fragile]{$O$-記法}{}
@@ -169,6 +195,7 @@ f(x) &= O(g(x))
 \begin{itemize}%\itemsep8pt
 \item 時間測定に限定させない一般化（波のenvelop関数）
 \end{itemize}
+\item p4でL5を無視したのは、$O$-記法に持っていくと消えてしまうから
 \end{itemize}
 \end{frame}
 
@@ -298,6 +325,17 @@ $O$-記法を使ったことで係数が消えているので、直接の速度�
 
 逆に$O$-記法での比較が最終目的なら、各行の実行回数を全て数え上げたりしなくてよい。
 }
+\end{frame}
+
+\begin{frame}[fragile]{Criterionで実測2}{}
+\begin{center}
+\begin{tikzpicture}
+\node at (0,0) {\pgfimage[width=0.8\pagewidth]{criterion2.png}};
+\end{tikzpicture}
+\end{center}
+
+\vfill
+両対数グラフであることに注意
 \end{frame}
 
 \begin{frame}[fragile]{別解}{再帰$\to$帰納法$\to$数列の一般項}
