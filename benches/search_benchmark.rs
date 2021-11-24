@@ -51,5 +51,40 @@ pub fn search_benchmark(c: &mut Criterion) {
     group.finish();
 }
 
-criterion_group!(benches, search_benchmark);
+pub fn lsearch_benchmark(c: &mut Criterion) {
+    let mut group = c.benchmark_group("liner search algorithm");
+
+    for size in [
+        10_000usize,
+        20_000,
+        50_000,
+        100_000,
+        200_000,
+        400_000,
+        600_000,
+        800_000,
+        1_000_000,
+        1_200_000,
+        1_400_000,
+        1_600_000,
+    ] {
+        let sorted: Vec<i32> = (0..size as i32).collect();
+        let mut rand_v: Vec<i32> = sorted.clone();
+        rand_v.shuffle(&mut rand::thread_rng());
+
+        let mut key: i32 = (size as i32) / 4;
+        assert_eq!(rand_v.len(), size);
+        group.throughput(Throughput::Elements(size as u64));
+        group.bench_with_input(BenchmarkId::new("lsearch", size), &size, |b, _| {
+            b.iter(|| {
+                key += 1;
+                black_box(lsearch(&rand_v, |i| key == *i));
+            })
+        });
+    }
+    group.finish();
+}
+
+// criterion_group!(benches, search_benchmark);
+criterion_group!(benches, lsearch_benchmark);
 criterion_main!(benches);
