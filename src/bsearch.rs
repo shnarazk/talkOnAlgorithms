@@ -10,12 +10,16 @@ use std::cmp::Ordering;
 /// assert_eq!(bsearch(&vec, |i| 100i32.cmp(i)), false);
 /// ```
 pub fn bsearch<T>(v: &[T], c: impl Fn(&T) -> Ordering) -> bool {
+    if v.len() == 0 {
+        return false;
+    }
     let mut i = 0;
     let mut j = v.len() - 1;
     while i < j {
         let mid = (i + j) / 2;
         match c(&v[mid]) {
             Ordering::Equal => return true,
+            Ordering::Less if mid == 0 => return false,
             Ordering::Less => j = mid - 1,
             Ordering::Greater => i = mid + 1,
         }
