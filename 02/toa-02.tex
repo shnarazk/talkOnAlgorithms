@@ -210,19 +210,19 @@ f(x) &= O(g(x))
 \begin{frame}[fragile]{足掛かり2}{}
 
 \begin{itemize}\itemsep20pt
-\item 「データ数$100$で実験したら線形探索の方が速かったです」
+\item 「データ数$100$まで理論通りになりません」あるいは「データ数$100$で実験したら線形探索の方が速かったです」
 \begin{itemize}
 \item $x_{0} = 100$とすれば騒ぐことではないな
 \end{itemize}
 \item 「こっちのPCでは実験結果は$O(N^2)$、あっちのだと$O(2.4N^2)$になりました」
 \begin{itemize}
 \item $M=2.4$とおいたらどちらも同じなのに
+\item p4でL1, L5などを無視したのは$O$-記法で消えてしまうから
 \end{itemize}
 \item なぜ絶対値
 \begin{itemize}%\itemsep8pt
 \item 時間測定に限定させない一般化（波のenvelop関数）
 \end{itemize}
-\item p4でL1, L5などを無視したのは$O$-記法で消えてしまうから
 \end{itemize}
 \end{frame}
 
@@ -278,6 +278,10 @@ f(x) &= \Theta(g(x))
 \item 線形探索の空間計算量は$O(1)$\footnotemark
 \end{itemize}
 \end{block}
+
+[1]{読み方は色々：オー、ビッグオー、オーダーなど}
+
+[2]{（再帰しない関数で）ローカル変数を$X$個定義しても$X = O(1)$}
 
 \footnotetext[1]{読み方色々：オー、ビッグオー、オーダーなど}
 \footnotetext[2]{（再帰しない関数で）ローカル変数を$X$個定義しても$X = O(1)$}
@@ -445,6 +449,8 @@ T(N) = & O(N\log(N))
 固定の$M$台使用するなら$O(N/M) = O(N)$。
 データの大きさに合わせて増加させるなら$O(N)$以下が可能。
 \end{block}
+
+[3]{正確には$O(|ハッシュ関数の値域|)$}
 
 \footnotetext[3]{正確には$O(|ハッシュ関数の値域|)$}
 \end{frame}
