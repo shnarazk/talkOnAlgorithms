@@ -2,10 +2,16 @@
 %\PassOptionsToClass{handout}{beamer}
 \documentclass{beamer}
 \usepackage{beamerPack}
+\usepackage{pgfplots}
 \usepackage[boxed,linesnumbered,ruled,vlined]{algorithm2e}
 \usepackage{setspace}
 \usepackage[02]{../lecture}
 \subtitle{}
+\usetikzlibrary{shapes.geometric,arrows,fit,matrix,positioning}
+\tikzset{
+  treenode/.style = {circle, draw=black, align=center, minimum size=1cm, anchor=center},
+  subtree/.style = {regular polygon, regular polygon sides=3, draw=black, align=center, minimum height=0.5cm, minimum width=1cm, anchor=center}
+}
 \begin{document}
 
 \begin{frame}[fragile]{}
@@ -25,7 +31,12 @@ Byte数よりも個数が単位。
 \end{block}
 
 \vfill
-ただし定量的な比較が目的でない
+ただし定量的な比較が目的ではない。アルゴリズムAとBがN=1000の場合に何倍速度差があるかではなく、アルゴリズムAはNに対してどう変化するかを表現。
+\begin{itemize}%\itemsep8pt
+\item 
+
+\end{itemize}
+
 \end{frame}
 
 \begin{frame}[fragile]{時間計算量}{}
@@ -75,7 +86,7 @@ i = 0\;
 
 \begin{frame}[fragile]{計算の簡略化:Nに対する変化にのみ注目}{}
 \begin{itemize}%\itemsep8pt
-\item おそらく条件検査(L3)が１番時間が掛かる
+\item おそらく条件検査L3が１番時間が掛かる
 \item L3とL5の実行回数はほぼ一緒
 \item L3のif文を数えることに帰着させる（係数の差程度）
 \end{itemize}
@@ -117,20 +128,7 @@ L3の実行回数はL2の実行回数。
 \end{columns}
 \end{frame}
 
-\section{$O$-notation}		%%%%%%%%
-\subsection{}
-
-\begin{frame}[fragile]{より説明力を持たせたい}{}
-
-\begin{itemize}\itemsep8pt
-\item 理論的に求めた計算量が現実を説明しないかもしれない
-\item あるいはN=100近辺で考える人とN=100,0000,000で考える人で違う印象を持つかもしれない
-\item 重要なのはスケーラビリティ
-\item 極限は無限大に飛ばす操作なのでこの文脈では不適切
-\end{itemize}
-\end{frame}
-
-\begin{frame}[fragile]{Criterionで実測}{}
+\begin{frame}[fragile]{参考1：Criterionで実測}{}
 \begin{center}
 \begin{tikzpicture}
 \node at (0,0) {\pgfimage[width=0.8\pagewidth]{criterion1.png}};
@@ -143,13 +141,42 @@ N=1M個に対し経過時間$100 \mu 秒 = 0.1 m秒$。1GHzのCPU（パイプラ
 \end{spacing}
 \end{frame}
 
-\begin{frame}[fragile]{さらに余談:\href{https://godbolt.org}{\beamergotobutton{Compiler Explore}}}{}
+\begin{frame}[fragile]{参考2：対応する機械語\href{https://godbolt.org}{\beamergotobutton{Compiler Explore}}}{}
+\begin{tikzpicture}[overlay, xshift=0.5\textwidth]
+\node at (0,-1) {\pgfimage[width=1.0\pagewidth]{assembled.png}};
+\end{tikzpicture}
+\end{frame}
+
+\begin{frame}[fragile]{理論値が示すもの}{}
+% \begin{tikzpicture}[overlay, xshift=0.6\textwidth, yshift=-0.6\textheight]
+% \draw[help lines, thin, step=0.5, color=gray] (0,0) grid (2,2);
+% \draw (0, 0) .. controls (0.5, 0.7) and (1.5,1.5) .. (2, 1.5);
+% \draw (0, 0) .. controls (0.5, 0.4) and (1.5,1) .. (2, 2);
+% \end{tikzpicture}
+
 \begin{center}
 \begin{tikzpicture}
-\node at (0,0) {\pgfimage[width=0.8\pagewidth]{assembled.png}};
+\draw[help lines, thin, step=0.5, color=gray] (0,0) grid (2,2);
+\draw (0, 0.2) .. controls (0.5, 0.7) and (1.5,1.5) .. (2, 1.5);
+\draw (0, 0) .. controls (0.5, 0.4) and (1.5,1) .. (2, 2);
 \end{tikzpicture}
 \end{center}
+
+
+
+\begin{itemize}\itemsep8pt
+\item 「スケーラビリティ」
+\begin{itemize}%\itemsep8pt
+\item 全ての$N$に対する予言、ではない
+\item 特定の$N$でのよしあし、ではない
+\item 誤差の無視、ではない（「無視できる」だけ）
+\end{itemize}
+\item 極限は無限大に飛ばす操作なのでこの文脈では不適切
+\end{itemize}
 \end{frame}
+
+\section{$O$-notation}		%%%%%%%%
+\subsection{}
 
 \begin{frame}[fragile]{$O$-記法}{}
 実数値関数 $f(x)$ と $g(x)$ に対し、
@@ -185,7 +212,7 @@ f(x) &= O(g(x))
 \begin{itemize}\itemsep20pt
 \item 「データ数$100$で実験したら線形探索の方が速かったです」
 \begin{itemize}
-\item $x_{0} = 100$として考えれば騒ぐほどじゃないな
+\item $x_{0} = 100$とすれば騒ぐことではないな
 \end{itemize}
 \item 「こっちのPCでは実験結果は$O(N^2)$、あっちのだと$O(2.4N^2)$になりました」
 \begin{itemize}
@@ -195,7 +222,7 @@ f(x) &= O(g(x))
 \begin{itemize}%\itemsep8pt
 \item 時間測定に限定させない一般化（波のenvelop関数）
 \end{itemize}
-\item p4でL5を無視したのは、$O$-記法に持っていくと消えてしまうから
+\item p4でL1, L5などを無視したのは$O$-記法で消えてしまうから
 \end{itemize}
 \end{frame}
 
@@ -239,7 +266,7 @@ f(x) &= \Theta(g(x))
 \end{align*}
 \end{frame}
 
-\section{Order of search}		%%%%%%%%
+\section{order of search}		%%%%%%%%
 \subsection{}
 
 \begin{frame}[fragile]{線形探索の計算量}{}
@@ -283,7 +310,7 @@ i = 0; j = z.len() - 1\Comment*{\sl\small\color[gray]{0.5}探索範囲}
 \item データの大きさが$N$の場合の繰り返し回数: $\log_{2}(N)$
 \item 各繰り返しの中で実行する条件比較は2回=$O(1)$回
 \item $1回あたりO(1) \times 繰り返し回数O(\log(N)) = 計 O(\log(N))$
-\item ローカル変数が二つ
+\item ローカル変数が二つ= $O(1)$
 \end{itemize}
 \end{frame}
 
@@ -301,11 +328,14 @@ i = 0; j = z.len() - 1\Comment*{\sl\small\color[gray]{0.5}探索範囲}
 \end{tabular}
 }
 
-\begin{align*}
-Nに対する全体の計算量 & = 繰り返し回数 \times そこでの計算量 \\
-& = \log_2(N) \times O(1)\\
-& = O(\log(N))
-\end{align*}
+\medskip
+\begin{tikzpicture}[->,>=stealth',level/.style={sibling distance = 3.0cm/#1, level distance = 1.9cm},scale=0.6, transform shape]
+\node [treenode] {$N$}
+    child[child anchor=north] { node [subtree] {$N/2$} }
+    child[child anchor=north] { node [subtree] {$N/2$} }
+    ;
+\end{tikzpicture}
+
 \end{frame}
 
 \begin{frame}[fragile]{探索の計算量まとめ}{}
