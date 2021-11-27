@@ -81,7 +81,7 @@ i = 0\;
 
 \begin{frame}[fragile]{計算の簡略化:Nに対する変化にのみ注目}{}
 \begin{itemize}%\itemsep8pt
-\item おそらく条件検査L3が１番時間が掛かる
+\item おそらく条件検査L3が１番時間が掛かる(前提条件：定数時間)
 \item L3とL5の実行回数はほぼ一緒
 \item L3のif文を数えることに帰着させる（係数の差程度）
 \end{itemize}
@@ -123,7 +123,7 @@ L3の実行回数はL2の実行回数。
 \end{columns}
 \end{frame}
 
-\begin{frame}[fragile]{参考1：Criterionで実測}{}
+\begin{frame}[fragile]{参考1：Criterionで実測\href{https://replit.com/@shnarazk/LinearSearchInRust}{\beamergotobutton{replit.com/@shnarazk/LinearSearchInRust}}}{}
 \begin{center}
 \begin{tikzpicture}
 \node at (0,0) {\pgfimage[width=0.8\pagewidth]{criterion1.png}};
@@ -132,7 +132,7 @@ L3の実行回数はL2の実行回数。
 
 \begin{spacing}{0.7}
 \fontsize{7}{7}\selectfont
-N=1M個に対し経過時間$100 \mu 秒 = 0.1 m秒$。1GHzのCPU（パイプライン無視して1M命令/1m秒）ならその間に0.1M命令。4GHzまでオーバーブーストかつパイプラインで最低4命令同時実行でようやく桁がギリギリ合うくらいなのだが。。。
+N=1M個に対し経過時間$200 \mu 秒 = 0.2 m秒$。1GHzのCPU（パイプライン無視して1M命令/1m秒）ならその間に0.2M命令。4GHzまでオーバーブーストかつパイプラインで最低4命令同時実行でなんとか桁が合うくらい。。。
 \end{spacing}
 \end{frame}
 

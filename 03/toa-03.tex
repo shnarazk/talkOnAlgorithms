@@ -119,24 +119,6 @@
 \end{frame}
 
 \begin{frame}[fragile]{バブルソート}{}
-\begin{algorithm}[H]
-\KwIn{v: \texttt{Vec<T>}--対象配列}
-\KwIn{start: Int -- 対象範囲の下限}
-\KwIn{end: Int -- 対象範囲の上界}
-\SetKwComment{Comment}{}{}
-\BlankLine
-i = 0\Comment*{\sl\small\color[gray]{0.5} 添字}
-\While{i < end}{
-   区間(i, end)内で最も小さな要素とv[start]を入れ替え\;
-  i += 1\;
-}
-\caption[page]{再帰を使わないアイデア}
-\end{algorithm}
-
-実際に入れ替えるにはxの添字が必要になるだろう
-\end{frame}
-
-\begin{frame}[fragile]{バブルソート2}{}
 \begin{tikzpicture}[
     overlay
     , xshift=0.5\textwidth
@@ -151,6 +133,7 @@ i = 0\Comment*{\sl\small\color[gray]{0.5} 添字}
 \SetKwComment{Comment}{}{}
 \BlankLine
 \For{i を0 からend の直前まで}{
+    区間(i, end)内で最も小さな要素とv[start]を入れ替え\;
     \For{j を end の直前から i + 1まで}{
     \If{v[j] < v[j-1]}{
     v[j] と v[j-1] とを入れ替える\;
@@ -161,21 +144,6 @@ i = 0\Comment*{\sl\small\color[gray]{0.5} 添字}
 \end{algorithm}
 \vfill
 if文, for文、代入文。探索と同じくif文の実行回数で評価。
-\end{frame}
-
-\begin{frame}[fragile]{バブルソートTypeScript版}{}
-\begin{codeof}{language=C}{bsort.ts}
-function bsort<T>(v: Array<T>) {
-  let last_index = v.length - 1
-  for (let i = 0; 0 < last_index; i++) {
-    for (let j = last_index; i < j; j--) {
-      if (v[j] > v[j - 1]) {
-        v[j]とv[j -1]を入れ替え // v.swap(j, j - 1)
-      }
-    }
-  }
-}
-\end{codeof}
 \end{frame}
 
 \begin{frame}[fragile]{バブルソートRust版}{}
@@ -207,7 +175,6 @@ pub fn bsort<T: Ord>(v: &mut [T]) {
 対象範囲を変えて繰り返す
 →範囲は1ずつ減る：N個のデータならN回繰り返し
 
-
 対象範囲の中で最も小さな要素を範囲の最初の位置に置く
 →対象範囲をrとするとこの操作は比較をr回繰り返す
 
@@ -218,7 +185,6 @@ pub fn bsort<T: Ord>(v: &mut [T]) {
 &= \frac{1}{2}N^2 - \frac{1}{2}N \\
 &= O(N^2)
 \end{align*}
-
 \end{frame}
 
 \begin{frame}[fragile]{バブルソートの計算量評価}{}
@@ -259,32 +225,12 @@ N/2個のソート問題ふたつに帰着させる。
 \end{itemize}
 それぞれを整列、順につなげば全体が整列
 
-
 \vfill
 1ステップごとに範囲が半分の副問題を2つ生成
 \end{frame}
 
-
-\begin{frame}[fragile]{}{}
-TODO
-
-
-\[
-\left(\frac{N}{2}\right)^k + \left(\frac{N}{2}\right)^k < N^k
-\]
-
-が成立する$k$とは?
-
-実際には2つに分割するためのコスト、2つの部分解を合成するコストも考慮する必要がある。
-\end{frame}
-
-
-\begin{frame}[fragile]{クイックソートTypeScript版}{}
-TODO
-\end{frame}
-
 \begin{frame}[fragile]{クイックソートRust版}{}
-\begin{codeof}{language=Rust}{quick sort}
+\begin{codeof}{language=Rust}{二つに分割}
 /// v[beg..end]で最後の要素v[end - 1]以下の要素を[0..i]に移動
 /// 注意：[b..e]はeを含まない（bは下限、eは上界）
 fn partition<T: Ord>(v: &mut [T], beg: usize, end: usize) -> usize {
@@ -319,31 +265,9 @@ fn sort<T: Ord>(v: &mut [T], beg: usize, end: usize) {
 
 \begin{frame}[fragile]{クイックソートの計算量評価}{最悪計算量、最良計算量、平均計算量}
 a
-\end{frame}
 
-\begin{frame}[fragile]{クイックソートの計算量評価}{前処理をした場合の最悪計算量}
-\[
-O(N)
-\]
-\end{frame}
-
-\begin{frame}[fragile]{見落としやすい状況への対応}{}
-\begin{codeof}{language=Rust}{quick sort}
-fn partition<T: Ord>(v: &mut [T], beg: usize, end: usize) -> usize {
-    let mut i = beg;
-    for j in beg..end {
-        if v[j] <= v[end - 1] {
-            v.swap(i, j);
-            i += 1;
-        }
-    }
-    i.min(end - 1)
-}
-\end{codeof}
-
-ループ終了時に$i = end$なら全ての要素がv[end-1]以下である。
-これはv[end - 1]が最大値であることを意味する。
-従って、次の範囲は[beg, end - 1]でよい。
+\vfill
+最悪計算量は注意は必要
 \end{frame}
 
 \section{summary}		%%%%%%%%
