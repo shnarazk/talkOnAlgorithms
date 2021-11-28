@@ -96,6 +96,15 @@
 \medskip
 \scalebox{0.6}{
 \begin{tikzpicture}[cell/.style = {rectangle,draw=gray,semithick,minimum size=1cm,outer sep = 0mm}]
+\foreach \i [count=\j from 0] in {-1, 5, 2, 2, 8, 4, 0, 7, 1}
+    \node[cell] at (\j, 0) {$\i$};
+\node[anchor=west] at (9,0) {順番が変わってしまった。問題か？};
+\end{tikzpicture}
+}
+
+\medskip
+\scalebox{0.6}{
+\begin{tikzpicture}[cell/.style = {rectangle,draw=gray,semithick,minimum size=1cm,outer sep = 0mm}]
 \foreach \i [count=\j from 0] in {-1, X, X, X, X, X, X, X, X}
     \node[cell] at (\j, 0) {$\i$};
 \node[anchor=west] at (9,0) {$X$は-1以外のもとからあった要素};
@@ -106,14 +115,14 @@
 \begin{frame}[fragile]{バブルソートの構造}{}
 並びの順に、
 \begin{itemize}%\itemsep8pt
-\item 要件を満たす範囲（区間）を拡大
-\item 対象範囲を縮小
+\item 中間目標を解いて要件を満たす範囲（区間）を拡大
+\item 対象範囲を縮小（相似問題に帰着）
 \end{itemize}
 
 \vfill
 \begin{itemize}%\itemsep8pt
-\item 先頭要素は範囲内の最小値であること（探索）
-\item 対象範囲は単調減少なので必ず終了
+\item 中間目標＝先頭要素は範囲内の最小値であること（探索という既知のアルゴリズムの応用）
+\item 停止性：対象範囲は単調減少なので必ず終了
 \end{itemize}
 \end{frame}
 
@@ -166,7 +175,7 @@ pub fn bsort<T: Ord>(v: &mut [T]) {
 
 \begin{columns}[T]
 \begin{column}{0.5\textwidth}
-\begin{codeof}{language=Rust}{再帰版lsearch}
+\begin{codeof}{language=Rust}{bsort}
 fn bsort(長さ\@N@) {
   長さ\@N@の最小値探索;
   bsort(長さ\@N-1@);
@@ -278,6 +287,11 @@ pub fn qsort<T: Ord>(v: &mut [T]) {
     sort(v, 0, v.len());
 }
 \end{codeof}
+
+\vfill
+{\fontsize{9}{9}\selectfont
+つないでない。コピーを作らず、その場で並べ替えているので、できたものを移動させる必要がない(in-place search)。
+}
 \end{frame}
 
 \begin{frame}[fragile]{クイックソートの計算量評価}{最悪計算量、最良計算量、平均計算量}
