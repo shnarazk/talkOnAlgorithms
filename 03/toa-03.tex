@@ -16,7 +16,7 @@
 \titlepage
 \end{frame}
 
-\section{sort}		%%%%%%%%
+\section{Sorting}		%%%%%%%%
 \subsection{}
 
 \begin{frame}[fragile]{整列}{}
@@ -53,7 +53,7 @@
 氏名順に並んでいた学生データの配列を成績順にソート
 \end{frame}
 
-\section{bubble sort}		%%%%%%%%
+\section{Bubble sort}		%%%%%%%%
 \subsection{}
 
 \begin{frame}[fragile]{バブルソート}{}
@@ -225,10 +225,14 @@ T(N) = & O(\log(N))
 \end{columns}
 \end{frame}
 
-\section{quick sort}		%%%%%%%%
+\section{Quick sort}		%%%%%%%%
 \subsection{}
 
-\begin{frame}[fragile]{第2のソートアルゴリズム：クイックソート}{}
+\begin{frame}[fragile]{第2のアイデア}{}
+\begin{tikzpicture}[overlay, xshift=0.5\textwidth]
+\node[] at (-3.5,-6) {\pgfimage[width=0.5\pagewidth]{jigzaw-1.jpg}};
+\node[] at ( 3.5,-6) {\pgfimage[width=0.5\pagewidth]{jigzaw-2.jpg}};
+\end{tikzpicture}
 \scalebox{0.5}{
 \begin{tikzpicture}[xshift=0.15\textwidth
     , cell/.style = {rectangle,draw=gray,semithick,minimum size=1cm,outer sep = 0mm}
@@ -242,25 +246,41 @@ T(N) = & O(\log(N))
 }
 
 \vfill
-適切な中間目標を設定せよ
-
-\vfill
-N/2個のソート問題ふたつに帰着させる。
-
+適切な中間目標：N/2個のソート問題ふたつに帰着
 \begin{itemize}%\itemsep8pt
 \item 他方のどの要素よりも小さい要素だけからなる配列
 \item 他方のどの要素よりも大きい要素だけからなる配列
 \end{itemize}
 それぞれを整列、順につなげば全体が整列
+\vfill
+\end{frame}
+
+\begin{frame}[fragile]{クイックソートアルゴリズム}{}
+\begin{algorithm}[H]
+\KwIn{v: \texttt{Vec<T>}--対象配列}
+\KwIn{start, end -- 対象範囲}
+\SetKwComment{Comment}{}{}
+\BlankLine
+\If{startがendと等しい}{
+  \Return{}
+}
+m = 適当な値\;
+vの要素でm以下のものを左に、大きいものを右にまとめる\;
+p = 境目の添字\;
+v, start, pを引数に再帰呼び出し\;
+v, p, endを引数に再帰呼び出し\;
+\Return{}
+\caption[page]{クイックソート}
+\end{algorithm}
 
 \vfill
-1ステップごとに範囲が半分の副問題を2つ生成
+{\fontsize{9}{9}\selectfont
+つないでない。コピーを作らず、その場で並べ替えているので、できたものを移動させる必要がない(in-place search)。
+}
 \end{frame}
 
 \begin{frame}[fragile]{クイックソートRust版下請け関数}{}
 \begin{codeof}{language=Rust}{配列を二つに分割（または長さ$N$の配列の並べ替え）}
-/// v[beg..end]で最後の要素v[end - 1]以下の要素を[0..i]に移動
-/// 注意：[b..e]はeを含まない（bは下限、eは上界）
 fn partition<T: Ord>(v: &mut [T], beg: usize, end: usize) -> usize {
     let mut i = beg;
     for j in beg..end {
@@ -272,9 +292,11 @@ fn partition<T: Ord>(v: &mut [T], beg: usize, end: usize) -> usize {
     i
 }
 \end{codeof}
+\vfill
+適当な値$m$として配列の最後の要素$v[end-1]$を採用した。
 \end{frame}
 
-\begin{frame}[fragile]{クイックソートRust版}{}
+\begin{frame}[fragile]{qsort (qsort.rs)}{}
 \begin{codeof}{language=Rust}{quick sort}
 fn sort<T: Ord>(v: &mut [T], beg: usize, end: usize) {
     if beg + 1 >= end { return; }
@@ -287,19 +309,14 @@ pub fn qsort<T: Ord>(v: &mut [T]) {
     sort(v, 0, v.len());
 }
 \end{codeof}
-
-\vfill
-{\fontsize{9}{9}\selectfont
-つないでない。コピーを作らず、その場で並べ替えているので、できたものを移動させる必要がない(in-place search)。
-}
 \end{frame}
 
 \begin{frame}[fragile]{クイックソートの計算量評価}{最悪計算量、最良計算量、平均計算量}
 \begin{columns}[T]
 \begin{column}{0.5\textwidth}
-\begin{codeof}{language=Rust}{再帰版lsearch}
-fn qsort(長さ\@N@)
-  長さ\@N@の2分割、または長さ\@N@の並べ替え;
+\begin{codeof}{language=Rust}{qsort}
+fn qsort(長さ\@N@) {
+  長さ\@N@の並べ替え;
   qsort(長さ\@N/2@);
   qsort(長さ\@N/2@);
 \end{codeof}
@@ -349,7 +366,7 @@ T(N) = & O(N\log(N))
 
 \end{frame}
 
-\section{summary}		%%%%%%%%
+\section{Summary}		%%%%%%%%
 \subsection{}
 
 \begin{frame}[fragile]{ソートアルゴリズムの比較}{}
@@ -419,10 +436,10 @@ fn merge(a: mut stream, b: mut stream, c: stearm) {
 
 \begin{frame}[fragile]{}{}
 {
-\fontsize{14}{14}\selectfont
-中学数学の「式を立てる」と同様の「アルゴリズムを立てる」スキルが必要。その上で立てたものを解くスキルが必要。
+\fontsize{11}{11}\selectfont
+中学数学の「式を立てる」と同様の「アルゴリズムを立てる」スキルが必要。
 }
-\vfill
+
 \begin{tcolorbox}[colframe=white,colback=black!2!white]
 \fontsize{8}{8}\selectfont
 \begin{quotation}
@@ -430,7 +447,14 @@ fn merge(a: mut stream, b: mut stream, c: stearm) {
 \end{quotation}
 \end{tcolorbox}
 
-\vfill
+{
+\fontsize{11}{11}\selectfont
+その上で立てたものを解くスキルが必要。
+}
+
+\end{frame}
+
+\begin{frame}[fragile]{}{}
 \begin{center}
 \pgfimage[width=0.85\pagewidth]{tekishikou.png}
 \end{center}
