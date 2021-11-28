@@ -3,8 +3,13 @@
 \documentclass{beamer}
 \usepackage{beamerPack}
 \usepackage[boxed,ruled,vlined]{algorithm2e}
+\usetikzlibrary{shapes.geometric,arrows,fit,matrix,positioning}
+\tikzset{
+  treenode/.style = {circle, draw=black, align=center, minimum size=1cm, anchor=center},
+  subtree/.style = {regular polygon, regular polygon sides=3, draw=black, align=center, minimum height=0.8cm, minimum width=0.6cm, anchor=north}
+}
 \usepackage[03]{../lecture}
-\subtitle{}
+\subtitle{整列}
 \begin{document}
 
 \begin{frame}[fragile]{}
@@ -99,23 +104,17 @@
 \end{frame}
 
 \begin{frame}[fragile]{バブルソートの構造}{}
-
-並びの順に、要件を満たす範囲（区間）を拡大、対象範囲を縮小
-
-\begin{enumerate}%\itemsep8pt
-\item
-対象範囲$[0, N)$に対して、最も小さな要素を範囲の最初の位置に、それ以外の要素をそれ以降の範囲$[1, N)$に置く
-\item
-対象範囲$[1, N)$に対して、最も小さな要素を範囲の最初の位置に、それ以外の要素をそれ以降の範囲$[2, N)$に置く
-\item
-対象範囲$[2, N)$に対して、最も小さな要素を範囲の最初の位置に、それ以外の要素をそれ以降の範囲$[3, N)$に置く
-\item[$\vdots$]
-\item
-対象範囲$[N, N)$にはデータは存在しないので終了
-\end{enumerate}
+並びの順に、
+\begin{itemize}%\itemsep8pt
+\item 要件を満たす範囲（区間）を拡大
+\item 対象範囲を縮小
+\end{itemize}
 
 \vfill
-1ステップごとに終了範囲は1拡大、対象範囲は1減少
+\begin{itemize}%\itemsep8pt
+\item 先頭要素は範囲内の最小値であること（探索）
+\item 対象範囲は単調減少なので必ず終了
+\end{itemize}
 \end{frame}
 
 \begin{frame}[fragile]{バブルソート}{}
@@ -123,24 +122,27 @@
     overlay
     , xshift=0.5\textwidth
 ]
-\draw[draw=blue!4,fill=blue!4,rounded corners=3,anchor=west] (-5,-4.6) rectangle ++(+7, +1.8) {};
+\node[] at (8,-3) {\pgfimage[height=0.9\pagewidth]{alberto-bianchini-krPdyjs1iTM-unsplash.jpg}};
+\node[color=gray,rotate=90] at (6.2,-4) {\fontsize{4}{4}\selectfont Photo by Alberto Bianchini on Unsplash};
+\draw[draw=blue!4,fill=blue!4,rounded corners=3,anchor=west] (-5.2,-4.8) rectangle ++(+7, +1.8) {};
 \end{tikzpicture}
 
 \begin{algorithm}[H]
 \KwIn{v: \texttt{Vec<T>}--対象配列}
 \KwIn{start: Int -- 対象範囲の下限}
-\KwIn{end: Int -- 対象範囲の上界}
+\KwIn{end: Int -- 対象範囲の上界(上限+1)}
 \SetKwComment{Comment}{}{}
 \BlankLine
-\For{i を0 からend の直前まで}{
-    区間(i, end)内で最も小さな要素とv[start]を入れ替え\;
-    \For{j を end の直前から i + 1まで}{
-    \If{v[j] < v[j-1]}{
-    v[j] と v[j-1] とを入れ替える\;
-    }
-   }
+\If{startがendと等しい}{
+  \Return{}
 }
-\caption[page]{入れ替えの具体化}
+\For{iをend の直前からstartの直前まで}{
+    \If{v[i-1] > v[j]}{
+      v[i-1] と v[i] とを入れ替える\;
+    }
+}
+\Return{startを1増やして再帰呼び出し}
+\caption[page]{再帰版バブルソート}
 \end{algorithm}
 \vfill
 if文, for文、代入文。探索と同じくif文の実行回数で評価。
@@ -148,53 +150,70 @@ if文, for文、代入文。探索と同じくif文の実行回数で評価。
 
 \begin{frame}[fragile]{バブルソートRust版}{}
 \begin{codeof}{language=Rust}{bsort.rs}
-///```
-/// use crate::toa::bsort::bsort;
-///
-/// let mut v = vec![-1i32, 4, 8, 1, 10, 8, -2, 9];
-/// let mut ans = vec.clone();
-/// bsort(&mut v);
-/// ans.sort();
-/// assert_eq!(v, ans);
-///```
 pub fn bsort<T: Ord>(v: &mut [T]) {
-    for i in 0..v.len() {
-        for j in ((i + 1)..v.len()).rev() {
-            if v[j] < v[j - 1] {
-                v.swap(j, j - 1);
-            }
+    if v.len() == 0 { return; }
+    for i in (1..v.len()).rev() {
+        if v[i - 1] > v[i] {
+            v.swap(i - 1, i);
         }
     }
+    return bsort(&mut v[1..]);
 }
 \end{codeof}
 \end{frame}
 
-\begin{frame}[fragile]{バブルソートの評価}{}
-対象範囲$[0, N)$に対して、最も小さな要素を範囲の最初の位置に、それ以外の要素をそれ以降の範囲$[1, N)$に置く
+\begin{frame}[fragile]{再帰関数の計算量評価}{}
 
-対象範囲を変えて繰り返す
-→範囲は1ずつ減る：N個のデータならN回繰り返し
-
-対象範囲の中で最も小さな要素を範囲の最初の位置に置く
-→対象範囲をrとするとこの操作は比較をr回繰り返す
-
+\begin{columns}[T]
+\begin{column}{0.5\textwidth}
+\begin{codeof}{language=Rust}{再帰版lsearch}
+fn bsort(長さ\@N@) {
+  長さ\@N@の最小値探索;
+  bsort(長さ\@N-1@);
+\end{codeof}
+\end{column}
+\begin{column}{0.5\textwidth}
 \begin{align*}
-最悪比較回数 &= N + (N - 1) + (N - 2) + (N - 3) + \cdots + 1 \\
-&= \Sigma_{n=1}^{N}N \\
-&= \frac{(N-1)N}{2} \\
-&= \frac{1}{2}N^2 - \frac{1}{2}N \\
-&= O(N^2)
+T(n) = & n + T(n-1)\\
+= & n + (n - 1) + \cdots + 1 \\
+T(N) = & O(N^2)
 \end{align*}
-\end{frame}
+\end{column}
+\end{columns}
 
-\begin{frame}[fragile]{バブルソートの計算量評価}{}
-最悪時間計算量$O(N)$（最良も同じ）
+\begin{columns}[T]
+\begin{column}{0.5\textwidth}
+\begin{codeof}{language=Rust}{再帰版lsearch}
+fn lsearch(長さ\@N@,c) {
+  c();
+  lsearch(長さ\@N-1@, c);
+\end{codeof}
+\end{column}
+\begin{column}{0.5\textwidth}
+\begin{align*}
+T(n) = & 1 + T(n-1)\\
+= & n \times O(1) \\
+T(N) = & O(N)
+\end{align*}
+\end{column}
+\end{columns}
 
-\vfill
-空間計算量：$O(1)$
-
-\vfill
-安定ソート（順番の入れ替えが起きるのは順序関係が満たされてない場合のみ）
+\begin{columns}[T]
+\begin{column}{0.5\textwidth}
+\begin{codeof}{language=Rust}{再帰版bsearch}
+fn bsearch(長さ\@$N$@, c) {
+  c();
+  bsearch(長さ\@$N/2$@, c);
+\end{codeof}
+\end{column}
+\begin{column}{0.5\textwidth}
+\begin{align*}
+T(n) = & 1 + T(n/2)\\
+= & 1 \times O(\log(n)) \\
+T(N) = & O(\log(N))
+\end{align*}
+\end{column}
+\end{columns}
 \end{frame}
 
 \section{quick sort}		%%%%%%%%
@@ -229,8 +248,8 @@ N/2個のソート問題ふたつに帰着させる。
 1ステップごとに範囲が半分の副問題を2つ生成
 \end{frame}
 
-\begin{frame}[fragile]{クイックソートRust版}{}
-\begin{codeof}{language=Rust}{二つに分割}
+\begin{frame}[fragile]{クイックソートRust版下請け関数}{}
+\begin{codeof}{language=Rust}{配列を二つに分割（または長さ$N$の配列の並べ替え）}
 /// v[beg..end]で最後の要素v[end - 1]以下の要素を[0..i]に移動
 /// 注意：[b..e]はeを含まない（bは下限、eは上界）
 fn partition<T: Ord>(v: &mut [T], beg: usize, end: usize) -> usize {
@@ -246,28 +265,74 @@ fn partition<T: Ord>(v: &mut [T], beg: usize, end: usize) -> usize {
 \end{codeof}
 \end{frame}
 
-\begin{frame}[fragile]{クイックソートRust版/2}{}
+\begin{frame}[fragile]{クイックソートRust版}{}
 \begin{codeof}{language=Rust}{quick sort}
-pub fn qsort<T: Ord>(v: &mut [T]) {
-    sort(v, 0, v.len());
-}
-
 fn sort<T: Ord>(v: &mut [T], beg: usize, end: usize) {
-    if beg + 1 >= end {
-        return;
-    }
-    let p = partition(v, beg, end); // assert!(0 < end);
+    if beg + 1 >= end { return; }
+    let p = partition(v, beg, end);
     sort(v, beg, p);
     sort(v, p, end);
+}
+
+pub fn qsort<T: Ord>(v: &mut [T]) {
+    sort(v, 0, v.len());
 }
 \end{codeof}
 \end{frame}
 
 \begin{frame}[fragile]{クイックソートの計算量評価}{最悪計算量、最良計算量、平均計算量}
-a
+\begin{columns}[T]
+\begin{column}{0.5\textwidth}
+\begin{codeof}{language=Rust}{再帰版lsearch}
+fn qsort(長さ\@N@)
+  長さ\@N@の2分割、または長さ\@N@の並べ替え;
+  qsort(長さ\@N/2@);
+  qsort(長さ\@N/2@);
+\end{codeof}
+\end{column}
+\begin{column}{0.5\textwidth}
+\begin{align*}
+T(n) = & ? + T(n/2) + T(n/2) \\
+     = & n + 2T(n/2) \\
+     = & n \times \log(n) \\
+T(N) = & O(N\log(N))
+\end{align*}
+\end{column}
+\end{columns}
 
 \vfill
-最悪計算量は注意は必要
+
+\begin{columns}[T]
+\begin{column}{0.5\textwidth}
+木の深さごとに計算量を小計
+{
+\fontsize{9}{10}\selectfont
+\begin{tabular}[h]{| r | r | r |}
+\CH 深さ & 作業内容 & 個数 \\
+\CL $1$ & N個の並べ替え & $1$ \\
+\CL $2$ & $N/2$個の並べ替え & $2$ \\
+\CL $3$ & $N/4$個の並べ替え & $4$ \\
+\CL $\log_2(N)$ & $1$個の並べ替え & $N$ \\
+\end{tabular}
+}
+\end{column}
+
+\begin{column}{0.5\textwidth}
+\begin{tikzpicture}[->,>=stealth',level/.style={sibling distance = 5.5cm/#1, level distance = 1.4cm},scale=0.5, transform shape]
+\node [treenode] {$N$}
+    child[child anchor=north] { node[treenode] {$N/2$}
+        child[child anchor=north] { node [subtree] {$N/4$} }
+        child[child anchor=north] { node [subtree] {$N/4$} }
+    }
+    child[child anchor=north] { node[treenode] {$N/2$}
+        child[child anchor=north] { node [subtree] {$N/4$} }
+        child[child anchor=north] { node [subtree] {$N/4$} }
+    }
+    ;
+\end{tikzpicture}
+\end{column}
+\end{columns}
+
 \end{frame}
 
 \section{summary}		%%%%%%%%
@@ -277,8 +342,8 @@ a
 
 {%\fontsize{9}{10}\selectfont
 \begin{tabular}[h]{|l|r|r|r|}
-\CH アルゴリズム & （最悪）時間--& 空間-- & 安定 \\
-\CL バブルソート & $O(N^2)$ & $O(1)$ & ?\\
+\CH アルゴリズム & 時間計算量 & 空間-- & 安定 \\
+\CL バブルソート & $O(N^2)$ & $O(1)$ & \checkmark\\
 \CL クイックソート & $O(N\log(N))$ & $O(\log(N))$ & \\
 \CL ヒープソート & $O(N\log(N))$ & $O(\log(N))$ & \checkmark \\
 \CL マージソート & $O(N\log(N))$ & $O(\log(N))$ & \checkmark \\
@@ -286,43 +351,81 @@ a
 }
 
 \vfill
-クイックソートは$O(N^2)$では？ $O(N)$の前処理でほぼ対応できる。
-\end{frame}
+今回話さなかったこと：2分割できるとは限らないので最悪の場合ではない
+\begin{itemize}%\itemsep8pt
+\item 要素数が極めて少ない時はバブルソートを使う
+\item スタックの消費を嫌って途中からヒープソート
+\end{itemize}
 
-\begin{frame}[fragile]{ヒープソート}{}
-データ構造ヒープにデータを登録、ヒープから整列されて出力
-
-安定ソート
 \vfill
-追加の処理をしなくても最悪時間計算量は$O(N\log(N))$
+ヒープソート：データ構造ヒープにデータを登録($O(\log(N))$)、ヒープから取り出し($O(\log(N))$)
 \end{frame}
 
 \begin{frame}[fragile]{マージソート}{}
-データを二分。再帰的に処理して整列する、それぞれストリームとみなして一つに整流。
+データを二分。再帰的に処理して整列する、それぞれストリームとみなして一つに合成、マージ、整流、zip。
 
-安定ソート
+\begin{codeof}{language=Rust}{二つのストリームを第3のストリームにマージする}
+fn merge(a: mut stream, b: mut stream, c: stearm) {
+    while a.is_empty() && b.is_empty() {
+        if aの先頭 < bの先頭 {
+          c.push(a.pop());
+          if aが空になった { c.append(b); return; }
+        } else {
+          c.push(b.pop());
+          if bが空になった { c.append(a); return; }
+        }
+    }
+}
+\end{codeof}
+この処理は$O(N)$。全体として$T(n)= T(n/2) + T(n/2) + n$
+\end{frame}
+
+\begin{frame}[fragile]{ここまでの振り返り}{アルゴリズム=自明または「前処理$\to$相似問題$\to$後処理」}
+
+{
+%\fontsize{9}{10}\selectfont
+\begin{tabular}[h]{r l}
+\CL 1つを処理、残りを再帰  & $T(n) = 1 + T(n-1) + 0$ \\
+\CL 1つを処理、残りを再帰  & $T(n) = 1 + T(n/2) + 0$ \\
+\CL 1つを処理、残りを再帰  & $T(n) = n + T(n-1) + 0$ \\
+\CL 再帰の準備、再帰、再帰 & $T(n) = n + T(n/2) + T(n/2) + 0$ \\
+\CL 再帰、再帰、結果の合成 & $T(n) = 0 + T(n/2) + T(n/2) + n$ \\
+\end{tabular}
+}
 
 \vfill
-追加の処理をしなくても最悪時間計算量は$O(N\log(N))$
-\end{frame}
-
-\begin{frame}[fragile]{追補}{}
-\begin{itemize}\itemsep8pt
-\item 多くの言語で標準ライブラリ化。多くの場合クイックソート、ただし各種改良が導入されている
+これまでの全ての問題において、
 \begin{itemize}%\itemsep8pt
-\item 要素数が極めて少ない時はバブルソートを使う
-\item スタックの消費を嫌って途中からヒープソート（キャッシュのヒット率？？）
+\item 中間目標の設定・理解が、問題を解けることに
+\item 再帰関数を定義できることが、プログラムを作れることに
 \end{itemize}
-\vfill 上位N個までのソートが欲しい。言語によっては提供
-\item 安定版、非安定版も言語によっては両方提供。
-\end{itemize}
+
+対応する。
 \end{frame}
 
-\begin{frame}[fragile]{ここまでの振り返り}{}
-\begin{itemize}%\itemsep8pt
-\item 中間目標の設定・理解がアルゴリズム設計・高速化において重要
-\item 問題の持つ帰納的構造を再帰的構造を持つプログラムに転移
-\end{itemize}
-\end{frame}
+\begin{frame}[fragile]{}{}
+{
+\fontsize{14}{14}\selectfont
+中学数学の「式を立てる」と同様の「アルゴリズムを立てる」スキルが必要。その上で立てたものを解くスキルが必要。
+}
+\vfill
+\begin{tcolorbox}[colframe=white,colback=black!2!white]
+\fontsize{8}{8}\selectfont
+\begin{quotation}
+「プログラミング的思考」は、文部科学省によると「自分が意図する一連の活動を実現するために、どのような動きの組合せが必要であり、一つ一つの動きに対応した記号を、どのように組み合わせたらいいのか、記号の組合せをどのように改善していけば、 より意図した活動に近づくのか、といったことを論理的に考えていく力」と定義されています。
+\end{quotation}
+\end{tcolorbox}
 
+\vfill
+\begin{center}
+\pgfimage[width=0.85\pagewidth]{tekishikou.png}
+\end{center}
+
+\begin{tcolorbox}[colframe=white,colback=black!2!white]
+\fontsize{6}{6}\selectfont
+\begin{quotation}
+そして、「すでにコンピューターを使ったプログラミングをやっているよ」という方もぜひ、この番組をご覧ください。プログラミング的思考を育むことで、プログラミングがより上手になるのはもちろん、プログラミング以外の普遍的なシーンでも、その考え方を役立てることができます。
+\end{quotation}
+\end{tcolorbox}
+\end{frame}
 \end{document}
