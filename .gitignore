@@ -285,3 +285,6 @@ TSWLatexianTemp*
 
 # For numbering
 commitid.tex
+
+# Blender backup
+*.blend1

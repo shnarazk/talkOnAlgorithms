@@ -18,6 +18,35 @@
 \section{algorithm design}		%%%%%%%%
 \subsection{}
 
+\section{dynamic programming}		%%%%%%%%
+\subsection{}
+
+\begin{frame}[fragile]{動的計画法}{}
+
+\begin{block}{動的計画法(dynamic programming)}
+\begin{itemize}%\itemsep8pt
+\item 再帰的に分割された部分問題の(最適)解から元問題の(最適)解を構成
+\item 部分問題の重複性の利用
+\end{itemize}
+\end{block}
+
+\footnotetext{線形計画法は不等式に関する問題}
+\end{frame}
+
+
+\begin{frame}[fragile]{アルゴリズムの改良}{素数}
+a
+\end{frame}
+
+\begin{frame}[fragile]{アルゴリズムの改良}{フィボナッチ数}
+a
+\end{frame}
+
+\begin{frame}[fragile]{問題の再帰構造の次元を落とす（線形化）}{}
+a
+\end{frame}
+
+
 \begin{frame}[fragile]{帰納法とループ}{与えられた数式からプログラムへ}
 \begin{align*}
 Fib(0) =& 1\\
@@ -32,73 +61,75 @@ A(m + 1, n + 1) =& A(m, A(m + 1, n))
 \end{align*}
 \end{frame}
 
-\begin{frame}[fragile]{再帰とループ}{与えられた問題からプログラムへ}
-\stackMath
-\Longstack[l]{
-n=0\\
-n=1\\
-n=2\\
-n=3\\
-n=4\\
-n=5\\
-n=6\qquad\ \\
-}
-\Longstack{
-1\\
-1\x 1\\
-1\x 2\x 1\\
-1\x 3\x 3\x 1\\
-1\x 4\x 6\x 4\x 1\\
-1\x 5\y 10\z 10\y 5\x 1\\
-1\x 6\y 15\z 20\z 15\y 6\x 1\\
-1\x 7\x 21\z 35\z 35\z 21\y 7\x 1\\
-}
-
-$n = 23$, 左から11番目の数は？
-\end{frame}
-
-
-\begin{frame}[fragile]{Pascalの三角形}{北東＋北西に等しい}
-
-\begin{align*}
-P(n,k) &= P(n-1, k - 1) + P(n - 1, k)
-\end{align*}
-
-\begin{center}
-\rotatebox{-45}{
-\scalebox{0.6}{
-\begin{tikzpicture}[cell/.style = {rectangle,draw=gray,semithick,minimum size=1cm,outer sep=0mm}]
-\foreach \i [count=\j from 0] in {1, 1, 1, 1, 1,  1, 1, 1, 1}
-    \node[cell] at (\j,  0) {\rotatebox{45}{$\i$}};
-\foreach \i [count=\j from 0] in {1, 2, 3, 4, 5,  6, 7, 8}
-    \node[cell] at (\j, -1) {\rotatebox{45}{$\i$}};
-\foreach \i [count=\j from 0] in {1, 3, 6, 10,15,21,28}
-    \node[cell] at (\j, -2) {\rotatebox{45}{$\i$}};
-\foreach \i [count=\j from 0] in {1, 4, 10,20,35,56}
-    \node[cell] at (\j, -3) {\rotatebox{45}{$\i$}};
-\foreach \i [count=\j from 0] in {1, 5, 15,35,70}
-    \node[cell] at (\j, -4) {\rotatebox{45}{$\i$}};
-\foreach \i [count=\j from 0] in {1, 6, 21,56}
-    \node[cell] at (\j, -5) {\rotatebox{45}{$\i$}};
-\foreach \i [count=\j from 0] in {1, 7, 28}
-    \node[cell] at (\j, -6) {\rotatebox{45}{$\i$}};
-\foreach \i [count=\j from 0] in {1, 8}
-    \node[cell] at (\j, -7) {\rotatebox{45}{$\i$}};
-\foreach \i [count=\j from 0] in {1}
-    \node[cell] at (\j, -8) {\rotatebox{45}{$\i$}};
-\end{tikzpicture}
-}
-}
-\end{center}
-\end{frame}
-
-\begin{frame}[fragile]{}{}
-線形再帰ならループと再帰の記述の手間は同じ（実行時間も同じ）。
-問題は線形でない場合：スタックを使って自分で機械語実行過程のシミュレーションを書けるならOK。
-\end{frame}
-
 \begin{frame}[fragile]{例題}{\herf{}{advent-of-code 2020}より}
 \end{frame}
 
+
+\begin{frame}[fragile]{メモ化}{\href{https://ja.wikipedia.org/wiki/メモ化}{\beamergotobutton{wikipedia}}}
+\begin{codeof}{language=Rust}{メモ化の一般形}
+fn foo (問題指定) -> 解の型 {
+  static memo: Hash<問題指定の型, 解の型>;
+  // メモの確認
+  if memo[問題指定]が有効な値を持つ {
+    return memo[問題指定];
+  }
+
+   本来の計算：問題指定から解を求める
+
+  // メモする
+  memo[問題指定] = 解;
+  return 解;
+}
+\end{codeof}
+
+\footnotetext[1]{定型化されているので言語によってはこのコードを自動生成する}
+\end{frame}
+
+\begin{frame}[fragile]{fibに対するメモ化の例}{\href{https://ja.wikipedia.org/wiki/メモ化}{\beamergotobutton{repl it}}}
+\begin{codeof}{language=Rust}{fib (memo.rs)}
+pub fn fib(n: usize) -> usize {
+    if let Ok(hash) = MEMO.read() {
+        if let Some(r) = hash.get(&n) {
+            return *r;
+        }
+    }
+    let n_1 = if n <= 2 { 1 } else { fib(n - 1) };
+    let n_2 = if n <= 2 { 0 } else { fib(n - 2) };
+    let result = n_1 + n_2;
+    if let Ok(mut hash) = MEMO.write() {
+        hash.insert(n, result);
+    }
+    result
+}
+\end{codeof}
+
+\begin{spacing}{0.7}\fontsize{6}{6}\selectfont
+メモは毎回初期化されないようグローバル(static)変数にしたい。
+Rustではグローバル変数への操作は同期操作を使ったスレッド安全なものしか受け付けないので、
+ライブラリのインポートや変数定義（ここでは省略）、アクセス(L.2--6, L.10-12)が面倒になっている。
+\end{spacing}
+\end{frame}
+
+\begin{frame}[fragile]{効果の確認}{}
+
+\begin{codeof}{language=Rust}{}
+fn main() {
+    let n = 46;
+    // mainから1回しか呼ばなくても再帰しているのでメモ化は有効
+    println!("fib({:>2}) = {:>11}", n, fib(n));
+    println!("fib({:>2}) = {:>11}", n, slow_fib(n));
+    // メモに残っているので同じ計算では2回目以降はO(1)
+    for i in 30..=48 {
+        println!("fib({:>2}) = {:>11}", n, fib(n));
+        println!("slw({:>2}) = {:>11}", n, slow_fib(n));
+    }
+    // 引数が違ってもメモに残っているので新規分だけ計算
+    for i in 30..=48 {
+        println!("fib({:>2}) = {:>11}", i, fib(i));
+        println!("slw({:>2}) = {:>11}", i, slow_fib(i));
+    }
+}
+\end{codeof}
+\end{frame}
 
 \end{document}
