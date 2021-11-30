@@ -3,8 +3,8 @@
 \documentclass{beamer}
 \usepackage{beamerPack}
 \usepackage[boxed,ruled,vlined]{algorithm2e}
+\usepackage{setspace}
 \usepackage[05]{../lecture}
-\usepackage[usestackEOL]{stackengine}[2013-10-15]
 \def\x{\hspace{4.1ex}}    %BETWEEN TWO 1-DIGIT NUMBERS
 \def\y{\hspace{3.4ex}}  %BETWEEN 1 AND 2 DIGIT NUMBERS
 \def\z{\hspace{2.7ex}}    %BETWEEN TWO 2-DIGIT NUMBERS
@@ -15,14 +15,10 @@
 \titlepage
 \end{frame}
 
-\section{algorithm design}		%%%%%%%%
-\subsection{}
-
 \section{dynamic programming}		%%%%%%%%
 \subsection{}
 
 \begin{frame}[fragile]{動的計画法}{}
-
 \begin{block}{動的計画法(dynamic programming)}
 \begin{itemize}%\itemsep8pt
 \item 再帰的に分割された部分問題の(最適)解から元問題の(最適)解を構成
@@ -33,39 +29,99 @@
 \footnotetext{線形計画法は不等式に関する問題}
 \end{frame}
 
+\section{algorithm design}		%%%%%%%%
+\subsection{}
 
-\begin{frame}[fragile]{アルゴリズムの改良}{素数}
-a
+
+\begin{frame}[fragile]{重複を避ける}{フィボナッチ数}
+\begin{codeof}{language=Rust}{}
+fn fib(n: usize) -> usize {
+    let mut memo = [0; 10000];
+    fn f(n: usize) -> usize {
+        if n < 2 { return 1; }
+        if memo[n] != 0 { return memo[n]; }
+        let result = f(n - 2) + f(n - 1);
+        memo[n] = result;
+        result
+    }
+    f(n)
+}
+\end{codeof}
 \end{frame}
 
-\begin{frame}[fragile]{アルゴリズムの改良}{フィボナッチ数}
-a
+\begin{frame}[fragile]{空間計算量を下げる}{フィボナッチ数}
+\begin{codeof}{language=Rust}{方向の逆転}
+fn fib(n: usize) -> usize {
+    fn f(k: usize, memo1: usize, memo2: usize) -> usize{
+        if n == k { return memo1 + memo2; } 
+        f(k + 1, memo2 + memo1, memo1);
+    }
+    if n <= 2 { 1 } else { f(3, 1, 1) }
+}
+\end{codeof}
+
+\begin{codeof}{language=Rust}{どうしても再帰がわからない人向け（実行時間は変わらない）}
+fn fib(n: usize) -> usize {
+    if n <= 2 { return 1; }
+    let (mut memo2, mut memo1) = (0, 0);
+    for k in 2..n {
+        (memo1, memo2) = (memo2 + memo1, memo1);
+    }
+    memo1 + memo1
+}
+\end{codeof}
+\end{frame}
+
+\begin{frame}[fragile]{素数判定}{}
+\[
+\forall k \in [2, n-1] : n \% k \ne 0.
+\]
+
+\begin{codeof}{language=Rust}{$O(N)$}
+fn is_prime(n: usize) -> bool {
+    for i in 2..n-1 {
+        if n % i == 0 { return false; } 
+    }
+    true
+}
+\end{codeof}
+高速化
+\begin{enumerate}%\itemsep8pt
+\item 偶数は調べない
+\item 素数しか調べない（そのためにはn以下の全ての素数をまず調べないといけないのだが）
+\end{enumerate}
+\end{frame}
+
+\begin{frame}[fragile]{素数判定：重複を省く}{}
+\[
+\forall k \in [2, n-1] : n \% k \ne 0.
+\]
+
+\begin{itemize}%\itemsep8pt
+\item 6000が2で割れた。3000でも割れる。
+\item Xがkで割れた。X/kでも割れる。
+\end{itemize}
+
+\[
+\forall k \in [2, \lceil\sqrt{n}\rceil] : n \% k \ne 0.
+\]
+
 \end{frame}
 
 \begin{frame}[fragile]{問題の再帰構造の次元を落とす（線形化）}{}
+どんな例を用意していたのか思い出せない。
+\end{frame}
+
+\begin{frame}[fragile]{例題}{\href{}{advent-of-code 2020}より}
 a
 \end{frame}
 
-
-\begin{frame}[fragile]{帰納法とループ}{与えられた数式からプログラムへ}
-\begin{align*}
-Fib(0) =& 1\\
-Fib(1) =& 1\\
-Fib(n) =& Fib(n - 1) + Fib(n - 2)\\
-\end{align*}
-
-\begin{align*}
-A(0, n) =& n + 1\\
-A(m + 1, 0) =& A(m, 1)\\
-A(m + 1, n + 1) =& A(m, A(m + 1, n))
-\end{align*}
+\begin{frame}[fragile]{動的計画法}{}
+ここでこの術語を出すのがいいかどうか。
 \end{frame}
-
-\begin{frame}[fragile]{例題}{\herf{}{advent-of-code 2020}より}
-\end{frame}
-
 
 \begin{frame}[fragile]{メモ化}{\href{https://ja.wikipedia.org/wiki/メモ化}{\beamergotobutton{wikipedia}}}
+X型の引数からY型の計算結果を求める関数に対してXからYへのメモを作ることで時間計算量を減らす
 \begin{codeof}{language=Rust}{メモ化の一般形}
 fn foo (問題指定) -> 解の型 {
   static memo: Hash<問題指定の型, 解の型>;
@@ -133,3 +189,4 @@ fn main() {
 \end{frame}
 
 \end{document}
+
