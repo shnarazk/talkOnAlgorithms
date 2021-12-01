@@ -1,6 +1,6 @@
 use {
     criterion::{
-        black_box, criterion_group, criterion_main, AxisScale, BenchmarkId, Criterion,
+        black_box, criterion_group, criterion_main, BenchmarkId, Criterion,
         PlotConfiguration, Throughput,
     },
     rand::prelude::SliceRandom,
@@ -8,14 +8,11 @@ use {
 };
 
 pub fn sort_benchmark(c: &mut Criterion) {
-    let plot_config = PlotConfiguration::default().summary_scale(AxisScale::Logarithmic);
-    let mut group = c.benchmark_group("sort algorithms (log-log scaled)");
+    let plot_config = PlotConfiguration::default();
+    let mut group = c.benchmark_group("sort algorithms (linear scaled)");
     group.plot_config(plot_config);
-    group.sample_size(10);
 
-    for size in [
-        1000usize, 2000, 4000, 10_000, 20_000, 50_000, 100_000, 200_000,
-    ] {
+    for size in [1000usize, 2000, 4000, 10_000] {
         let mut v: Vec<i32> = (0..size as i32).collect();
 
         group.throughput(Throughput::Elements(size as u64));
