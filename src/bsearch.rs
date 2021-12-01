@@ -10,7 +10,7 @@ use std::cmp::Ordering;
 /// assert_eq!(bsearch(&vec, |i| 100i32.cmp(i)), false);
 /// ```
 pub fn bsearch<T>(v: &[T], c: impl Fn(&T) -> Ordering) -> bool {
-    if v.len() == 0 {
+    if v.is_empty() {
         return false;
     }
     let mut i = 0;
