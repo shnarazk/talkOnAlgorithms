@@ -13,41 +13,29 @@
 
 ## 2. 計算量
 
+- O
+
 ## 3. 整列
 
 - https://replit.com/@shnarazk/LinearSearchInRust
 
 ## 4. アルゴリズム設計
 
+- Fib関数、Ackermann関数
 - 再帰の表現力
-  - Fib関数、Ackermann関数
+- Pascalの三角形
+- 経路問題
+- 素数
+
+## 5. 動的計画法
+
 - メモ化
   - https://ja.wikipedia.org/wiki/メモ化
 　- https://en.wikipedia.org/wiki/Memoization
-  -
-
-## 5. 動的計画法
-
-- メモ化の一般化
 - 経路数
-- Advent-of-Code (2020)
-
-
-## 2. 計算量
-
-## 3. 整列
-
-## 4. アルゴリズム設計
-
-- 再帰の表現力
-  - Fib関数、Ackermann関数
-- メモ化
-
-## 5. 動的計画法
-
-- メモ化の一般化
-- 経路数
-- Advent-of-Code (2020)
+- 最短経路
+- Dijkstra
+- Advent-of-Code
 
 ------
 
