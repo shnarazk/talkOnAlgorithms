@@ -1,3 +1,4 @@
+#![allow(dead_code)]
 use std::fmt::Debug;
 
 ///
@@ -12,10 +13,26 @@ use std::fmt::Debug;
 /// check_implementation(qsort, vec![1 ,2, 3, 1, 2, 3, 4, 5, 1, 2, 3]);
 ///```
 pub fn qsort<T: Ord>(v: &mut [T]) {
-    sort_on(v, 0, v.len());
+    if v.len() <= 1 {
+        return;
+    }
+    let p = partition(v); // assert!(0 < end);
+    qsort(&mut v[0..p]);
+    qsort(&mut v[p..]);
 }
 
-fn partition<T: Ord>(v: &mut [T], beg: usize, end: usize) -> usize {
+fn partition<T: Ord>(v: &mut [T]) -> usize {
+    let mut i = 0;
+    for j in 0..v.len() {
+        if v[j] <= v[v.len() - 1] {
+            v.swap(i, j);
+            i += 1;
+        }
+    }
+    i.min(v.len() - 1)
+}
+
+fn partition_old<T: Ord>(v: &mut [T], beg: usize, end: usize) -> usize {
     let mut i = beg;
     for j in beg..end {
         if v[j] <= v[end - 1] {
@@ -26,11 +43,15 @@ fn partition<T: Ord>(v: &mut [T], beg: usize, end: usize) -> usize {
     i.min(end - 1)
 }
 
+fn qsort_old<T: Ord>(v: &mut [T]) {
+    sort_on(v, 0, v.len());
+}
+
 fn sort_on<T: Ord>(v: &mut [T], beg: usize, end: usize) {
     if beg + 1 >= end {
         return;
     }
-    let p = partition(v, beg, end); // assert!(0 < end);
+    let p = partition_old(v, beg, end); // assert!(0 < end);
     sort_on(v, beg, p);
     sort_on(v, p, end);
 }

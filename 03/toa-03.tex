@@ -280,13 +280,13 @@ v, p, endを引数に再帰呼び出し\;
 \begin{codeof}{language=Rust}{配列を二つに分割（または長さ$N$の配列の並べ替え）}
 fn partition<T: Ord>(v: &mut [T]) -> usize {
     let mut i = 0;      // 小さなものを移動させた総数
-    for j in (0..v.len()).rev() {
+    for j in 0..v.len() {
         if v[j] <= v[v.len() - 1] {
             v.swap(i, j);
             i += 1;  // +1したので次に小さなものを入れるべき添字
         }
     }
-    i   // 小さいものの総数（あるいは最後の小さいものの添字+1）
+    i.min(v.len() - 1)   // 2分割に失敗した場合のfail safe
 }
 \end{codeof}
 \vfill
@@ -298,8 +298,8 @@ fn partition<T: Ord>(v: &mut [T]) -> usize {
 pub fn qsort<T: Ord>(v: &mut [T]) {
     if v.len() <= 1 { return; }
     let p = partition(v);
-    qsort(v[0..p]);     // vの前半分
-    qsort(v[p..]);      // vの後半分
+    qsort(&mut v[0..p]);     // vの前半分
+    qsort(&mut v[p..]);      // vの後半分
 }
 \end{codeof}
 \end{frame}

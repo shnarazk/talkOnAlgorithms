@@ -1,5 +1,5 @@
 use toa::lsearch::lsearch;
-use toa::qsort::qsort;
+// use toa::qsort::qsort;
 use {std::collections::HashSet, toa::memo::*};
 
 fn main() {
