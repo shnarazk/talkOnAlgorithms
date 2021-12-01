@@ -45,12 +45,6 @@
 }
 \end{itemize}
 全ての要素に順序がつけられること：全順序性が必要。
-\vfill
-\begin{block}{安定なソート}
-順序が同じ要素は整列後も元の順序を保つ
-\end{block}
-
-氏名順に並んでいた学生データの配列を成績順にソート
 \end{frame}
 
 \section{Bubble sort}		%%%%%%%%
@@ -154,7 +148,7 @@
 \caption[page]{再帰版バブルソート}
 \end{algorithm}
 \vfill
-if文, for文、代入文。探索と同じくif文の実行回数で評価。
+if文, for文、入れ替え、再帰呼び出し。探索と同じくif文の実行回数で評価。
 \end{frame}
 
 \begin{frame}[fragile]{バブルソートRust版}{}
@@ -166,9 +160,12 @@ pub fn bsort<T: Ord>(v: &mut [T]) {
             v.swap(i - 1, i);
         }
     }
-    return bsort(&mut v[1..]);
+    bsort(&mut v[1..])
 }
 \end{codeof}
+
+引数が多くなると行が長くなって見苦しいのでスライスを使用した。
+
 \end{frame}
 
 \begin{frame}[fragile]{再帰関数の計算量評価}{}
@@ -275,38 +272,34 @@ v, p, endを引数に再帰呼び出し\;
 
 \vfill
 {\fontsize{9}{9}\selectfont
-つないでない。コピーを作らず、その場で並べ替えているので、できたものを移動させる必要がない(in-place search)。
+コピーを作らずその場で並べ替えているので、できたものを「つなぐ」必要がない(in-place search)。
 }
 \end{frame}
 
 \begin{frame}[fragile]{クイックソートRust版下請け関数}{}
 \begin{codeof}{language=Rust}{配列を二つに分割（または長さ$N$の配列の並べ替え）}
-fn partition<T: Ord>(v: &mut [T], beg: usize, end: usize) -> usize {
-    let mut i = beg;
-    for j in beg..end {
-        if v[j] <= v[end - 1] {
+fn partition<T: Ord>(v: &mut [T]) -> usize {
+    let mut i = 0;      // 小さなものを移動させた総数
+    for j in (0..v.len()).rev() {
+        if v[j] <= v[v.len() - 1] {
             v.swap(i, j);
-            i += 1;
+            i += 1;  // +1したので次に小さなものを入れるべき添字
         }
     }
-    i
+    i   // 小さいものの総数（あるいは最後の小さいものの添字+1）
 }
 \end{codeof}
 \vfill
-適当な値$m$として配列の最後の要素$v[end-1]$を採用した。
+適当な値$m$として配列の最後の要素v[v.len()-1]を採用した。
 \end{frame}
 
 \begin{frame}[fragile]{qsort (qsort.rs)}{}
 \begin{codeof}{language=Rust}{quick sort}
-fn sort<T: Ord>(v: &mut [T], beg: usize, end: usize) {
-    if beg + 1 >= end { return; }
-    let p = partition(v, beg, end);
-    sort(v, beg, p);
-    sort(v, p, end);
-}
-
 pub fn qsort<T: Ord>(v: &mut [T]) {
-    sort(v, 0, v.len());
+    if v.len() <= 1 { return; }
+    let p = partition(v);
+    qsort(v[0..p]);     // vの前半分
+    qsort(v[p..]);      // vの後半分
 }
 \end{codeof}
 \end{frame}
@@ -369,7 +362,7 @@ T(N) = & O(N\log(N))
 \section{Summary}		%%%%%%%%
 \subsection{}
 
-\begin{frame}[fragile]{ソートアルゴリズムの比較}{}
+\begin{frame}[fragile]{ソートアルゴリズムの比較}{\href{https://www.geogebra.org/graphing}{\beamergotobutton{geogebra}}}
 
 {%\fontsize{9}{10}\selectfont
 \begin{tabular}[h]{|l|r|r|r|}
@@ -382,7 +375,7 @@ T(N) = & O(N\log(N))
 }
 
 \vfill
-今回話さなかったこと：2分割できるとは限らないので最悪の場合ではない
+今回話さなかったこと：{\bf 2分割できるとは限らない}
 \begin{itemize}%\itemsep8pt
 \item 要素数が極めて少ない時はバブルソートを使う
 \item スタックの消費を嫌って途中からヒープソート
@@ -427,7 +420,7 @@ fn merge(a: mut stream, b: mut stream, c: stearm) {
 \vfill
 これまでの全ての問題において、
 \begin{itemize}%\itemsep8pt
-\item 中間目標の設定・理解が、問題を解けることに
+\item 中間目標の設定・帰納的構造の発見が、問題を解けることに
 \item 再帰関数を定義できることが、プログラムを作れることに
 \end{itemize}
 
@@ -441,7 +434,7 @@ fn merge(a: mut stream, b: mut stream, c: stearm) {
 }
 
 \begin{tcolorbox}[colframe=white,colback=black!2!white]
-\fontsize{8}{8}\selectfont
+\fontsize{8}{10}\selectfont
 \begin{quotation}
 「プログラミング的思考」は、文部科学省によると「自分が意図する一連の活動を実現するために、どのような動きの組合せが必要であり、一つ一つの動きに対応した記号を、どのように組み合わせたらいいのか、記号の組合せをどのように改善していけば、 より意図した活動に近づくのか、といったことを論理的に考えていく力」と定義されています。
 \end{quotation}
@@ -460,7 +453,7 @@ fn merge(a: mut stream, b: mut stream, c: stearm) {
 \end{center}
 
 \begin{tcolorbox}[colframe=white,colback=black!2!white]
-\fontsize{6}{6}\selectfont
+\fontsize{6}{8}\selectfont
 \begin{quotation}
 そして、「すでにコンピューターを使ったプログラミングをやっているよ」という方もぜひ、この番組をご覧ください。プログラミング的思考を育むことで、プログラミングがより上手になるのはもちろん、プログラミング以外の普遍的なシーンでも、その考え方を役立てることができます。
 \end{quotation}
