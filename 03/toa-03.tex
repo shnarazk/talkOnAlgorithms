@@ -369,24 +369,24 @@ T(N) = & O(N\log(N))
 \CH アルゴリズム & 時間計算量 & 空間-- & 安定 \\
 \CL バブルソート & $O(N^2)$ & $O(1)$ & \checkmark\\
 \CL クイックソート & $O(N\log(N))$ & $O(\log(N))$ & \\
-\CL ヒープソート & $O(N\log(N))$ & $O(\log(N))$ & \checkmark \\
-\CL マージソート & $O(N\log(N))$ & $O(\log(N))$ & \checkmark \\
+\CL ヒープソート & $O(N\log(N))$ & $O(1)$ & \checkmark \\
+\CL マージソート & $O(N\log(N))$ & $O(1)$ & \checkmark \\
 \end{tabular}
 }
 
 \vfill
 今回話さなかったこと：{\bf 2分割できるとは限らない}
 \begin{itemize}%\itemsep8pt
-\item 要素数が極めて少ない時はバブルソートを使う
-\item スタックの消費を嫌って途中からヒープソート
+\item 要素数が極めて少ない時はバブルソートを使うかも
+\item スタックの消費を嫌って途中からヒープソートかも
 \end{itemize}
 
 \vfill
-ヒープソート：データ構造ヒープにデータを登録($O(\log(N))$)、ヒープから取り出し($O(\log(N))$)
+ヒープソート：データ構造ヒープにデータを登録($O(\log(n))$)、ヒープから取り出し($O(\log(n))$)
 \end{frame}
 
 \begin{frame}[fragile]{マージソート}{}
-データを二分。再帰的に処理して整列する、それぞれストリームとみなして一つに合成、マージ、整流、zip。
+データを二分。再帰的に処理して整列する、それぞれストリームとみなして一つに合成、マージ、\href{https://unsplash.com/photos/D6P-V3CQlnk}{\beamergotobutton{zip}}。
 
 \begin{codeof}{language=Rust}{二つのストリームを第3のストリームにマージする}
 fn merge(a: mut stream, b: mut stream, c: stearm) {
