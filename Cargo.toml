@@ -16,6 +16,6 @@ rand = "^0.8"
 criterion = "0.3"
 
 [[bench]]
-name = "search_benchmark"
+name = "sort_benchmark"
 harness = false
 
