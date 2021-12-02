@@ -1,7 +1,7 @@
 use {
     criterion::{
-        black_box, criterion_group, criterion_main, BenchmarkId, Criterion,
-        PlotConfiguration, Throughput,
+        black_box, criterion_group, criterion_main, BenchmarkId, Criterion, PlotConfiguration,
+        Throughput,
     },
     rand::prelude::SliceRandom,
     toa::{bsort::bsort, qsort::qsort},

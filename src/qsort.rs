@@ -186,3 +186,22 @@ fn wrong_qsort<T: Ord>(v: &mut [T]) {
     }
     sort_on(v, 0, v.len() - 1);
 }
+
+#[cfg(test)]
+mod test {
+    use super::*;
+    use rand::prelude::SliceRandom;
+
+    #[test]
+    fn qsearch_test_1000() {
+        let mut seed = rand::thread_rng();
+        let mut vec: Vec<i32> = (-100i32..900).collect();
+        for _ in 1..1000 {
+            vec.shuffle(&mut seed);
+            let mut copied = vec.clone();
+            qsort(&mut vec);
+            copied.sort();
+            assert_eq!(vec, copied);
+        }
+    }
+}
