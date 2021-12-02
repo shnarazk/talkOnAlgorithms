@@ -47,6 +47,8 @@ fn fib(n: usize) -> usize {
     f(n)
 }
 \end{codeof}
+f(n-1)の計算がf(n-2)の計算を含んでいる$\to$重複問題の出現。
+
 \end{frame}
 
 \begin{frame}[fragile]{空間計算量を下げる}{フィボナッチ数}
@@ -99,13 +101,18 @@ fn is_prime(n: usize) -> bool {
 
 \begin{itemize}%\itemsep8pt
 \item 6000が2で割れた。3000でも割れる。
-\item Xがkで割れた。X/kでも割れる。
+\item Xがkで割れた。$\to$ X/kでも割れる。
+\item Xがkで割れなかった。$\to$ X/kでも割れない？
+\item Xがkで割れるなら$\to$ X/kでも割れなければならない。
 \end{itemize}
 
 \[
 \forall k \in [2, \lceil\sqrt{n}\rceil] : n \% k \ne 0.
 \]
 
+\[
+O(n) \to O(\sqrt{n})
+\]
 \end{frame}
 
 \begin{frame}[fragile]{問題の再帰構造の次元を落とす（線形化）}{}
@@ -197,17 +204,54 @@ fn main() {
 経路数ではなく最短経路を求めよ。
 \end{frame}
 
-\begin{frame}[fragile]{ダイクストラ法}{}
-wikipediaで理解しよう
+\begin{frame}[fragile]{ダイクストラ法}{\href{https://ja.wikipedia.org/wiki/ダイクストラ法}{\beamergotobutton{wikipedia}}}
+\begin{quotation}
+\fontsize{9}{12}\selectfont
+最短経路問題は、ビー玉と紐を用いて解くことができる。
+まずビー玉を頂点、紐を辺にするグラフを工作する。
+グラフを板の上に置き、スタートの頂点にあたるビー玉だけをつまむ。
+グラフが置かれている板を取り除くと、グラフは自由落下を始めるが、スタートにあたるビー玉を持っているので、スタート地点から近いビー玉から順に落下が止まる。
+ゴールにあたるビー玉が止まったとき、ゴールにあたるビー玉はスタートにあたるビー玉まで紐で一直線で結ばれている。
+この直線が最短経路である。
+
+ダイクストラのアルゴリズムは、上述の解法をコンピュータ上でシミュレートしたものである。
+\end{quotation}
 \end{frame}
 
-\begin{frame}[fragile]{ダイクストラ法の根幹：相似問題の考え方による説明}{}
+\begin{frame}[fragile]{ダイクストラ法の根幹：相似問題の考え方による説明}{中間目標を設定し相似問題に帰着させたい}
+中間目標の選択：どの頂点が確定できるか
+\begin{itemize}\itemsep8pt
+\item 距離確定頂点から最も「近い」未確定頂点とする
+\begin{itemize}%\itemsep8pt
+\item なぜならこの頂点に限り三角不等式が成立するから
 
-一つのノードの最短時間を確定させ、未定ノード数を減らしたい
+\begin{center}
+\begin{tikzpicture}[scale=0.25]
+\draw (0, 0)
+    -- (4, 3) node[near end, above=4pt, anchor=east] {$5$km}
+    -- (5, 0) node[near end, right=2pt] {$3$km}
+    -- (0, 0) node[near start,below] {$4<8$km};
+\draw (20, 0)
+    -- (24, 3) node[near end, above=4pt, anchor=east] {$5$min}
+    -- (24, 0) node[near end, right=2pt] {$2$min}
+    -- (20, 0) node[near start, below] {$1$min};
+\end{tikzpicture}
+\end{center}
 
-どのノードが確定できるか。距離確定ノードから最も近い未確定ノードとする。
+\end{itemize}
+\item この選択の余地の少なさが中間目標の変更を要請する
+\begin{itemize}%\itemsep8pt
+\item これまでの中間目標は終点から；今回は始点から
+\end{itemize}
+\end{itemize}
 
-なぜならば、このノードに限り三角不等式が成立するから。
+\vfill
+相似問題：
+\begin{itemize}\itemsep8pt
+\item 頂点数が1減ったもの
+\end{itemize}
+
 \end{frame}
+
 \end{document}
 
