@@ -9,6 +9,16 @@
 /// assert_eq!(vec, ans);
 ///```
 pub fn bsort<T: Ord>(v: &mut [T]) {
+    if v.len() <= 1 { return; }
+    for j in (1..v.len()).rev() {
+        if v[j] < v[j - 1] {
+            v.swap(j, j - 1);
+        }
+    }
+    bsort(&mut v[1..]);
+}
+
+pub fn bsort_old<T: Ord>(v: &mut [T]) {
     for i in 0..v.len() {
         for j in ((i + 1)..v.len()).rev() {
             if v[j] < v[j - 1] {
