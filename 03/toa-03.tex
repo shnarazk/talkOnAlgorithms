@@ -20,7 +20,7 @@
 \subsection{}
 
 \begin{frame}[fragile]{整列}{}
-\begin{itemize}\itemindent15mm\labelsep10mm
+\begin{itemize}\itemsep20pt\itemindent15mm\labelsep10mm
 \item[初期状態]入力: 配列\texttt{VecT}
 
 \medskip
@@ -44,13 +44,18 @@
 \end{tikzpicture}
 }
 \end{itemize}
-全ての要素に順序がつけられること：全順序性が必要。
+
+\vfill
+全ての要素に順序がつけられること：要素型Tは全順序が必要
+
+\vfill
+簡単のため昇順に限定
 \end{frame}
 
 \section{Bubble sort}		%%%%%%%%
 \subsection{}
 
-\begin{frame}[fragile]{バブルソート}{}
+\begin{frame}[fragile]{第1のアイデア}{バブルソート}
 \scalebox{0.5}{
 \begin{tikzpicture}[xshift=0.15\textwidth
     , cell/.style = {rectangle,draw=gray,semithick,minimum size=1cm,outer sep = 0mm}
@@ -67,7 +72,7 @@
 適切な中間目標を設定せよ
 
 \vfill
-先頭の1個が要件を満たしている
+$\to$先頭の1個が要件を満たす（範囲内の最小値）
 
 \vfill
 \scalebox{0.6}{
@@ -90,18 +95,18 @@
 \medskip
 \scalebox{0.6}{
 \begin{tikzpicture}[cell/.style = {rectangle,draw=gray,semithick,minimum size=1cm,outer sep = 0mm}]
-\foreach \i [count=\j from 0] in {-1, 5, 2, 2, 8, 4, 0, 7, 1}
+\foreach \i [count=\j from 0] in {-1, 4, 2, 8, 7, 2, 5, 0, 1}
     \node[cell] at (\j, 0) {$\i$};
-\node[anchor=west] at (9,0) {順番が変わってしまった。問題か？};
+\node[anchor=west] at (9,0) {望ましい状態};
 \end{tikzpicture}
 }
 
 \medskip
 \scalebox{0.6}{
 \begin{tikzpicture}[cell/.style = {rectangle,draw=gray,semithick,minimum size=1cm,outer sep = 0mm}]
-\foreach \i [count=\j from 0] in {-1, X, X, X, X, X, X, X, X}
+\foreach \i [count=\j from 0] in {-1, 5, 2, 2, 8, 4, 0, 7, 1}
     \node[cell] at (\j, 0) {$\i$};
-\node[anchor=west] at (9,0) {$X$は-1以外のもとからあった要素};
+\node[anchor=west] at (9,0) {順番が変わってしまった。問題か？};
 \end{tikzpicture}
 }
 \end{frame}
@@ -109,13 +114,20 @@
 \begin{frame}[fragile]{バブルソートの構造}{}
 並びの順に、
 \begin{itemize}%\itemsep8pt
-\item 中間目標を解いて要件を満たす範囲（区間）を拡大
-\item 対象範囲を縮小（相似問題に帰着）
+\item 中間目標を達成して要件を満たす範囲（区間）を拡大
+\begin{itemize}%\itemsep8pt
+\item その際、初期状態を保持する必要はない
+\end{itemize}
+\item その結果、対象範囲を縮小した相似問題に帰着
 \end{itemize}
 
 \vfill
 \begin{itemize}%\itemsep8pt
-\item 中間目標＝先頭要素は範囲内の最小値であること（探索という既知のアルゴリズムの応用）
+\item 中間目標：先頭要素を範囲内の最小値にする
+\begin{itemize}%\itemsep8pt
+\item 探索という既知のアルゴリズムの応用
+\end{itemize}
+
 \item 停止性：対象範囲は単調減少なので必ず終了
 \end{itemize}
 \end{frame}
@@ -151,7 +163,7 @@
 if文, for文、入れ替え、再帰呼び出し。探索と同じくif文の実行回数で評価。
 \end{frame}
 
-\begin{frame}[fragile]{バブルソートRust版}{}
+\begin{frame}[fragile]{バブルソートRust版}{\href{https://replit.com/@shnarazk/Sortings-in-Rust}{\beamergotobutton{repl it}}}
 \begin{codeof}{language=Rust}{bsort.rs}
 pub fn bsort<T: Ord>(v: &mut [T]) {
     if v.len() == 0 { return; }
@@ -276,8 +288,9 @@ v, p, endを引数に再帰呼び出し\;
 }
 \end{frame}
 
-\begin{frame}[fragile]{クイックソートRust版下請け関数}{}
-\begin{codeof}{language=Rust}{配列を二つに分割（または長さ$N$の配列の並べ替え）}
+\begin{frame}[fragile]{クイックソートRust版下請け関数}{\href{https://replit.com/@shnarazk/Sortings-in-Rust}{\beamergotobutton{repl it}}}
+\begin{codeof}{language=Rust}{partition (qsort.rs)}
+// 配列を二つに分割（または長さ$N$の配列の並べ替え）
 fn partition<T: Ord>(v: &mut [T]) -> usize {
     let mut i = 0;      // 小さなものを移動させた総数
     for j in 0..v.len() {
@@ -401,7 +414,7 @@ fn merge(a: mut stream, b: mut stream, c: stearm) {
     }
 }
 \end{codeof}
-この処理は$O(N)$。全体として$T(n)= T(n/2) + T(n/2) + n$
+この処理は$O(n)$。全体として$T(n)= T(n/2) + T(n/2) + n$
 \end{frame}
 
 \begin{frame}[fragile]{ここまでの振り返り}{アルゴリズム=自明または「前処理$\to$相似問題$\to$後処理」}
