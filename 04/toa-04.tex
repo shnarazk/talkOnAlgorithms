@@ -25,7 +25,7 @@
 \begin{align*}
 アルゴリズム = & 前処理? 相似問題^{+} 後処理?
 \end{align*}
-\item （要求を満たすまでオーダーレベルの無駄を省く）
+\item （要求を満たすまで無駄を省く）
 \item 実装する
 \item （要求を満たすまで高速化する）
 \end{enumerate}
@@ -94,11 +94,11 @@ n=7\qquad\ \\
 $n = 23$, 左から11番目の数は？
 \end{frame}
 
-\begin{frame}[fragile]{Pascalの三角形}{北東＋北西に等しい}
-\begin{align*}
-P(n,k) &= P(n-1, k - 1) + P(n - 1, k)
-\end{align*}
-
+\begin{frame}[fragile]{北東＋北西}{}
+% \begin{align*}
+% P(n,k) &= P(n-1, k - 1) + P(n - 1, k)
+% \end{align*}
+しかし座標を打つのが面倒そう
 \begin{center}
 \rotatebox{-45}{
 \scalebox{0.6}{
@@ -151,34 +151,29 @@ P(n,k) &= P(n-1, k - 1) + P(n - 1, k)
     \node[cell] at (\j, 8) {\rotatebox{0}{$\i$}};
 \draw[arrow] (0, -1) -- ++(10, 0) node[below] {N=23 (X=23)};
 \draw[arrow] (-1, 0) -- ++(0, 10) node[left] {Y};
-\draw[arrow] (10, 0) -- ++ (-6, 6) node[right=5pt, anchor=west] {左から11};
+\draw[arrow] (10, 0) -- ++ (-6, 6) node[right=5pt, anchor=west] {左から11(10回移動)};
 \end{tikzpicture}
 }
 \end{center}
-求める場所は座標$(12, 11)$に対応
+求める場所は座標$(12, 10)$に対応
 \end{frame}
 
 \begin{frame}[fragile]{配列の是非}{}
 
-与えられた問題は点(12, 11)を求める
+与えられた問題は点(13, 10)を求める
 
-これは大きさ(12,12)の表を完成させる問題を解けば簡単に求められる
+これは大きさ(13,10)の表を完成させる問題を解けば簡単に求められる
 
-\begin{center}
-\scalebox{0.6}{
-\begin{tikzpicture}[node distance=5cm, auto]
-\node (P) {(12, 11)計算問題};
-\node (E) [right of=P] {全点計算問題};
-\node (A1) [below of=P] {アルゴリズム1};
-\node (A2) [below of=E] {プログラム2};
-\draw[->,dashed] (P) to node {なぜ？} (E);
-\draw[->] (P) to node {再帰} (A1);
-\draw[->] (E) to node {for文 $\times$ for文} (A2);
-\draw[->] (A2) to node[below=20pt] {無駄を省くため考え直し} (A1);
-\end{tikzpicture}
-}
-\end{center}
-「配列を使ってはいけません」という追加制約があっても解けるのならOK
+\begin{itemize}\itemsep8pt
+\item ゴールから遡ると再帰関数、補助記憶領域なし
+\item （帰納的構造を理解した上で）スタートから組み立てると、配列が必要
+\end{itemize}
+
+\vfill
+「配列を使ってはいけない」という追加制約があっても解けるのならOK
+
+\vfill
+{\fontsize{5}{5}\selectfont ただし電卓問題ではスタートからの組み立ては無理}
 \end{frame}
 
 \begin{frame}[fragile]{問題1.0}{}
@@ -320,5 +315,141 @@ P(n,k) &= P(n-1, k - 1) + P(n - 1, k)
 }
 \end{center}
 \end{frame}
+
+\section{extra puzzle}		%%%%%%%%
+\subsection{}
+
+\begin{frame}[fragile]{時間が余るなら}{}
+\begin{itemize}\itemsep8pt
+\item advent of code year 2020 day10 (昇圧)
+\item advent of code year 2020 day18 (変態電卓)
+\end{itemize}
+\end{frame}
+
+\begin{frame}[fragile]{advent of code: year 2020, day 10}{}
+\begin{enumerate}\itemsep8pt
+\item 与えられた数列を以下のルールを守って並べ替えよ
+\begin{itemize}%\itemsep8pt
+\item 全ての項は、直前の項より1、2、または3大きい
+\end{itemize}
+\begin{enumerate}%\itemsep8pt
+\item 数列1：\{ 16, 10, 15, 5, 1, 11, 7, 19, 6, 12, 4 \}
+\item 数列2：もっと長い(91項)ので次ページに掲載
+\end{enumerate}
+\item 所与の数列に対し以下の条件を満たす数列の個数を求めよ
+\begin{itemize}%\itemsep8pt
+\item 与えられた全ての項を使わなくてよい。
+\item その列中の全ての項は、直前の項より1、2、または3大きい
+\item その初項は所与の数列の最小項に等しい
+\item その末項は所与の数列の最大項に等しい
+\end{itemize}
+\begin{enumerate}%\itemsep8pt
+\item 数列1に対する解
+\begin{enumerate}%\itemsep8pt
+\item 求める数列は1で始まらなければならない
+\item 求める数列は19で終わらなければならない
+\item 例えば\{ 1, 4, 5, 7, 10, 12, 15, 16, 19 \}は条件を満たす
+\item 網羅すると8通りあることがわかるので答えは8
+\end{enumerate}
+\item (64bit CPUで)次ページの数列2に対する解を求めよ
+\end{enumerate}
+\end{enumerate}
+\end{frame}
+
+\begin{frame}[fragile]{数列2}{}
+95
+43
+114
+118
+2
+124
+120
+127
+140
+21
+66
+103
+102
+132
+136
+93
+59
+131
+32
+9
+20
+141
+94
+109
+143
+142
+65
+73
+27
+83
+133
+104
+60
+110
+89
+29
+78
+49
+76
+16
+34
+17
+105
+98
+15
+106
+4
+57
+1
+67
+71
+14
+92
+39
+68
+125
+113
+115
+26
+33
+61
+45
+46
+11
+99
+7
+25
+130
+42
+3
+10
+54
+44
+139
+50
+8
+58
+86
+64
+77
+35
+79
+72
+36
+80
+126
+28
+123
+119
+51
+22
+
+\end{frame}
+
 
 \end{document}
