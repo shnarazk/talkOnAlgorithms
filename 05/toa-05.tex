@@ -8,11 +8,45 @@
 \def\x{\hspace{4.1ex}}    %BETWEEN TWO 1-DIGIT NUMBERS
 \def\y{\hspace{3.4ex}}  %BETWEEN 1 AND 2 DIGIT NUMBERS
 \def\z{\hspace{2.7ex}}    %BETWEEN TWO 2-DIGIT NUMBERS
-\subtitle{}
+\subtitle{動的計画法}
 \begin{document}
 
 \begin{frame}[fragile]{}
 \titlepage
+\end{frame}
+
+\begin{frame}[fragile]{素朴なアルゴリズムと巧妙なアルゴリズムの違い}{}
+\begin{itemize}%\itemsep8pt
+\item 時間計算量を減らす：無駄を省く
+\item 空間計算量を減らす：無駄を省く
+\end{itemize}
+
+\vfill
+空間計算量を減らす例は前回出てきたpartition。元々は一つの配列から二つの配列に要素をコピー（移動）させるアルゴリズムだったが、効率を追求した結果、あのようなプログラム定義になった。
+\end{frame}
+
+\begin{frame}[fragile]{素数の計算}{}
+この話は相似問題に等価なものが含まれるので削除する話なので、今回の最後か次回がふさわしい。
+\end{frame}
+
+\section{for programmers}		%%%%%%%%
+\subsection{}
+
+\begin{frame}[fragile]{数学的解析の力}{}
+
+\[
+Fib(n) = \frac{1}{\sqrt{5}}
+\left\{
+\left(\frac{1 + \sqrt{5}}{2}\right)^n
+-
+\left(\frac{1 - \sqrt{5}}{2}\right)^n
+\right\}
+\]
+
+\end{frame}
+
+\begin{frame}[fragile]{ふかしぎおねえさん}{}
+a
 \end{frame}
 
 \section{dynamic programming}		%%%%%%%%

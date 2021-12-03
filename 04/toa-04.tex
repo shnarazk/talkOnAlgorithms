@@ -9,7 +9,7 @@
 \def\y{\hspace{3.4ex}}  %BETWEEN 1 AND 2 DIGIT NUMBERS
 \def\z{\hspace{2.7ex}}    %BETWEEN TWO 2-DIGIT NUMBERS
 \usepackage[04]{../lecture}
-\subtitle{}
+\subtitle{練習問題}
 \begin{document}
 
 \begin{frame}[fragile]{}
@@ -20,52 +20,55 @@
 \subsection{}
 
 \begin{frame}[fragile]{問題解決の枠組み}{}
+\begin{enumerate}%\itemsep8pt
+\item 問題の解法をアルゴリズム化する\footnotemark
 \begin{align*}
-アルゴリズム =& 前処理? \\
-&+ 相似問題^{+} \\
-&+ 後処理?
+アルゴリズム = & 前処理? 相似問題^{+} 後処理?
 \end{align*}
+\item （要求を満たすまでオーダーレベルの無駄を省く）
+\item 実装する
+\item （要求を満たすまで高速化する）
+\end{enumerate}
 
-記号は正規表現より輸入
+\vfill
 
 \begin{codeof}{language=Rust}{skeleton}
 fn solve(problem) {
-  // pre-process
+  ...   // pre process
+  solve(sub_problem1);
   ...
-  solve(sub-problem1);
-  solve(sub-problem2);
-  // post-process
-  ...
-  return;
+  solve(sub_problemN);
+  ...    // post process
+}
 \end{codeof}
+
+\footnotetext[1]{記号はBNFより輸入}
 \end{frame}
 
-\begin{frame}[fragile]{例1}{Fibonacchi}
-
+\begin{frame}[fragile]{アルゴリズムでは再帰であること}{}
+fact(100), Fib(100), A(3, 3)を求めるプログラムを作成せよ
 \begin{align*}
+fact(1) =& 1 \\
+fact(n) =& n \times fact(n - 1)\\
 Fib(1) =& 1 \\
 Fib(2) =& 1 \\
-Fib(n) =& Fib(n - 1) + Fix(n -2) \quad (3 \le n)\\
-\end{align*}
-\end{frame}
-
-\begin{frame}[fragile]{例2}{Ackermann and Takeuchi}
-\begin{align*}
+Fib(n) =& Fib(n - 1) + Fib(n -2) \\
 A(0, n) =& n + 1 \\
 A(m, 0) =& A(m - 1, 1) \\
 A(m, n) =& A(m - 1, A(m, n - 1))
 \end{align*}
 
-\begin{align*}
-Tak(x, y, z) =& y if x \le y \\
-=& Tak(Tak(x - 1, y, z), Tak(y -1, z, x), Tak(z - 1, x, y))
-\end{align*}
-
-線形再帰ならループと再帰の記述の手間は同じ（実行時間も同じ）。
-問題は線形でない場合：スタックを使って自分で機械語実行過程のシミュレーションを書けるならOK。
+\begin{itemize}%\itemsep8pt
+\item $T(n) = ? + T(-) + ?$ :: 線形再帰
+\item $T(n) = ? + T(-)$ :: 線形再帰、特に末尾再帰
+\item $T(n) = ? + T(-) + T(-) + ?$ :: 線形再帰でない
+\end{itemize}
 \end{frame}
 
-\begin{frame}[fragile]{文章題1:Pascalの三角形}{}
+\section{A series of practices}		%%%%%%%%
+\subsection{}
+
+\begin{frame}[fragile]{問題0}{}
 \stackMath
 \Longstack[l]{
 n=0\\
@@ -74,7 +77,8 @@ n=2\\
 n=3\\
 n=4\\
 n=5\\
-n=6\qquad\ \\
+n=6\\
+n=7\qquad\ \\
 }
 \Longstack{
 1\\
@@ -91,7 +95,6 @@ $n = 23$, 左から11番目の数は？
 \end{frame}
 
 \begin{frame}[fragile]{Pascalの三角形}{北東＋北西に等しい}
-
 \begin{align*}
 P(n,k) &= P(n-1, k - 1) + P(n - 1, k)
 \end{align*}
@@ -124,41 +127,102 @@ P(n,k) &= P(n-1, k - 1) + P(n - 1, k)
 \end{center}
 \end{frame}
 
-\begin{frame}[fragile]{飛行経路の総数を求めよ}{}
-観光用スペースシャトルが高度100キロメートルからツアーを開始します。乗客は1分ごとに次の1分間上昇するか、下降するかを決めることができます。どちらも1分でちょうど1キロ上昇するか下降します。11分後に元の高度に戻ってこなければならないとすると、飛行経路は何通りあるでしょう。
+\begin{frame}[fragile]{イメージしやすい形に回転}{}
+\begin{center}
+\scalebox{0.5}{
+\begin{tikzpicture}[cell/.style = {rectangle,draw=gray,semithick,minimum size=1cm,outer sep=0mm}]
+\foreach \i [count=\j from 0] in {1, 1, 1, 1, 1,  1, 1, 1, 1}
+    \node[cell] at (\j, 0) {\rotatebox{0}{$\i$}};
+\foreach \i [count=\j from 0] in {1, 2, 3, 4, 5,  6, 7, 8}
+    \node[cell] at (\j, 1) {\rotatebox{0}{$\i$}};
+\foreach \i [count=\j from 0] in {1, 3, 6, 10,15,21,28}
+    \node[cell] at (\j, 2) {\rotatebox{0}{$\i$}};
+\foreach \i [count=\j from 0] in {1, 4, 10,20,35,56}
+    \node[cell] at (\j, 3) {\rotatebox{0}{$\i$}};
+\foreach \i [count=\j from 0] in {1, 5, 15,35,70}
+    \node[cell] at (\j, 4) {\rotatebox{0}{$\i$}};
+\foreach \i [count=\j from 0] in {1, 6, 21,56}
+    \node[cell] at (\j, 5) {\rotatebox{0}{$\i$}};
+\foreach \i [count=\j from 0] in {1, 7, 28}
+    \node[cell] at (\j, 6) {\rotatebox{0}{$\i$}};
+\foreach \i [count=\j from 0] in {1, 8}
+    \node[cell] at (\j, 7) {\rotatebox{0}{$\i$}};
+\foreach \i [count=\j from 0] in {1}
+    \node[cell] at (\j, 8) {\rotatebox{0}{$\i$}};
+\draw[arrow] (0, -1) -- ++(10, 0) node[below] {N=23 (X=23)};
+\draw[arrow] (-1, 0) -- ++(0, 10) node[left] {Y};
+\draw[arrow] (10, 0) -- ++ (-6, 6) node[right=5pt, anchor=west] {左から11};
+\end{tikzpicture}
+}
+\end{center}
+求める場所は座標$(12, 11)$に対応
+\end{frame}
+
+\begin{frame}[fragile]{配列の是非}{}
+
+与えられた問題は点(12, 11)を求める
+
+これは大きさ(12,12)の表を完成させる問題を解けば簡単に求められる
+
+\begin{center}
+\scalebox{0.6}{
+\begin{tikzpicture}[node distance=5cm, auto]
+\node (P) {(12, 11)計算問題};
+\node (E) [right of=P] {全点計算問題};
+\node (A1) [below of=P] {アルゴリズム1};
+\node (A2) [below of=E] {プログラム2};
+\draw[->,dashed] (P) to node {なぜ？} (E);
+\draw[->] (P) to node {再帰} (A1);
+\draw[->] (E) to node {for文 $\times$ for文} (A2);
+\draw[->] (A2) to node[below=20pt] {無駄を省くため考え直し} (A1);
+\end{tikzpicture}
+}
+\end{center}
+「配列を使ってはいけません」という追加制約があっても解けるのならOK
+\end{frame}
+
+\begin{frame}[fragile]{問題1.0}{}
+\begin{tikzpicture}[overlay, xshift=0.5\textwidth,yshift=-0.2\textheight]
+\node at (0,0) {\pgfimage[width=1.0\pagewidth]{shuttle.jpg}};
+\end{tikzpicture}
+\textcolor{white}{
+観光用スペースシャトルが高度100キロメートルからツアーを開始します。乗客は1分ごとに次の1分間上昇するか、下降するかを決めることができます。どちらも1分でちょうど1キロ上昇するか下降します。61分後（60回の進路変更）に元の高度に戻ってこなければならないとすると、飛行経路は何通りあるでしょう。
+}
 \end{frame}
 
 \begin{frame}[fragile]{}{}
 \begin{center}
 \rotatebox{45}{
-\scalebox{0.5}{
+\scalebox{0.4}{
 \begin{tikzpicture}[cell/.style = {rectangle,draw=gray,semithick,minimum size=1cm,outer sep=0mm}]
 \foreach \i [count=\j from 0] in {1, 1, 1, 1, 1,  1, 1, 1, 1}
-    \node[cell] at (\j,  0) {\rotatebox{45}{$\i$}};
+    \node[cell] at (\j,  0) {\rotatebox{-45}{$\i$}};
 \foreach \i [count=\j from 0] in {1, 2, 3, 4, 5,  6, 7, 8}
-    \node[cell] at (\j, -1) {\rotatebox{45}{$\i$}};
+    \node[cell] at (\j, -1) {\rotatebox{-45}{$\i$}};
 \foreach \i [count=\j from 0] in {1, 3, 6, 10,15,21,28}
-    \node[cell] at (\j, -2) {\rotatebox{45}{$\i$}};
+    \node[cell] at (\j, -2) {\rotatebox{-45}{$\i$}};
 \foreach \i [count=\j from 0] in {1, 4, 10,20,35,56}
-    \node[cell] at (\j, -3) {\rotatebox{45}{$\i$}};
+    \node[cell] at (\j, -3) {\rotatebox{-45}{$\i$}};
 \foreach \i [count=\j from 0] in {1, 5, 15,35,70}
-    \node[cell] at (\j, -4) {\rotatebox{45}{$\i$}};
+    \node[cell] at (\j, -4) {\rotatebox{-45}{$\i$}};
 \foreach \i [count=\j from 0] in {1, 6, 21,56}
     \node[cell] at (\j, -5) {\rotatebox{45}{$\i$}};
 \foreach \i [count=\j from 0] in {1, 7, 28}
-    \node[cell] at (\j, -6) {\rotatebox{45}{$\i$}};
+    \node[cell] at (\j, -6) {\rotatebox{-45}{$\i$}};
 \foreach \i [count=\j from 0] in {1, 8}
-    \node[cell] at (\j, -7) {\rotatebox{45}{$\i$}};
+    \node[cell] at (\j, -7) {\rotatebox{-45}{$\i$}};
 \foreach \i [count=\j from 0] in {1}
-    \node[cell] at (\j, -8) {\rotatebox{45}{$\i$}};
+    \node[cell] at (\j, -8) {\rotatebox{-45}{$\i$}};
+\node at (10,-10) {\rotatebox{-45}{\textcolor{red}{ゴール}}};
 \end{tikzpicture}
 }
 }
 \end{center}
+60で元の高さ $\to$ 座標(?,?)
 \end{frame}
 
-\begin{frame}[fragile]{飛行経路の総数を求めよ}{}
-観光用飛行機が高度5キロメートルからツアーを開始します。乗客は1分ごとに次の1分間上昇するか、下降するかを決めることができます。どちらも1分でちょうど1キロ上昇するか下降します。11分後に元の高度に戻ってこなければならないとすると、飛行経路は何通りあるでしょう。高度0キロメートルで墜落します。
+\begin{frame}[fragile]{問題1.1}{}
+観光用飛行機が高度5キロメートルからツアーを開始します。乗客は1分ごとに次の1分間上昇するか、下降するかを決めることができます。どちらも1分でちょうど1キロ上昇するか下降します。61分後(60回の進路変更後)に元の高度に戻ってこなければならないとすると、飛行経路は何通りあるでしょう。高度0キロメートルで墜落します。
 \end{frame}
 
 \begin{frame}[fragile]{}{}
@@ -191,38 +255,67 @@ P(n,k) &= P(n-1, k - 1) + P(n - 1, k)
 \end{center}
 \end{frame}
 
-\begin{frame}[fragile]{素朴なアルゴリズムと巧妙なアルゴリズムの違い}{}
-\begin{itemize}%\itemsep8pt
-\item 時間計算量を減らす：無駄を省く
-\item 空間計算量を減らす：無駄を省く
-\end{itemize}
+\begin{frame}[fragile]{問題2.0}{}
+あなたはA地点でお客を拾ったタクシードライバーです。お客はB地点に行こうとしています。
+リアルタイム混雑情報サービスはそれぞれのブロック間の移動時間を以下のように表示しています（無限大は工事中）。
+最短で何分あればお客をB地点に届けることができるでしょう。
+ただしどの道も一方通行です。
 
-\vfill
-空間計算量を減らす例は前回出てきたpartition。元々は一つの配列から二つの配列に要素をコピー（移動）させるアルゴリズムだったが、効率を追求した結果、あのようなプログラム定義になった。
+\begin{center}
+\scalebox{0.5}{
+\begin{tikzpicture}[cell/.style = {rectangle,draw=gray,semithick,minimum size=1cm,outer sep=0mm}]
+\foreach \i [count=\j from 0] in {3, 1, 2, 1, 4,  1, 1, 8, 1}
+    \node[cell] at (\j, 0) {\rotatebox{0}{$\i$}};
+\foreach \i [count=\j from 0] in {2, 2, 3, 4, 5,  6, 7, 8}
+    \node[cell] at (\j, 1) {\rotatebox{0}{$\i$}};
+\foreach \i [count=\j from 0] in {2, 3, 6, 1,5,2, 8}
+    \node[cell] at (\j, 2) {\rotatebox{0}{$\i$}};
+\foreach \i [count=\j from 0] in {1, 4, 10,2,5 ,6, 5}
+    \node[cell] at (\j, 3) {\rotatebox{0}{$\i$}};
+\foreach \i [count=\j from 0] in {3, 5, 2,3, 10, 1, 1}
+    \node[cell] at (\j, 4) {\rotatebox{0}{$\i$}};
+\foreach \i [count=\j from 0] in {1, 6, 1, 6, \infty, 4, 8}
+    \node[cell] at (\j, 5) {\rotatebox{0}{$\i$}};
+\foreach \i [count=\j from 0] in {1, 7, 8, 2, 3, 3, 4}
+    \node[cell] at (\j, 6) {\rotatebox{0}{$\i$}};
+\foreach \i [count=\j from 0] in {1, 8, 4, 5, 5, 8, 9}
+    \node[cell] at (\j, 7) {\rotatebox{0}{$\i$}};
+\foreach \i [count=\j from 0] in {1, 3, 2, 8, 4, 3, 4}
+    \node[cell] at (\j, 8) {\rotatebox{0}{$\i$}};
+\end{tikzpicture}
+}
+\end{center}
 \end{frame}
 
-\begin{frame}[fragile]{素数の計算}{}
-この話は相似問題に等価なものが含まれるので削除する話なので、今回の最後か次回がふさわしい。
-\end{frame}
+\begin{frame}[fragile]{問題2.1}{}
+あなたはA地点でお客を拾ったタクシードライバーです。お客はB地点に行こうとしています。
+リアルタイム混雑情報サービスはそれぞれのブロック間の移動時間を以下のように表示しています（無限大は工事中）。
+最短で何分あればお客をB地点に届けることができるでしょう。
 
-\section{for programmers}		%%%%%%%%
-\subsection{}
-
-\begin{frame}[fragile]{数学的解析の力}{}
-
-\[
-Fib(n) = \frac{1}{\sqrt{5}}
-\left\{
-\left(\frac{1 + \sqrt{5}}{2}\right)^n
--
-\left(\frac{1 - \sqrt{5}}{2}\right)^n
-\right\}
-\]
-
-\end{frame}
-
-\begin{frame}[fragile]{ふかしぎおねえさん}{}
-a
+\begin{center}
+\scalebox{0.5}{
+\begin{tikzpicture}[cell/.style = {rectangle,draw=gray,semithick,minimum size=1cm,outer sep=0mm}]
+\foreach \i [count=\j from 0] in {3, 1, 2, 1, 4,  1, 1, 8, 1}
+    \node[cell] at (\j, 0) {\rotatebox{0}{$\i$}};
+\foreach \i [count=\j from 0] in {2, 2, 3, 4, 5,  6, 7, 8}
+    \node[cell] at (\j, 1) {\rotatebox{0}{$\i$}};
+\foreach \i [count=\j from 0] in {2, 3, 6, 1,5,2, 8}
+    \node[cell] at (\j, 2) {\rotatebox{0}{$\i$}};
+\foreach \i [count=\j from 0] in {1, 4, 10,2,5 ,6, 5}
+    \node[cell] at (\j, 3) {\rotatebox{0}{$\i$}};
+\foreach \i [count=\j from 0] in {3, 5, 2,3, 10, 1, 1}
+    \node[cell] at (\j, 4) {\rotatebox{0}{$\i$}};
+\foreach \i [count=\j from 0] in {1, 6, 1, 6, \infty, 4, 8}
+    \node[cell] at (\j, 5) {\rotatebox{0}{$\i$}};
+\foreach \i [count=\j from 0] in {1, 7, 8, 2, 3, 3, 4}
+    \node[cell] at (\j, 6) {\rotatebox{0}{$\i$}};
+\foreach \i [count=\j from 0] in {1, 8, 4, 5, 5, 8, 9}
+    \node[cell] at (\j, 7) {\rotatebox{0}{$\i$}};
+\foreach \i [count=\j from 0] in {1, 3, 2, 8, 4, 3, 4}
+    \node[cell] at (\j, 8) {\rotatebox{0}{$\i$}};
+\end{tikzpicture}
+}
+\end{center}
 \end{frame}
 
 \end{document}
