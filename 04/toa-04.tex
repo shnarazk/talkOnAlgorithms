@@ -8,6 +8,7 @@
 \def\x{\hspace{4.1ex}}    %BETWEEN TWO 1-DIGIT NUMBERS
 \def\y{\hspace{3.4ex}}  %BETWEEN 1 AND 2 DIGIT NUMBERS
 \def\z{\hspace{2.7ex}}    %BETWEEN TWO 2-DIGIT NUMBERS
+\usetikzlibrary{arrows.meta}
 \usepackage[04]{../lecture}
 \subtitle{練習問題}
 \begin{document}
@@ -68,7 +69,7 @@ A(m, n) =& A(m - 1, A(m, n - 1))
 \section{A series of practices}		%%%%%%%%
 \subsection{}
 
-\begin{frame}[fragile]{問題0}{}
+\begin{frame}[fragile]{問題0.0}{}
 \stackMath
 \Longstack[l]{
 n=0\\
@@ -94,11 +95,12 @@ n=7\qquad\ \\
 $n = 23$, 左から11番目の数は？
 \end{frame}
 
-\begin{frame}[fragile]{北東＋北西}{}
-% \begin{align*}
-% P(n,k) &= P(n-1, k - 1) + P(n - 1, k)
-% \end{align*}
-しかし座標を打つのが面倒そう
+\begin{frame}[fragile]{構造}{}
+\visible<2->{
+\begin{align*}
+P(-) &= P(北東) + P(北西)
+\end{align*}
+}
 \begin{center}
 \rotatebox{-45}{
 \scalebox{0.6}{
@@ -121,6 +123,7 @@ $n = 23$, 左から11番目の数は？
     \node[cell] at (\j, -7) {\rotatebox{45}{$\i$}};
 \foreach \i [count=\j from 0] in {1}
     \node[cell] at (\j, -8) {\rotatebox{45}{$\i$}};
+\visible<3>{\draw[-{Latex[scale=2.5]},red, very thick] (-1,-2) arc (180:450:3);}
 \end{tikzpicture}
 }
 }
@@ -155,17 +158,17 @@ $n = 23$, 左から11番目の数は？
 \end{tikzpicture}
 }
 \end{center}
-求める場所は座標$(12, 10)$に対応
+求める場所は座標$(13, 10)$に対応
 \end{frame}
 
 \begin{frame}[fragile]{配列の是非}{}
 
 与えられた問題は点(13, 10)を求める
 
-これは大きさ(13,10)の表を完成させる問題を解けば簡単に求められる
+大きさ(13,10)の表を完成させる問題を解けば簡単に求められる
 
 \begin{itemize}\itemsep8pt
-\item ゴールから遡ると再帰関数、補助記憶領域なし
+\item ゴールから遡ると再帰関数（）補助記憶領域なし）
 \item （帰納的構造を理解した上で）スタートから組み立てると、配列が必要
 \end{itemize}
 
@@ -177,12 +180,16 @@ $n = 23$, 左から11番目の数は？
 \end{frame}
 
 \begin{frame}[fragile]{問題1.0}{}
-\begin{tikzpicture}[overlay, xshift=0.5\textwidth,yshift=-0.2\textheight]
+\begin{tikzpicture}[overlay, xshift=0.5\textwidth,yshift=-0.25\textheight]
 \node at (0,0) {\pgfimage[width=1.0\pagewidth]{shuttle.jpg}};
 \end{tikzpicture}
+\begin{spacing}{1.25}
 \textcolor{white}{
-観光用スペースシャトルが高度100キロメートルからツアーを開始します。乗客は1分ごとに次の1分間上昇するか、下降するかを決めることができます。どちらも1分でちょうど1キロ上昇するか下降します。60分後（60回の進路変更後）に元の高度に戻ってこなければならないとすると、飛行経路は何通りあるでしょう。
+観光用スペースシャトルが高度100キロメートルからツアーを開始します。\\
+乗客は1分ごとに次の1分間上昇するか、下降するかを決めることができます。どちらも1分でちょうど1キロ上昇するか下降します。\\
+60分後（60回の進路変更後）に元の高度に戻ってこなければならないとすると、飛行経路は何通りあるでしょう。
 }
+\end{spacing}
 \end{frame}
 
 \begin{frame}[fragile]{}{}
@@ -213,14 +220,26 @@ $n = 23$, 左から11番目の数は？
 }
 }
 \end{center}
-60で元の高さ $\to$ 座標(?,?)
+
+\visible<1>{60で元の高さ}
+
+\visible<2>{60で元の高さ $\to$ 座標(?,?)}
+
+\visible<3>{60で元の高さ $\to$ 座標(30,30)}
 \end{frame}
 
 \begin{frame}[fragile]{問題1.1}{}
 \begin{tikzpicture}[overlay, xshift=0.5\textwidth,yshift=-0.2\textheight]
 \node at (0,-1) {\pgfimage[width=0.5\pagewidth]{smalltalk.jpg}};
 \end{tikzpicture}
-観光用飛行船が高度5キロメートルからツアーを開始します。乗客は1分ごとに次の1分間上昇するか、下降するかを決めることができます。どちらも1分でちょうど1キロ上昇するか下降します。60分後(60回の進路変更後)に元の高度に戻ってこなければならないとすると、飛行経路は何通りあるでしょう。高度0キロメートルで墜落します。
+
+\begin{spacing}{1.25}
+観光用飛行船が高度5キロメートルからツアーを開始します。\\
+乗客は1分ごとに次の1分間上昇するか、下降するかを決めることができます。どちらも1分でちょうど1キロ上昇するか下降します。\\
+60分後(60回の進路変更後)に元の高度に戻ってこなければならないとすると、飛行経路は何通りあるでしょう。\\
+高度0キロメートルで墜落します。
+\end{spacing}
+
 \end{frame}
 
 \begin{frame}[fragile]{}{}
@@ -236,28 +255,56 @@ $n = 23$, 左から11番目の数は？
     \node[cell] at (\j, -2) {\rotatebox{-45}{$\i$}};
 \foreach \i [count=\j from 0] in {1, 4, 10,20,35,56}
     \node[cell] at (\j, -3) {\rotatebox{-45}{$\i$}};
-\foreach \i [count=\j from 0] in {X, 5, 15, 35, 70}
+\foreach \i [count=\j from 0] in {1, 5, 15, 35, 70}
     \node[cell] at (\j, -4) {\rotatebox{-45}{$\i$}};
-\foreach \i [count=\j from 0] in {X, X, 21, 56}
+\foreach \i [count=\j from 0] in {X, 6, 21, 56}
     \node[cell] at (\j, -5) {\rotatebox{-45}{$\i$}};
-\foreach \i [count=\j from 0] in {X, X, X}
+\foreach \i [count=\j from 0] in {X, X, 28}
     \node[cell] at (\j, -6) {\rotatebox{-45}{$\i$}};
 \foreach \i [count=\j from 0] in {X, X}
     \node[cell] at (\j, -7) {\rotatebox{-45}{$\i$}};
 \foreach \i [count=\j from 0] in {X}
     \node[cell] at (\j, -8) {\rotatebox{-45}{$\i$}};
-\draw[draw=red,rotate=-45,very thick] (0,-2.8) --  ++(10,0) node[rotate=-45,above=4pt] () {$y + 5 < x$};
+\draw[draw=red,rotate=-45,very thick] (1,-3.5) -- ++(10,0) node[rotate=-45,above=4pt] () {地平線};
 \end{tikzpicture}
 }
 }
 \end{center}
 \end{frame}
 
-\begin{frame}[fragile]{問題2.0}{}
-あなたはA地点でお客を拾ったタクシードライバーです。お客はB地点に行こうとしています。
-リアルタイム混雑情報サービスはそれぞれのブロック間の移動時間を以下のように表示しています（無限大は工事中）。
+\begin{frame}[fragile]{回転}{}
+\begin{center}
+\scalebox{0.5}{
+\begin{tikzpicture}[cell/.style = {rectangle,draw=gray,semithick,minimum size=1cm,outer sep=0mm}]
+\foreach \i [count=\j from 0] in {1, 1, 1, 1, 0, 0, 0, 0, 0}
+    \node[cell] at (\j,  0) {\rotatebox{0}{$\i$}};
+\foreach \i [count=\j from 0] in {1, 2, 3, 4, 5,  0, 0, 0}
+    \node[cell] at (\j, 1) {\rotatebox{0}{$\i$}};
+\foreach \i [count=\j from 0] in {1, 3, 6, 10,15,21, 0}
+    \node[cell] at (\j, 2) {\rotatebox{0}{$\i$}};
+\foreach \i [count=\j from 0] in {1, 4, 10,20,35,56}
+    \node[cell] at (\j, 3) {\rotatebox{0}{$\i$}};
+\foreach \i [count=\j from 0] in {X, 5, 15, 35, 70}
+    \node[cell] at (\j, 4) {\rotatebox{0}{$\i$}};
+\foreach \i [count=\j from 0] in {X, X, 21, 56}
+    \node[cell] at (\j, 5) {\rotatebox{0}{$\i$}};
+\foreach \i [count=\j from 0] in {X, X, X}
+    \node[cell] at (\j, 6) {\rotatebox{0}{$\i$}};
+\foreach \i [count=\j from 0] in {X, X}
+    \node[cell] at (\j, 7) {\rotatebox{0}{$\i$}};
+\foreach \i [count=\j from 0] in {X}
+    \node[cell] at (\j, 8) {\rotatebox{0}{$\i$}};
+\draw[draw=red,very thick] (4,-1) -- ++(8,8) node[near end, right=4pt] () {$y + 5 \le x$};
+\end{tikzpicture}
+}
+\end{center}
+\end{frame}
+
+\begin{frame}[fragile]{問題1.2}{}
+あなたはAブロックでお客を拾ったタクシードライバーです。お客はBブロックに行こうとしています。
+リアルタイム混雑情報サービスはそれぞれのブロック内移動時間を以下のように表示しています。
 最短で何分あればお客をB地点に届けることができるでしょう。
-ただしどの道も一方通行です。
+ただしどのブロックも下から上または左から右へ一方通行でつながっています。
 
 \begin{center}
 \scalebox{0.5}{
@@ -272,7 +319,7 @@ $n = 23$, 左から11番目の数は？
     \node[cell] at (\j, 3) {\rotatebox{0}{$\i$}};
 \foreach \i [count=\j from 0] in {3, 5, 2,3, 10, 1, 1}
     \node[cell] at (\j, 4) {\rotatebox{0}{$\i$}};
-\foreach \i [count=\j from 0] in {1, 6, 1, 6, \infty, 4, 8}
+\foreach \i [count=\j from 0] in {1, 6, 1, 6, 10, 4, 8}
     \node[cell] at (\j, 5) {\rotatebox{0}{$\i$}};
 \foreach \i [count=\j from 0] in {1, 7, 8, 2, 3, 3, 4}
     \node[cell] at (\j, 6) {\rotatebox{0}{$\i$}};
@@ -285,10 +332,64 @@ $n = 23$, 左から11番目の数は？
 \end{center}
 \end{frame}
 
-\begin{frame}[fragile]{問題2.1}{}
-あなたはA地点でお客を拾ったタクシードライバーです。お客はB地点に行こうとしています。
-リアルタイム混雑情報サービスはそれぞれのブロック間の移動時間を以下のように表示しています（無限大は工事中）。
+\begin{frame}[fragile]{配布ファイル}{}
+\begin{codeof}{language=c}{数値はいずれも1桁である}
+ 0, 0 = 2
+ 0, 1 = 1
+ 0, 2 = 1
+ 0, 3 = 1
+ 0, 4 = 2
+...
+ 1, 0 = 9
+ 1, 1 = 1
+ 1, 2 = 1
+ 1, 3 = 2
+...
+ 2, 0 = 8
+\end{codeof}
+
+1行目の意味：座標$(0, 0)$のブロックを（どの方向であれ）通り抜けるには2分かかる。
+従って座標$(1,0)$のブロックにたどり着くには2分が必要。座標$(0,1)$も同様に2分。
+\end{frame}
+
+
+\begin{frame}[fragile]{問題1.2.1}{}
+あなたはAブロックでお客を拾ったタクシードライバーです。お客はBブロックに行こうとしています。
+リアルタイム混雑情報サービスはそれぞれのブロック内移動時間を以下のように表示しています。
 最短で何分あればお客をB地点に届けることができるでしょう。
+ただしどのブロックも下から上、左から右、または左下から右上へ一方通行でつながっています。
+
+\begin{center}
+\scalebox{0.5}{
+\begin{tikzpicture}[cell/.style = {rectangle,draw=gray,semithick,minimum size=1cm,outer sep=0mm}]
+\foreach \i [count=\j from 0] in {3, 1, 2, 1, 4,  1, 1, 8, 1}
+    \node[cell] at (\j, 0) {\rotatebox{0}{$\i$}};
+\foreach \i [count=\j from 0] in {2, 2, 3, 4, 5,  6, 7, 8}
+    \node[cell] at (\j, 1) {\rotatebox{0}{$\i$}};
+\foreach \i [count=\j from 0] in {2, 3, 6, 1,5,2, 8}
+    \node[cell] at (\j, 2) {\rotatebox{0}{$\i$}};
+\foreach \i [count=\j from 0] in {1, 4, 10,2,5 ,6, 5}
+    \node[cell] at (\j, 3) {\rotatebox{0}{$\i$}};
+\foreach \i [count=\j from 0] in {3, 5, 2,3, 10, 1, 1}
+    \node[cell] at (\j, 4) {\rotatebox{0}{$\i$}};
+\foreach \i [count=\j from 0] in {1, 6, 1, 6, 10, 4, 8}
+    \node[cell] at (\j, 5) {\rotatebox{0}{$\i$}};
+\foreach \i [count=\j from 0] in {1, 7, 8, 2, 3, 3, 4}
+    \node[cell] at (\j, 6) {\rotatebox{0}{$\i$}};
+\foreach \i [count=\j from 0] in {1, 8, 4, 5, 5, 8, 9}
+    \node[cell] at (\j, 7) {\rotatebox{0}{$\i$}};
+\foreach \i [count=\j from 0] in {1, 3, 2, 8, 4, 3, 4}
+    \node[cell] at (\j, 8) {\rotatebox{0}{$\i$}};
+\end{tikzpicture}
+}
+\end{center}
+\end{frame}
+
+\begin{frame}[fragile]{問題2.0}{}
+あなたはA地点でお客を拾ったタクシードライバーです。お客はB地点に行こうとしています。
+リアルタイム混雑情報サービスはそれぞれのブロック間の移動時間を以下のように表示しています。
+最短で何分あればお客をB地点に届けることができるでしょう。
+ただしどのブロックも上下または左右方向ででつながっています。
 
 \begin{center}
 \scalebox{0.5}{
@@ -321,14 +422,14 @@ $n = 23$, 左から11番目の数は？
 
 \begin{frame}[fragile]{時間が余るなら}{}
 \begin{itemize}\itemsep8pt
-\item advent of code year 2020 day10 (昇圧)
-\item advent of code year 2020 day18 (変態電卓)
+\item 昇圧鎖 (advent of code year 2020 day 10)
+\item 変態電卓 (advent of code year 2020 day 18)
 \end{itemize}
 \end{frame}
 
-\begin{frame}[fragile]{advent of code: year 2020, day 10}{}
+\begin{frame}[fragile]{問題3}{advent of code: year 2020, day 10}
 \begin{enumerate}\itemsep8pt
-\item 与えられた数列を以下のルールを守って並べ替えよ
+\item 与えられた数列は以下の条件を満たす数列に変換できるか
 \begin{itemize}%\itemsep8pt
 \item 全ての項は、直前の項より1、2、または3大きい
 \end{itemize}
@@ -338,20 +439,20 @@ $n = 23$, 左から11番目の数は？
 \end{enumerate}
 \item 所与の数列に対し以下の条件を満たす数列の個数を求めよ
 \begin{itemize}%\itemsep8pt
-\item 与えられた全ての項を使わなくてよい。
 \item その列中の全ての項は、直前の項より1、2、または3大きい
-\item その初項は所与の数列の最小項に等しい
-\item その末項は所与の数列の最大項に等しい
+\item 与えられた全ての項を使わなくてよい
+\item ただし、所与の数列の最小項は必ず使うこと
+\item ただし、所与の数列の最大項は必ず使うこと
 \end{itemize}
 \begin{enumerate}%\itemsep8pt
-\item 数列1に対する解
+\item 先の数列1
 \begin{enumerate}%\itemsep8pt
 \item 求める数列は1で始まらなければならない
 \item 求める数列は19で終わらなければならない
 \item 例えば\{ 1, 4, 5, 7, 10, 12, 15, 16, 19 \}は条件を満たす
 \item 網羅すると8通りあることがわかるので答えは8
 \end{enumerate}
-\item (64bit CPUで)次ページの数列2に対する解を求めよ
+\item (64bit CPU所有者のみ)次ページの数列2
 \end{enumerate}
 \end{enumerate}
 \end{frame}
