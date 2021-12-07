@@ -17,33 +17,19 @@
 \titlepage
 \end{frame}
 
-\section{algorithm design}		%%%%%%%%
+\section{Algorithm design}		%%%%%%%%
 \subsection{}
 
 \begin{frame}[fragile]{問題解決の枠組み}{}
-\begin{enumerate}%\itemsep8pt
-\item 問題の解法をアルゴリズム化する\footnotemark
+\begin{enumerate}\itemsep8pt
+\item 問題の解法をアルゴリズム化する
 \begin{align*}
 アルゴリズム = & 前処理? 相似問題^{+} 後処理?
 \end{align*}
 \item （要求を満たすまで無駄を省く）
-\item 実装する
+\item プログラムとして実装する
 \item （要求を満たすまで高速化する）
 \end{enumerate}
-
-\vfill
-
-\begin{codeof}{language=Rust}{skeleton}
-fn solve(problem) {
-  ...   // pre process
-  solve(sub_problem1);
-  ...
-  solve(sub_problemN);
-  ...    // post process
-}
-\end{codeof}
-
-\footnotetext[1]{記号はBNFより輸入}
 \end{frame}
 
 \begin{frame}[fragile]{アルゴリズムでは再帰であること}{}
@@ -60,9 +46,9 @@ A(m, n) =& A(m - 1, A(m, n - 1))
 \end{align*}
 
 \begin{itemize}%\itemsep8pt
-\item $T(n) = ? + T(-) + ?$ :: 線形再帰
-\item $T(n) = ? + T(-)$ :: 線形再帰、特に末尾再帰
-\item $T(n) = ? + T(-) + T(-) + ?$ :: 線形再帰でない
+\item $f(n) = ? + f(-) + ?$ :: 線形再帰
+\item $f(n) = ? + f(-)$ :: 線形再帰、特に末尾再帰\href{https://ja.wikipedia.org/wiki/%E6%9C%AB%E5%B0%BE%E5%86%8D%E5%B8%B0}{\beamergotobutton{wikipedia}}
+\item $f(n) = ? + f(-) + f(-) + ?$ :: 線形再帰でない
 \end{itemize}
 \end{frame}
 
@@ -423,17 +409,10 @@ RCISはそれぞれのブロック内移動時間を以下のように表示し�
 \end{center}
 \end{frame}
 
-\section{extra puzzle}		%%%%%%%%
+\section{An extra puzzle}		%%%%%%%%
 \subsection{}
 
-\begin{frame}[fragile]{時間が余るなら}{}
-\begin{itemize}\itemsep8pt
-\item 昇圧鎖 (advent of code year 2020 day 10)
-\item 変態電卓 (advent of code year 2020 day 18)
-\end{itemize}
-\end{frame}
-
-\begin{frame}[fragile]{問題3}{advent of code: year 2020, day 10}
+\begin{frame}[fragile]{問題3}{Advent of Code: year 2020, day 10}
 \begin{enumerate}\itemsep8pt
 \item 与えられた数列は以下の条件を満たす数列に変換できるか
 \begin{itemize}%\itemsep8pt
@@ -555,8 +534,6 @@ RCISはそれぞれのブロック内移動時間を以下のように表示し�
 119
 51
 22
-
 \end{frame}
-
 
 \end{document}
