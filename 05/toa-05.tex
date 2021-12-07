@@ -153,15 +153,15 @@ O(n) \to O(\sqrt{n})
 どんな例を用意していたのか思い出せない。
 \end{frame}
 
-\begin{frame}[fragile]{例題}{\href{}{advent-of-code 2020}より}
-a
-\end{frame}
-
 \begin{frame}[fragile]{動的計画法}{}
 ここでこの術語を出すのがいいかどうか。
 \end{frame}
 
-\begin{frame}[fragile]{メモ化}{\href{https://ja.wikipedia.org/wiki/メモ化}{\beamergotobutton{wikipedia}}}
+\begin{frame}[fragile]{メモ化}{
+%\href{https://ja.wikipedia.org/wiki/%E3%83%A1%E3%83%A2%E5%8C%96}%
+%{\beamergotobutton{wikipedia}}
+}
+
 X型の引数からY型の計算結果を求める関数に対してXからYへのメモを作ることで時間計算量を減らす
 \begin{codeof}{language=Rust}{メモ化の一般形}
 fn foo (問題指定) -> 解の型 {
@@ -182,7 +182,9 @@ fn foo (問題指定) -> 解の型 {
 \footnotetext[1]{定型化されているので言語によってはこのコードを自動生成する}
 \end{frame}
 
-\begin{frame}[fragile]{fibに対するメモ化の例}{\href{https://ja.wikipedia.org/wiki/メモ化}{\beamergotobutton{repl it}}}
+\begin{frame}[fragile]{fibに対するメモ化の例}{
+%\href{https://ja.wikipedia.org/wiki/%E3%83%A1%E3%83%A2%E5%8C%96}{\beamergotobutton{repl it}}
+}
 \begin{codeof}{language=Rust}{fib (memo.rs)}
 pub fn fib(n: usize) -> usize {
     if let Ok(hash) = MEMO.read() {
@@ -238,7 +240,9 @@ fn main() {
 経路数ではなく最短経路を求めよ。
 \end{frame}
 
-\begin{frame}[fragile]{ダイクストラ法}{\href{https://ja.wikipedia.org/wiki/ダイクストラ法}{\beamergotobutton{wikipedia}}}
+\begin{frame}[fragile]{ダイクストラ法}{
+%\href{https://ja.wikipedia.org/wiki/ダイクストラ法}{\beamergotobutton{wikipedia}}
+}
 \begin{quotation}
 \fontsize{9}{12}\selectfont
 最短経路問題は、ビー玉と紐を用いて解くことができる。
@@ -285,6 +289,13 @@ fn main() {
 \item 頂点数が1減ったもの
 \end{itemize}
 
+\end{frame}
+
+\begin{frame}[fragile]{時間が余るなら}{}
+\begin{itemize}\itemsep8pt
+\item 昇圧鎖 (Advent of Code year 2020 day 10)
+\item 変態電卓 (Advent of Code year 2020 day 18)
+\end{itemize}
 \end{frame}
 
 \end{document}
