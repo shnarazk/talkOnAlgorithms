@@ -7,7 +7,8 @@ edition = "2021"
 authors = ["Narazaki Shuji <shujinarazaki@protonmail.com>"]
 description = "A talk on Algorithms"
 repository = "https://github.com/shnarazk/talkOnAlgorithms"
-default-run = "routes"
+# default-run = "routes"
+default-run = "distance"
 
 [dependencies]
 lazy_static = "^1.4"
