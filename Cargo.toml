@@ -7,12 +7,13 @@ edition = "2021"
 authors = ["Narazaki Shuji <shujinarazaki@protonmail.com>"]
 description = "A talk on Algorithms"
 repository = "https://github.com/shnarazk/talkOnAlgorithms"
+default-run = "routes"
 
 [dependencies]
 lazy_static = "^1.4"
+rand = "^0.8"
 
 [dev-dependencies]
-rand = "^0.8"
 criterion = "0.3"
 
 [[bench]]
