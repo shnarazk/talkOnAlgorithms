@@ -216,7 +216,6 @@ P(-) &= P(北東) + P(北西)
 }
 }
 \end{center}
-
 \end{frame}
 
 \begin{frame}[fragile]{問題1.1}{}
@@ -293,6 +292,33 @@ P(-) &= P(北東) + P(北西)
 \end{center}
 \end{frame}
 
+
+\begin{frame}[fragile]{相似問題の場合分け}{}
+問題1.0と問題1.1は別問題か？
+
+\begin{itemize}%\itemsep8pt
+\item 問題1.0 : $T(n)  = T_{i}(-) + T_{j}(-)$
+\begin{enumerate}%\itemsep8pt
+\item 左はし
+\item 下はし
+\item それ以外
+\end{enumerate}
+\item 問題1.1 : $T(n)  = T_{i}(-) + T_{j}(-)$
+\begin{enumerate}%\itemsep8pt
+\item 左はし
+\item 下はし
+\item 地平線（新しい場合分け）
+\item それ以外
+\end{enumerate}
+\end{itemize}
+
+\vfill
+そもそも長さ0は場合分けして特別扱い（でなければ停止しない）
+
+\vfill
+両者は別アルゴリズムというより相似問題の種類数の差
+\end{frame}
+
 \begin{frame}[fragile]{問題1.2}{}
 あなたはAブロックでお客を拾ったタクシードライバーです。お客はBブロックに行こうとしています。
 リアルタイム混雑情報サービスはブロック内移動時間を以下のように表示しています。
@@ -346,6 +372,25 @@ P(-) &= P(北東) + P(北西)
 従って座標$(1,0)$のブロックにたどり着くには9分が必要。座標$(0,1)$も同様に9分。
 \end{frame}
 
+\begin{frame}[fragile]{ジェネリックなフレームワーク}{問題1.0と問題1.2は別問題か？}
+\begin{itemize}%\itemsep8pt
+\item 問題1.0
+\begin{enumerate}%\itemsep8pt
+\item 再帰して
+\item 再帰して
+\item 組み合わせ
+\end{enumerate}
+\item 問題1.2
+\begin{enumerate}%\itemsep8pt
+\item 再帰して
+\item 再帰して
+\item 組み合わせ
+\end{enumerate}
+\end{itemize}
+
+\vfill
+両者は同じにしか見えない（整数用の二分探索と実数用の二分探索程度）
+\end{frame}
 
 \begin{frame}[fragile]{問題1.2.1}{}
 あなたはAブロックでお客を拾ったタクシードライバーです。お客はBブロックに行こうとしています。
