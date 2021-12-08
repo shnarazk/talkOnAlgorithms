@@ -10,7 +10,7 @@
 \def\z{\hspace{2.7ex}}    %BETWEEN TWO 2-DIGIT NUMBERS
 \usetikzlibrary{arrows.meta}
 \usepackage[04]{../lecture}
-\subtitle{練習問題}
+\subtitle{プログラミング的思考}
 \begin{document}
 
 \begin{frame}[fragile]{}
@@ -82,44 +82,9 @@ $n = 23$, 左から11番目の数は？
 \end{frame}
 
 \begin{frame}[fragile]{構造}{}
-\visible<2->{
-\begin{align*}
-P(-) &= P(北東) + P(北西)
-\end{align*}
-}
 \begin{center}
-\rotatebox{-45}{
 \scalebox{0.6}{
-\begin{tikzpicture}[cell/.style = {rectangle,draw=gray,semithick,minimum size=1cm,outer sep=0mm}]
-\foreach \i [count=\j from 0] in {1, 1, 1, 1, 1,  1, 1, 1, 1}
-    \node[cell] at (\j,  0) {\rotatebox{45}{$\i$}};
-\foreach \i [count=\j from 0] in {1, 2, 3, 4, 5,  6, 7, 8}
-    \node[cell] at (\j, -1) {\rotatebox{45}{$\i$}};
-\foreach \i [count=\j from 0] in {1, 3, 6, 10,15,21,28}
-    \node[cell] at (\j, -2) {\rotatebox{45}{$\i$}};
-\foreach \i [count=\j from 0] in {1, 4, 10,20,35,56}
-    \node[cell] at (\j, -3) {\rotatebox{45}{$\i$}};
-\foreach \i [count=\j from 0] in {1, 5, 15,35,70}
-    \node[cell] at (\j, -4) {\rotatebox{45}{$\i$}};
-\foreach \i [count=\j from 0] in {1, 6, 21,56}
-    \node[cell] at (\j, -5) {\rotatebox{45}{$\i$}};
-\foreach \i [count=\j from 0] in {1, 7, 28}
-    \node[cell] at (\j, -6) {\rotatebox{45}{$\i$}};
-\foreach \i [count=\j from 0] in {1, 8}
-    \node[cell] at (\j, -7) {\rotatebox{45}{$\i$}};
-\foreach \i [count=\j from 0] in {1}
-    \node[cell] at (\j, -8) {\rotatebox{45}{$\i$}};
-\visible<3>{\draw[-{Latex[scale=2.5]},red, very thick] (-1,-2) arc (180:450:3);}
-\end{tikzpicture}
-}
-}
-\end{center}
-\end{frame}
-
-\begin{frame}[fragile]{イメージしやすい形に回転（変数変換）}{}
-\begin{center}
-\scalebox{0.5}{
-\begin{tikzpicture}[cell/.style = {rectangle,draw=gray,semithick,minimum size=1cm,outer sep=0mm}]
+\begin{tikzpicture}[cell/.style = {rectangle,draw=gray,semithick,minimum size=1.0cm,outer sep=0mm}]
 \foreach \i [count=\j from 0] in {1, 1, 1, 1, 1,  1, 1, 1, 1}
     \node[cell] at (\j, 0) {\rotatebox{0}{$\i$}};
 \foreach \i [count=\j from 0] in {1, 2, 3, 4, 5,  6, 7, 8}
@@ -141,22 +106,22 @@ P(-) &= P(北東) + P(北西)
 \draw[arrow] (0, -1) -- ++(10, 0) node[below] {N=23 (X=23)};
 \draw[arrow] (-1, 0) -- ++(0, 10) node[left] {Y};
 \draw[arrow] (10, 0) -- ++ (-6, 6) node[right=5pt, anchor=west] {左から11(10回移動)};
+\node at (8,8) {$(N=23, 11)$は$j,i$座標$(13, 10)$に対応};
 \end{tikzpicture}
 }
 \end{center}
-求める場所は座標$(13, 10)$に対応
 \end{frame}
 
 \begin{frame}[fragile]{配列の是非}{}
 
-与えられた問題は点(13, 10)を求める
+与えられた問題は点(13, 10)を求める問題
 
 大きさ(13,10)の表を完成させる問題を解けば簡単に求められる
 
 \vfill
 \begin{itemize}\itemsep8pt
-\item ゴールから遡ると再帰関数が必要（補助記憶領域なし）
-\item （帰納的構造を理解した上で）スタートから組み立てると配列が必要（再帰なし）
+\item ゴールから遡ると再帰関数が必要、補助記憶領域なし
+\item （帰納的構造を理解した上で）スタートから組み立てると配列が必要、再帰なし
 \end{itemize}
 
 \vfill
@@ -167,7 +132,7 @@ P(-) &= P(北東) + P(北西)
 \end{frame}
 
 \begin{frame}[fragile]{問題1.0}{}
-\begin{tikzpicture}[overlay, xshift=0.5\textwidth,yshift=-0.25\textheight]
+\begin{tikzpicture}[overlay, xshift=0.5\textwidth,yshift=-0.26\textheight]
 \node at (0,0) {\pgfimage[width=1.0\pagewidth]{shuttle.jpg}};
 \end{tikzpicture}
 \begin{spacing}{1.25}
@@ -180,9 +145,8 @@ P(-) &= P(北東) + P(北西)
 \end{frame}
 
 \begin{frame}[fragile]{}{}
-\begin{tikzpicture}[overlay , xshift=0.5\textwidth]
-\visible<1>{\node[anchor=west] at (0, -5) {30で元の高さ};}
-\visible<2>{\node[anchor=west] at (1, -5) {30で元の高さ $\to$ 座標(15,15)};}
+\begin{tikzpicture}[overlay, xshift=0.5\textwidth]
+\node[anchor=west] at (0, -5) {15回上昇15回下降};
 \end{tikzpicture}
 
 \begin{center}
@@ -369,7 +333,7 @@ P(-) &= P(北東) + P(北西)
 \end{codeof}
 
 1行目の意味：座標$(0, 0)$のブロックを（どの方向であれ）通り抜けるには9分かかる。
-従って座標$(1,0)$のブロックにたどり着くには9分が必要。座標$(0,1)$も同様に9分。
+従ってそこから座標$(1,0)$や$(0,1)$のブロックにたどり着くには9分が必要。
 \end{frame}
 
 \begin{frame}[fragile]{ジェネリックなフレームワーク}{問題1.0と問題1.2は別問題か？}
@@ -426,7 +390,7 @@ RCISはそれぞれのブロック内移動時間を以下のように表示し�
 \end{frame}
 
 \begin{frame}[fragile]{問題1.3}{}
-問題1.2を解くことで各ブロックのA地点からの最短移動時間が以下に示す配列Aに格納された。
+問題1.2を解くことで各ブロックのA地点からの最短移動時間が以下に示す配列に格納された。
 AブロックからBブロックまでの最短経路を以下の形式で表示せよ。
 \begin{quote}
 (0,0) -> (?, ?) -> ... -> (16,16)
