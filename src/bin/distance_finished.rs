@@ -14,19 +14,34 @@ const SIZE: usize = 17;
 
 pub fn main() {
     // make_map();
+
     let mut map = set_routes();
+
+    for j in (0..SIZE).rev() {
+        for i in 0..SIZE {
+            print!("{:>2} ", map[j][i]);
+        }
+        println!();
+    }
+    // problem 1.2
     for j in 0..SIZE {
         for i in 0..SIZE {
-            match (i, j) {
+            match (j, i) {
                 (0, 0) => (),
-                (0, k) => map[j][k] += map[j][k - 1],
-                (k, 0) => map[j][i] += map[k - 1][i],
+                (0, _) => map[j][i] += map[j][i - 1],
+                (_, 0) => map[j][i] += map[j - 1][i],
                 _ => map[j][i] += map[j - 1][i].min(map[j][i - 1]),
             }
         }
     }
-    dbg!(map[16][16]);
+    for j in (0..SIZE).rev() {
+        for i in 0..SIZE {
+            print!("{:>2} ", map[j][i]);
+        }
+        println!();
+    }
 
+    // problem 1.3
     let mut route: Vec<(usize, usize)> = Vec::new();
     let mut loc: (usize, usize) = (16, 16);
     while loc != (0, 0) {
@@ -34,7 +49,7 @@ pub fn main() {
             (0, i) => loc.1 -= 1,
             (j, 0) => loc.0 -= 1,
             (j, i) => {
-                if map[i - 1][j] < map[i][j - 1] {
+                if map[j - 1][i] < map[j][i - 1] {
                     loc.0 -= 1;
                 } else {
                     loc.1 -= 1;
@@ -48,6 +63,22 @@ pub fn main() {
         print!(" ({},{}) ->", l.0, l.1);
     }
     println!("B(16, 16)");
+
+
+    // for LaTeX
+
+    for j in 0..SIZE {
+        println!("\\foreach \\i [count=\\j from 0] in {{{}}} \\node[cell] at (\\j, {}) {{$\\i$}};",
+                 (0..SIZE).map(|i| format!("{}", map[j][i])).collect::<Vec<_>>().join(","),
+                 j);
+    }
+
+    print!("{{ ");
+    for l in route.iter().rev() {
+        print!("{}/{},", l.0, l.1);
+    }
+    println!("16/16 }}");
+
 }
 
 pub fn make_map() {
@@ -73,6 +104,7 @@ pub fn make_map() {
                  v.iter().map(|i| format!("{}",i)).collect::<Vec<_>>().join(","),
         )
     }
+    vec[SIZE-1][SIZE-1] = 0;
     for (j,v) in vec.iter().enumerate() {
         for (i, x) in v.iter().enumerate() {
             println!("{:>2},{:>2} = {:>2}", j, i, x);
@@ -98,7 +130,7 @@ fn set_routes () -> Vec<Vec<usize>> {
         vec![6,9,1,5,2,6,5,8,8,4,9,9,2,2,7,3,9],
         vec![6,3,5,8,7,2,6,1,6,7,8,6,4,9,8,6,8],
         vec![5,3,2,8,5,2,4,6,2,6,1,8,9,5,6,3,2],
-        vec![7,8,7,2,4,2,1,2,3,2,5,3,2,7,3,9,6],
+        vec![7,8,7,2,4,2,1,2,3,2,5,3,2,7,3,9,0],
     ];
     vec
 }
