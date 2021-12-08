@@ -15,10 +15,39 @@ const SIZE: usize = 17;
 pub fn main() {
     // make_map();
     let mut map = set_routes();
-    // 問題1.2
+    for j in 0..SIZE {
+        for i in 0..SIZE {
+            match (i, j) {
+                (0, 0) => (),
+                (0, k) => map[j][k] += map[j][k - 1],
+                (k, 0) => map[j][i] += map[k - 1][i],
+                _ => map[j][i] += map[j - 1][i].min(map[j][i - 1]),
+            }
+        }
+    }
     dbg!(map[16][16]);
 
-    // 問題1.2.2
+    let mut route: Vec<(usize, usize)> = Vec::new();
+    let mut loc: (usize, usize) = (16, 16);
+    while loc != (0, 0) {
+        match loc {
+            (0, i) => loc.1 -= 1,
+            (j, 0) => loc.0 -= 1,
+            (j, i) => {
+                if map[i - 1][j] < map[i][j - 1] {
+                    loc.0 -= 1;
+                } else {
+                    loc.1 -= 1;
+                }
+            }
+        }
+        route.push(loc);
+    }
+    print!("A");
+    for l in route.iter().rev() {
+        print!(" ({},{}) ->", l.0, l.1);
+    }
+    println!("B(16, 16)");
 }
 
 pub fn make_map() {
