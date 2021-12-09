@@ -52,7 +52,7 @@ A(m, n) =& A(m - 1, A(m, n - 1))
 \end{itemize}
 \end{frame}
 
-\section{A series of practices}		%%%%%%%%
+\section{Variants of an idea}		%%%%%%%%
 \subsection{}
 
 \begin{frame}[fragile]{問題0.0}{}
@@ -103,10 +103,10 @@ $n = 23$, 左から11番目の数は？
     \node[cell] at (\j, 7) {\rotatebox{0}{$\i$}};
 \foreach \i [count=\j from 0] in {1}
     \node[cell] at (\j, 8) {\rotatebox{0}{$\i$}};
-\draw[arrow] (0, -1) -- ++(10, 0) node[below] {N=23 (X=23)};
-\draw[arrow] (-1, 0) -- ++(0, 10) node[left] {Y};
+\draw[arrow] (0, -1) -- ++(10, 0) node[below] {N=23 (X=23, i=23)};
+\draw[arrow] (-1, 0) -- ++(0, 10) node[left] {Y, j};
 \draw[arrow] (10, 0) -- ++ (-6, 6) node[right=5pt, anchor=west] {左から11(10回移動)};
-\node at (8,8) {$(N=23, 11)$は$j,i$座標$(13, 10)$に対応};
+\node at (8,8) {$(N=23, 11)$は$ji$座標$(13, 10)$に対応};
 \end{tikzpicture}
 }
 \end{center}
@@ -121,19 +121,19 @@ $n = 23$, 左から11番目の数は？
 \vfill
 \begin{itemize}\itemsep8pt
 \item ゴールから遡ると再帰関数が必要、補助記憶領域なし
-\item （帰納的構造を理解した上で）スタートから組み立てると配列が必要、再帰なし
+\item スタートから組み立てると配列が必要、再帰なし
 \end{itemize}
 
 \vfill
-「配列を使ってはいけない」という追加制約があっても解けるのならOK
+追加制約「配列を使ってはいけない」の下でも解けるならOK
 
 \vfill
 {\fontsize{5}{5}\selectfont ただし電卓問題ではスタートからの組み立ては無理}
 \end{frame}
 
-\begin{frame}[fragile]{問題1.0}{}
-\begin{tikzpicture}[overlay, xshift=0.5\textwidth,yshift=-0.26\textheight]
-\node at (0,0) {\pgfimage[width=1.0\pagewidth]{shuttle.jpg}};
+\begin{frame}[fragile]{問題1.0}{文章題=論理的思考力+アルゴリズム}
+\begin{tikzpicture}[overlay, xshift=0.5\textwidth,yshift=-0.33\textheight]
+\node at (0,0) {\pgfimage[width=1.1\pagewidth]{shuttle.jpg}};
 \end{tikzpicture}
 \begin{spacing}{1.25}
 \textcolor{white}{
@@ -146,12 +146,12 @@ $n = 23$, 左から11番目の数は？
 
 \begin{frame}[fragile]{}{}
 \begin{tikzpicture}[overlay, xshift=0.5\textwidth]
-\node[anchor=west] at (0, -5) {15回上昇15回下降};
+\node[anchor=west] at (2, -5) {15回上昇15回下降};
 \end{tikzpicture}
 
 \begin{center}
 \rotatebox{45}{
-\scalebox{0.4}{
+\scalebox{0.5}{
 \begin{tikzpicture}[cell/.style = {rectangle,draw=gray,semithick,minimum size=1cm,outer sep=0mm}]
 \foreach \i [count=\j from 0] in {1, 1, 1, 1, 1,  1, 1, 1, 1}
     \node[cell] at (\j,  0) {\rotatebox{-45}{$\i$}};
@@ -171,9 +171,9 @@ $n = 23$, 左から11番目の数は？
     \node[cell] at (\j, -7) {\rotatebox{-45}{$\i$}};
 \foreach \i [count=\j from 0] in {1}
     \node[cell] at (\j, -8) {\rotatebox{-45}{$\i$}};
-\node[fill=red] at (10,-10) {\rotatebox{-45}{\textcolor{red}{\textcolor{white}{ゴール}}}};
-\draw[draw=black,-{Latex[scale=2]}] (-0.5, 0.5) -- ++(12, 0);
-\draw[draw=black,-{Latex[scale=2]}] (-0.5, 0.5) -- ++(0, -12);
+\node[fill=red] at (10,-10) {\rotatebox{-45}{\textcolor{red}{\textcolor{white}{G}}}};
+\draw[draw=black,-{Latex[scale=2]}] (-0.5, 0.5) -- ++(0, -10) node[right=4pt] {\rotatebox{-45}{$x$}};
+\draw[draw=black,-{Latex[scale=2]}] (-0.5, 0.5) -- ++(10, 0) node[right=4pt] {\rotatebox{-45}{$y$}};
 \draw[-{Latex[scale=1.5]}] (-3, -1) -- (-0.5, 0);
 \node[rotate=-45] at (-3.5,-1.8) {原点$(0,0)$};
 \end{tikzpicture}
@@ -183,8 +183,8 @@ $n = 23$, 左から11番目の数は？
 \end{frame}
 
 \begin{frame}[fragile]{問題1.1}{}
-\begin{tikzpicture}[overlay, xshift=0.5\textwidth,yshift=-0.22\textheight]
-\node at (0,-1) {\pgfimage[width=0.5\pagewidth]{smalltalk.jpg}};
+\begin{tikzpicture}[overlay, xshift=0.5\textwidth,yshift=-0.28\textheight]
+\node at (0,-1) {\pgfimage[width=0.55\pagewidth]{smalltalk.jpg}};
 \end{tikzpicture}
 
 \begin{spacing}{1.25}
@@ -193,40 +193,9 @@ $n = 23$, 左から11番目の数は？
 30分後(30回の進路変更後)に元の高度に戻ってこなければならないとすると、飛行経路は何通りあるでしょう。\\
 高度0キロメートルで墜落します。
 \end{spacing}
-
 \end{frame}
 
 \begin{frame}[fragile]{}{}
-\begin{center}
-\rotatebox{45}{
-\scalebox{0.5}{
-\begin{tikzpicture}[cell/.style = {rectangle,draw=gray,semithick,minimum size=1cm,outer sep=0mm}]
-\foreach \i [count=\j from 0] in {1, 1, 1, 1, 1, 1, 1, 1, 1}
-    \node[cell] at (\j,  0) {\rotatebox{-45}{$\i$}};
-\foreach \i [count=\j from 0] in {1, 2, 3, 4, 5,  6, 7, 8}
-    \node[cell] at (\j, -1) {\rotatebox{-45}{$\i$}};
-\foreach \i [count=\j from 0] in {1, 3, 6, 10,15,21,28}
-    \node[cell] at (\j, -2) {\rotatebox{-45}{$\i$}};
-\foreach \i [count=\j from 0] in {1, 4, 10,20,35,56}
-    \node[cell] at (\j, -3) {\rotatebox{-45}{$\i$}};
-\foreach \i [count=\j from 0] in {1, 5, 15, 35, 70}
-    \node[cell] at (\j, -4) {\rotatebox{-45}{$\i$}};
-\foreach \i [count=\j from 0] in {X, 6, 21, 56}
-    \node[cell] at (\j, -5) {\rotatebox{-45}{$\i$}};
-\foreach \i [count=\j from 0] in {X, X, 28}
-    \node[cell] at (\j, -6) {\rotatebox{-45}{$\i$}};
-\foreach \i [count=\j from 0] in {X, X}
-    \node[cell] at (\j, -7) {\rotatebox{-45}{$\i$}};
-\foreach \i [count=\j from 0] in {X}
-    \node[cell] at (\j, -8) {\rotatebox{-45}{$\i$}};
-\draw[draw=red,rotate=-45,very thick] (1,-3.5) -- ++(10,0) node[rotate=-45,above=4pt] () {地平線};
-\end{tikzpicture}
-}
-}
-\end{center}
-\end{frame}
-
-\begin{frame}[fragile]{回転}{}
 \begin{center}
 \scalebox{0.5}{
 \begin{tikzpicture}[cell/.style = {rectangle,draw=gray,semithick,minimum size=1cm,outer sep=0mm}]
@@ -248,26 +217,24 @@ $n = 23$, 左から11番目の数は？
     \node[cell] at (\j, 7) {\rotatebox{0}{$\i$}};
 \foreach \i [count=\j from 0] in {1, 9}
     \node[cell] at (\j, 8) {\rotatebox{0}{$\i$}};
-\draw[-{Stealth[scale=1.4]},draw=black,very thick] (-0.6,-0.6) -- ++(11,0) node[right=4pt] {$x$};
-\draw[-{Stealth[scale=1.4]},draw=black,very thick] (-0.6,-0.6) -- ++(0,11) node[right=4pt] {$y$};
+\draw[-{Stealth[scale=1.4]},draw=black,very thick] (-0.6,-0.6) -- ++(12,0) node[right=4pt] {$x$あるいはi};
+\draw[-{Stealth[scale=1.4]},draw=black,very thick] (-0.6,-0.6) -- ++(0,11) node[right=4pt] {$y$あるいはj};
 \draw[draw=red,very thick] (4,-1) -- ++(8,8) node[near end, right=4pt] () {$y + 5 \le x$};
+\node[] at (8,3.6) {\rotatebox{45}{地平線}};
 \end{tikzpicture}
 }
 \end{center}
 \end{frame}
 
-
-\begin{frame}[fragile]{相似問題の場合分け}{}
-問題1.0と問題1.1は別問題か？
-
-\begin{itemize}%\itemsep8pt
-\item 問題1.0 : $T(n)  = T_{i}(-) + T_{j}(-)$
+\begin{frame}[fragile]{相似問題の場合分け：パターンを見つける}{問題1.0と問題1.1は別問題か？}
+\begin{itemize}\itemsep20pt
+\item 問題1.0
 \begin{enumerate}%\itemsep8pt
 \item 左はし
 \item 下はし
 \item それ以外
 \end{enumerate}
-\item 問題1.1 : $T(n)  = T_{i}(-) + T_{j}(-)$
+\item 問題1.1
 \begin{enumerate}%\itemsep8pt
 \item 左はし
 \item 下はし
@@ -277,14 +244,14 @@ $n = 23$, 左から11番目の数は？
 \end{itemize}
 
 \vfill
-そもそも長さ0は場合分けして特別扱い（でなければ停止しない）
+そもそもこれまで長さ0は場合分けして特別扱い
 
 \vfill
-両者は別アルゴリズムというより相似問題の種類数の差
+別アルゴリズムというより相似問題の種類数の差
 \end{frame}
 
 \begin{frame}[fragile]{問題1.2}{}
-あなたはAブロックでお客を拾ったタクシードライバーです。お客はBブロックに行こうとしています。
+あなたは\textcolor{blue}{Aブロック}でお客を拾ったタクシードライバーです。お客は\textcolor{red}{Bブロック}に行こうとしています。
 リアルタイム混雑情報サービスはブロック内移動時間を以下のように表示しています。
 最短で何分あればBブロックに到着できるでしょう。
 どのブロックも下から上または左から右へ一方通行でつながっています。
@@ -292,6 +259,8 @@ $n = 23$, 左から11番目の数は？
 \begin{center}
 \scalebox{0.25}{
 \begin{tikzpicture}[cell/.style = {rectangle,draw=gray,semithick,minimum size=1cm,outer sep=0mm}]
+\node[cell,fill=blue!20] at (0,0) {};
+\node[cell,fill=red!20] at (16,16) {};
     \foreach \i [count=\j from 0] in {9,9,4,8,7,3,3,4,7,8,4,2,6,1,3,1,6} \node[cell] at (\j, 0) {$\i$};
     \foreach \i [count=\j from 0] in {2,2,4,8,4,9,9,5,4,3,5,5,7,5,1,7,5} \node[cell] at (\j, 1) {$\i$};
     \foreach \i [count=\j from 0] in {5,6,1,8,6,5,4,3,6,9,7,1,9,3,9,4,4} \node[cell] at (\j, 2) {$\i$};
@@ -309,15 +278,13 @@ $n = 23$, 左から11番目の数は？
     \foreach \i [count=\j from 0] in {6,3,5,8,7,2,6,1,6,7,8,6,4,9,8,6,8} \node[cell] at (\j, 14) {$\i$};
     \foreach \i [count=\j from 0] in {5,3,2,8,5,2,4,6,2,6,1,8,9,5,6,3,2} \node[cell] at (\j, 15) {$\i$};
     \foreach \i [count=\j from 0] in {7,8,7,2,4,2,1,2,3,2,5,3,2,7,3,9,0} \node[cell] at (\j, 16) {$\i$};
-\draw[{Latex[scale=1.5]}-] (-0.7, 0.1) -- (-2,1) node[left] {\textcolor{red}{A}};
-\node[cell,red,label={(16, 16)}] at (16,16) {B};
 \end{tikzpicture}
 }
 \end{center}
 \end{frame}
 
 \begin{frame}[fragile]{配布ファイル}{toa04-p1.2-routes.txt}
-\begin{codeof}{language=c}{Y, X = N}
+\begin{codeof}{language=c}{行が列より先：j, i = N}
  0, 0 = 9
  0, 1 = 9
  0, 2 = 4
@@ -336,28 +303,28 @@ $n = 23$, 左から11番目の数は？
 従ってそこから座標$(1,0)$や$(0,1)$のブロックにたどり着くには9分が必要。
 \end{frame}
 
-\begin{frame}[fragile]{ジェネリックなフレームワーク}{問題1.0と問題1.2は別問題か？}
-\begin{itemize}%\itemsep8pt
+\begin{frame}[fragile]{分解、組み合わせ、抽象化}{問題1.0と問題1.2は別問題か？}
+\begin{itemize}\itemsep20pt
 \item 問題1.0
 \begin{enumerate}%\itemsep8pt
 \item 再帰して
 \item 再帰して
-\item 組み合わせ
+\item 組み合わせ：\texttt{+}を投入
 \end{enumerate}
 \item 問題1.2
 \begin{enumerate}%\itemsep8pt
 \item 再帰して
 \item 再帰して
-\item 組み合わせ
+\item 組み合わせ：\texttt{min}を投入
 \end{enumerate}
 \end{itemize}
 
 \vfill
-両者は同じにしか見えない（整数用の二分探索と実数用の二分探索程度）
+両者は同じ
 \end{frame}
 
 \begin{frame}[fragile]{問題1.2.1}{}
-あなたはAブロックでお客を拾ったタクシードライバーです。お客はBブロックに行こうとしています。
+あなたは\textcolor{blue}{Aブロック}でお客を拾ったタクシードライバーです。お客は\textcolor{red}{Bブロック}に行こうとしています。
 RCISはそれぞれのブロック内移動時間を以下のように表示しています。
 最短で何分あればBブロックに到着できるでしょう。
 どのブロックも下から上、左から右、または左下から右上へ一方通行でつながっています。
@@ -365,6 +332,8 @@ RCISはそれぞれのブロック内移動時間を以下のように表示し�
 \begin{center}
 \scalebox{0.25}{
 \begin{tikzpicture}[cell/.style = {rectangle,draw=gray,semithick,minimum size=1cm,outer sep=0mm}]
+\node[cell,fill=blue!20] at (0,0) {};
+\node[cell,fill=red!20] at (16,16) {};
     \foreach \i [count=\j from 0] in {9,9,4,8,7,3,3,4,7,8,4,2,6,1,3,1,6} \node[cell] at (\j, 0) {$\i$};
     \foreach \i [count=\j from 0] in {2,2,4,8,4,9,9,5,4,3,5,5,7,5,1,7,5} \node[cell] at (\j, 1) {$\i$};
     \foreach \i [count=\j from 0] in {5,6,1,8,6,5,4,3,6,9,7,1,9,3,9,4,4} \node[cell] at (\j, 2) {$\i$};
@@ -382,25 +351,25 @@ RCISはそれぞれのブロック内移動時間を以下のように表示し�
     \foreach \i [count=\j from 0] in {6,3,5,8,7,2,6,1,6,7,8,6,4,9,8,6,8} \node[cell] at (\j, 14) {$\i$};
     \foreach \i [count=\j from 0] in {5,3,2,8,5,2,4,6,2,6,1,8,9,5,6,3,2} \node[cell] at (\j, 15) {$\i$};
     \foreach \i [count=\j from 0] in {7,8,7,2,4,2,1,2,3,2,5,3,2,7,3,9,0} \node[cell] at (\j, 16) {$\i$};
-\draw[{Latex[scale=1.5]}-] (-0.7, 0.1) -- (-2,1) node[left] {\textcolor{red}{A}};
-\node[cell,red,label={(16, 16)}] at (16, 16) {B};
 \end{tikzpicture}
 }
 \end{center}
 \end{frame}
 
 \begin{frame}[fragile]{問題1.3}{}
-問題1.2を解くことで各ブロックのA地点からの最短移動時間が以下に示す配列に格納された。
-AブロックからBブロックまでの最短経路を以下の形式で表示せよ。
-\begin{quote}
-(0,0) -> (?, ?) -> ... -> (16,16)
-\end{quote}
+問題1.2を解くことで\textcolor{blue}{Aブロック}から各ブロックへの最短移動時間が以下に示す配列に格納された。
+\textcolor{blue}{Aブロック}から\textcolor{red}{Bブロック}までの最短経路を次行の形式で出力せよ。
+\begin{codeof}{}{}
+(0,0) -> (1,0) -> ... -> (16,16)
+\end{codeof}
 
 \begin{center}
 \scalebox{0.25}{
 \begin{tikzpicture}[cell/.style = {rectangle,draw=gray,semithick,minimum size=1cm,outer sep=0mm}]
 \visible<2>{    \foreach \j\i in { 0/0,1/0,1/1,2/1,3/1,4/1,5/1,6/1,7/1,8/1,9/1,9/2,9/3,10/3,11/3,12/3,13/3,13/4,13/5,14/5,15/5,16/5,16/6,16/7,16/8,16/9,16/10,16/11,16/12,16/13,16/14,16/15,16/16 }
  \node[cell,fill=green] at (\i, \j) {};}
+\node[cell,fill=blue!20] at (0,0) {};
+\node[cell,fill=red!20] at (16,16) {};
 \foreach \i [count=\j from 0] in {9,18,22,30,37,40,43,47,54,62,66,68,74,75,78,79,85} \node[cell] at (\j, 0) {$\i$};
 \foreach \i [count=\j from 0] in {11,13,17,25,29,38,47,52,56,59,64,69,76,80,79,86,90} \node[cell] at (\j, 1) {$\i$};
 \foreach \i [count=\j from 0] in {16,19,18,26,32,37,41,44,50,59,66,67,76,79,88,90,94} \node[cell] at (\j, 2) {$\i$};
@@ -418,19 +387,20 @@ AブロックからBブロックまでの最短経路を以下の形式で表示
 \foreach \i [count=\j from 0] in {80,70,68,71,72,73,79,80,86,90,98,104,105,112,118,119,127} \node[cell] at (\j, 14) {$\i$};
 \foreach \i [count=\j from 0] in {85,73,70,78,77,75,79,85,87,93,94,102,111,116,122,122,124} \node[cell] at (\j, 15) {$\i$};
 \foreach \i [count=\j from 0] in {92,81,77,79,81,77,78,80,83,85,90,93,95,102,105,114,114} \node[cell] at (\j, 16) {$\i$};
-\draw[{Latex[scale=1.5]}-] (-0.7, 0.1) -- (-2,1) node[left] {\textcolor{red}{A}};
-\node[cell,red,label={(16, 16)}] at (16, 16) {B};
 \end{tikzpicture}
 }
 \end{center}
 \end{frame}
 
 \begin{frame}[fragile]{問題2.0}{}
-各点の重みが以下で与えられたとしてAからBへの最短距離を求めよ。各点は4近傍（4連結）である。
+各点の重みが以下で与えられたとして\textcolor{blue}{A=(j=2,i=5)}から\textcolor{red}{B=(j=13,i=13)}への最短距離を求めよ。
+各点は4近傍（4連結）である。
 
 \begin{center}
 \scalebox{0.3}{
 \begin{tikzpicture}[cell/.style = {rectangle,draw=gray,semithick,minimum size=1cm,outer sep=0mm}]
+\node[cell,fill=blue!20] at (5,2) {};
+\node[cell,fill=red!20] at (13,13) {};
     \foreach \i [count=\j from 0] in {9,9,4,8,7,3,3,4,7,8,4,2,6,1,3,1,6} \node[cell] at (\j, 0) {$\i$};
     \foreach \i [count=\j from 0] in {2,2,4,8,4,9,9,5,4,3,5,5,7,5,1,7,5} \node[cell] at (\j, 1) {$\i$};
     \foreach \i [count=\j from 0] in {5,6,1,8,6,5,4,3,6,9,7,1,9,3,9,4,4} \node[cell] at (\j, 2) {$\i$};
@@ -448,8 +418,6 @@ AブロックからBブロックまでの最短経路を以下の形式で表示
     \foreach \i [count=\j from 0] in {6,3,5,8,7,2,6,1,6,7,8,6,4,9,8,6,8} \node[cell] at (\j, 14) {$\i$};
     \foreach \i [count=\j from 0] in {5,3,2,8,5,2,4,6,2,6,1,8,9,5,6,3,2} \node[cell] at (\j, 15) {$\i$};
     \foreach \i [count=\j from 0] in {7,8,7,2,4,2,1,2,3,2,5,3,2,7,3,9,0} \node[cell] at (\j, 16) {$\i$};
-\draw[{Latex[scale=1.5]}-] (-0.7, 0.1) -- (-2,1) node[left] {\textcolor{red}{A}};
-\node[cell,red,label={(13, 13)}] at (13,13) {B};
 \end{tikzpicture}
 }
 \end{center}
