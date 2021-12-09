@@ -1,0 +1,253 @@
+\NeedsTeXFormat{LaTeX2e}
+%\PassOptionsToClass{handout}{beamer}
+\documentclass{beamer}
+\usepackage{beamerPack}
+\usepackage[boxed,ruled,vlined]{algorithm2e}
+\usepackage{setspace}
+\usepackage[usestackEOL]{stackengine}[2013-10-15]
+\def\x{\hspace{4.1ex}}    %BETWEEN TWO 1-DIGIT NUMBERS
+\def\y{\hspace{3.4ex}}  %BETWEEN 1 AND 2 DIGIT NUMBERS
+\def\z{\hspace{2.7ex}}    %BETWEEN TWO 2-DIGIT NUMBERS
+\usetikzlibrary{arrows.meta}
+\usepackage[04]{../lecture}
+\subtitle{プログラミング的思考}
+\begin{document}
+
+\begin{frame}[fragile]{}
+\titlepage
+\end{frame}
+
+\section{Algorithm design}		%%%%%%%%
+\subsection{}
+
+\begin{frame}[fragile]{問題解決の枠組み}{}
+\begin{enumerate}\itemsep8pt
+\item 問題の解法をアルゴリズム化する
+\begin{align*}
+アルゴリズム = & 前処理? 相似問題^{+} 後処理?
+\end{align*}
+\item （要求を満たすまで無駄を省く）
+\item プログラムとして実装する
+\item （要求を満たすまで高速化する）
+\end{enumerate}
+\end{frame}
+
+\begin{frame}[fragile]{アルゴリズムでは再帰であること}{}
+fact(100), Fib(100), A(3, 3)を求めるプログラムを作成せよ
+\begin{align*}
+fact(1) =& 1 \\
+fact(n) =& n \times fact(n - 1)\\
+Fib(1) =& 1 \\
+Fib(2) =& 1 \\
+Fib(n) =& Fib(n - 1) + Fib(n -2) \\
+A(0, n) =& n + 1 \\
+A(m, 0) =& A(m - 1, 1) \\
+A(m, n) =& A(m - 1, A(m, n - 1))
+\end{align*}
+
+\begin{itemize}%\itemsep8pt
+\item $f(n) = ? + f(-) + ?$ :: 線形再帰
+\item $f(n) = ? + f(-)$ :: 線形再帰、特に末尾再帰\href{https://ja.wikipedia.org/wiki/%E6%9C%AB%E5%B0%BE%E5%86%8D%E5%B8%B0}{\beamergotobutton{wikipedia}}
+\item $f(n) = ? + f(-) + f(-) + ?$ :: 線形再帰でない
+\end{itemize}
+\end{frame}
+
+\section{Variants of an idea}		%%%%%%%%
+\subsection{}
+
+\begin{frame}[fragile]{問題0.0}{}
+\stackMath
+\Longstack[l]{
+n=0\\
+n=1\\
+n=2\\
+n=3\\
+n=4\\
+n=5\\
+n=6\\
+n=7\qquad\ \\
+}
+\Longstack{
+1\\
+1\x 1\\
+1\x 2\x 1\\
+1\x 3\x 3\x 1\\
+1\x 4\x 6\x 4\x 1\\
+1\x 5\y 10\z 10\y 5\x 1\\
+1\x 6\y 15\z 20\z 15\y 6\x 1\\
+1\x 7\x 21\z 35\z 35\z 21\y 7\x 1\\
+}
+
+$n = 23$, 左から11番目の数は？
+\end{frame}
+
+\begin{frame}[fragile]{構造}{}
+\begin{center}
+\scalebox{0.6}{
+\begin{tikzpicture}[cell/.style = {rectangle,draw=gray,semithick,minimum size=1.0cm,outer sep=0mm}]
+\foreach \i [count=\j from 0] in {1, 1, 1, 1, 1,  1, 1, 1, 1}
+    \node[cell] at (\j, 0) {\rotatebox{0}{$\i$}};
+\foreach \i [count=\j from 0] in {1, 2, 3, 4, 5,  6, 7, 8}
+    \node[cell] at (\j, 1) {\rotatebox{0}{$\i$}};
+\foreach \i [count=\j from 0] in {1, 3, 6, 10,15,21,28}
+    \node[cell] at (\j, 2) {\rotatebox{0}{$\i$}};
+\foreach \i [count=\j from 0] in {1, 4, 10,20,35,56}
+    \node[cell] at (\j, 3) {\rotatebox{0}{$\i$}};
+\foreach \i [count=\j from 0] in {1, 5, 15,35,70}
+    \node[cell] at (\j, 4) {\rotatebox{0}{$\i$}};
+\foreach \i [count=\j from 0] in {1, 6, 21,56}
+    \node[cell] at (\j, 5) {\rotatebox{0}{$\i$}};
+\foreach \i [count=\j from 0] in {1, 7, 28}
+    \node[cell] at (\j, 6) {\rotatebox{0}{$\i$}};
+\foreach \i [count=\j from 0] in {1, 8}
+    \node[cell] at (\j, 7) {\rotatebox{0}{$\i$}};
+\foreach \i [count=\j from 0] in {1}
+    \node[cell] at (\j, 8) {\rotatebox{0}{$\i$}};
+\draw[arrow] (0, -1) -- ++(10, 0) node[below] {N=23 (X=23, i=23)};
+\draw[arrow] (-1, 0) -- ++(0, 10) node[left] {Y, j};
+\draw[arrow] (10, 0) -- ++ (-6, 6) node[right=5pt, anchor=west] {左から11(10回移動)};
+\node at (8,8) {$(N=23, 11)$は$ji$座標$(10, 13)$に対応};
+\end{tikzpicture}
+}
+\end{center}
+\end{frame}
+
+\begin{frame}[fragile]{配列の是非}{}
+
+与えられた問題は点(13, 10)を求める問題
+
+大きさ(13,10)の表を完成させる問題を解けば簡単に求められる
+
+\vfill
+\begin{itemize}\itemsep8pt
+\item ゴールから遡ると再帰関数が必要、補助記憶領域なし
+\item スタートから組み立てると配列が必要、再帰なし
+\end{itemize}
+
+\vfill
+追加制約「配列を使ってはいけない」の下でも解けるならOK
+
+\vfill
+{\fontsize{5}{5}\selectfont ただし電卓問題ではスタートからの組み立ては無理}
+\end{frame}
+
+\begin{frame}[fragile]{問題1.0}{文章題=論理的思考力+アルゴリズム}
+\begin{tikzpicture}[overlay, xshift=0.5\textwidth,yshift=-0.33\textheight]
+\node at (0,0) {\pgfimage[width=1.1\pagewidth]{shuttle.jpg}};
+\end{tikzpicture}
+\begin{spacing}{1.25}
+\textcolor{white}{
+観光用スペースシャトルが高度100キロメートルからツアーを開始します。\\
+乗客は1分ごとに次の1分間上昇するか、下降するかを決めることができます。どちらも1分でちょうど1キロ上昇するか下降します。\\
+30分後（30回の進路変更後）に元の高度に戻ってこなければならないとすると、飛行経路は何通りあるでしょう。
+}
+\end{spacing}
+\end{frame}
+
+\begin{frame}[fragile]{}{}
+\begin{tikzpicture}[overlay, xshift=0.5\textwidth]
+\node[anchor=west] at (2, -5) {15回上昇15回下降};
+\end{tikzpicture}
+
+\begin{center}
+\rotatebox{45}{
+\scalebox{0.5}{
+\begin{tikzpicture}[cell/.style = {rectangle,draw=gray,semithick,minimum size=1cm,outer sep=0mm}]
+\foreach \i [count=\j from 0] in {1, 1, 1, 1, 1,  1, 1, 1, 1}
+    \node[cell] at (\j,  0) {\rotatebox{-45}{$\i$}};
+\foreach \i [count=\j from 0] in {1, 2, 3, 4, 5,  6, 7, 8}
+    \node[cell] at (\j, -1) {\rotatebox{-45}{$\i$}};
+\foreach \i [count=\j from 0] in {1, 3, 6, 10,15,21,28}
+    \node[cell] at (\j, -2) {\rotatebox{-45}{$\i$}};
+\foreach \i [count=\j from 0] in {1, 4, 10,20,35,56}
+    \node[cell] at (\j, -3) {\rotatebox{-45}{$\i$}};
+\foreach \i [count=\j from 0] in {1, 5, 15,35,70}
+    \node[cell] at (\j, -4) {\rotatebox{-45}{$\i$}};
+\foreach \i [count=\j from 0] in {1, 6, 21,56}
+    \node[cell] at (\j, -5) {\rotatebox{-45}{$\i$}};
+\foreach \i [count=\j from 0] in {1, 7, 28}
+    \node[cell] at (\j, -6) {\rotatebox{-45}{$\i$}};
+\foreach \i [count=\j from 0] in {1, 8}
+    \node[cell] at (\j, -7) {\rotatebox{-45}{$\i$}};
+\foreach \i [count=\j from 0] in {1}
+    \node[cell] at (\j, -8) {\rotatebox{-45}{$\i$}};
+\node[fill=red] at (10,-10) {\rotatebox{-45}{\textcolor{red}{\textcolor{white}{G}}}};
+\draw[draw=black,-{Latex[scale=2]}] (-0.5, 0.5) -- ++(0, -10) node[right=4pt] {\rotatebox{-45}{$x$}};
+\draw[draw=black,-{Latex[scale=2]}] (-0.5, 0.5) -- ++(10, 0) node[right=4pt] {\rotatebox{-45}{$y$}};
+\draw[-{Latex[scale=1.5]}] (-3, -1) -- (-0.5, 0);
+\node[rotate=-45] at (-3.5,-1.8) {原点$(0,0)$};
+\end{tikzpicture}
+}
+}
+\end{center}
+\end{frame}
+
+\begin{frame}[fragile]{問題1.1}{}
+\begin{tikzpicture}[overlay, xshift=0.5\textwidth,yshift=-0.28\textheight]
+\node at (0,-1) {\pgfimage[width=0.55\pagewidth]{smalltalk.jpg}};
+\end{tikzpicture}
+
+\begin{spacing}{1.25}
+観光用飛行船が高度5キロメートルからツアーを開始します。\\
+乗客は1分ごとに次の1分間上昇するか、下降するかを決めることができます。どちらも1分でちょうど1キロ上昇するか下降します。\\
+30分後(30回の進路変更後)に元の高度に戻ってこなければならないとすると、飛行経路は何通りあるでしょう。\\
+高度0キロメートルで墜落します。
+\end{spacing}
+\end{frame}
+
+\begin{frame}[fragile]{}{}
+\begin{center}
+\scalebox{0.5}{
+\begin{tikzpicture}[cell/.style = {rectangle,draw=gray,semithick,minimum size=1cm,outer sep=0mm}]
+\foreach \i [count=\j from 0] in {1, 1, 1, 1, 1, 0, 0, 0, 0}
+    \node[cell] at (\j,  0) {\rotatebox{0}{$\i$}};
+\foreach \i [count=\j from 0] in {1, 2, 3, 4, 5, 5, 0, 0, 0}
+    \node[cell] at (\j, 1) {\rotatebox{0}{$\i$}};
+\foreach \i [count=\j from 0] in {1, 3, 6, 10,15,20, 20, 0}
+    \node[cell] at (\j, 2) {\rotatebox{0}{$\i$}};
+\foreach \i [count=\j from 0] in {1, 4, 10,20,35,55, 75}
+    \node[cell] at (\j, 3) {\rotatebox{0}{$\i$}};
+\foreach \i [count=\j from 0] in {1, 5, 15, 35, 70, 105}
+    \node[cell] at (\j, 4) {\rotatebox{0}{$\i$}};
+\foreach \i [count=\j from 0] in {1, 6, 21, 56, 106}
+    \node[cell] at (\j, 5) {\rotatebox{0}{$\i$}};
+\foreach \i [count=\j from 0] in {1, 7, 28, 64}
+    \node[cell] at (\j, 6) {\rotatebox{0}{$\i$}};
+\foreach \i [count=\j from 0] in {1, 8, 36}
+    \node[cell] at (\j, 7) {\rotatebox{0}{$\i$}};
+\foreach \i [count=\j from 0] in {1, 9}
+    \node[cell] at (\j, 8) {\rotatebox{0}{$\i$}};
+\draw[-{Stealth[scale=1.4]},draw=black,very thick] (-0.6,-0.6) -- ++(12,0) node[right=4pt] {$x$あるいはi};
+\draw[-{Stealth[scale=1.4]},draw=black,very thick] (-0.6,-0.6) -- ++(0,11) node[right=4pt] {$y$あるいはj};
+\draw[draw=red,very thick] (4,-1) -- ++(8,8) node[near end, right=4pt] () {$y + 5 \le x$};
+\node[] at (8,3.6) {\rotatebox{45}{地平線}};
+\end{tikzpicture}
+}
+\end{center}
+\end{frame}
+
+\begin{frame}[fragile]{相似問題の場合分け：パターンを見つける}{問題1.0と問題1.1は別問題か？}
+\begin{itemize}\itemsep20pt
+\item 問題1.0
+\begin{enumerate}%\itemsep8pt
+\item 左はし
+\item 下はし
+\item それ以外
+\end{enumerate}
+\item 問題1.1
+\begin{enumerate}%\itemsep8pt
+\item 左はし
+\item 下はし
+\item 地平線（新しい場合分け）
+\item それ以外
+\end{enumerate}
+\end{itemize}
+
+\vfill
+そもそもこれまで長さ0は場合分けして特別扱い
+
+\vfill
+別アルゴリズムというより相似問題の種類数の差
+\end{frame}
+
+\end{document}
