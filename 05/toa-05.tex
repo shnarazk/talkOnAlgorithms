@@ -2,428 +2,347 @@
 %\PassOptionsToClass{handout}{beamer}
 \documentclass{beamer}
 \usepackage{beamerPack}
-\usepackage[boxed,ruled,vlined]{algorithm2e}
 \usepackage{setspace}
 \usepackage[05]{../lecture}
-\def\x{\hspace{4.1ex}}    %BETWEEN TWO 1-DIGIT NUMBERS
-\def\y{\hspace{3.4ex}}  %BETWEEN 1 AND 2 DIGIT NUMBERS
-\def\z{\hspace{2.7ex}}    %BETWEEN TWO 2-DIGIT NUMBERS
-\subtitle{動的計画法}
+\subtitle{プログラミング的思考cntd.}
 \begin{document}
 
 \begin{frame}[fragile]{}
 \titlepage
 \end{frame}
 
-\begin{frame}[fragile]{素朴なアルゴリズムと巧妙なアルゴリズムの違い}{}
-\begin{itemize}%\itemsep8pt
-\item 時間計算量を減らす：無駄を省く
-\item 空間計算量を減らす：無駄を省く
-\end{itemize}
-
-\vfill
-空間計算量を減らす例は前回出てきたpartition。元々は一つの配列から二つの配列に要素をコピー（移動）させるアルゴリズムだったが、効率を追求した結果、あのようなプログラム定義になった。
-\end{frame}
-
-\begin{frame}[fragile]{素数の計算}{}
-この話は相似問題に等価なものが含まれるので削除する話なので、今回の最後か次回がふさわしい。
-\end{frame}
-
-\section{for programmers}		%%%%%%%%
+\section{Algorithm design}		%%%%%%%%
 \subsection{}
 
-\begin{frame}[fragile]{数学的解析の力}{}
-
-\[
-Fib(n) = \frac{1}{\sqrt{5}}
-\left\{
-\left(\frac{1 + \sqrt{5}}{2}\right)^n
--
-\left(\frac{1 - \sqrt{5}}{2}\right)^n
-\right\}
-\]
-
-\end{frame}
-
-\begin{frame}[fragile]{ふかしぎおねえさん}{}
-a
-\end{frame}
-
-\section{dynamic programming}		%%%%%%%%
-\subsection{}
-
-\begin{frame}[fragile]{動的計画法}{}
-\begin{block}{動的計画法(dynamic programming)}
-\begin{itemize}%\itemsep8pt
-\item 再帰的に分割された部分問題の(最適)解から元問題の(最適)解を構成
-\item 部分問題の重複性の利用
-\end{itemize}
-\end{block}
-
-\footnotetext{線形計画法は不等式に関する問題}
-\end{frame}
-
-\section{algorithm design}		%%%%%%%%
-\subsection{}
-
-
-\begin{frame}[fragile]{重複を避ける}{フィボナッチ数}
-\begin{codeof}{language=Rust}{}
-fn fib(n: usize) -> usize {
-    let mut memo = [0; 10000];
-    fn f(n: usize) -> usize {
-        if n < 2 { return 1; }
-        if memo[n] != 0 { return memo[n]; }
-        let result = f(n - 2) + f(n - 1);
-        memo[n] = result;
-        result
-    }
-    f(n)
-}
-\end{codeof}
-f(n-1)の計算がf(n-2)の計算を含んでいる$\to$重複問題の出現。
-
-\end{frame}
-
-\begin{frame}[fragile]{空間計算量を下げる}{フィボナッチ数}
-\begin{codeof}{language=Rust}{方向の逆転}
-fn fib(n: usize) -> usize {
-    fn f(k: usize, memo1: usize, memo2: usize) -> usize{
-        if n == k { return memo1 + memo2; } 
-        f(k + 1, memo2 + memo1, memo1);
-    }
-    if n <= 2 { 1 } else { f(3, 1, 1) }
-}
-\end{codeof}
-
-\begin{codeof}{language=Rust}{どうしても再帰がわからない人向け（実行時間は変わらない）}
-fn fib(n: usize) -> usize {
-    if n <= 2 { return 1; }
-    let (mut memo2, mut memo1) = (0, 0);
-    for k in 2..n {
-        (memo1, memo2) = (memo2 + memo1, memo1);
-    }
-    memo1 + memo1
-}
-\end{codeof}
-\end{frame}
-
-\begin{frame}[fragile]{素数判定}{}
-\[
-\forall k \in [2, n-1] : n \% k \ne 0.
-\]
-
-\begin{codeof}{language=Rust}{$O(N)$}
-fn is_prime(n: usize) -> bool {
-    for i in 2..n-1 {
-        if n % i == 0 { return false; } 
-    }
-    true
-}
-\end{codeof}
-高速化
-\begin{enumerate}%\itemsep8pt
-\item 偶数は調べない
-\item 素数しか調べない（そのためにはn以下の全ての素数をまず調べないといけないのだが）
+\begin{frame}[fragile]{問題解決の枠組み}{}
+\begin{enumerate}\itemsep8pt
+\item 問題の解法をアルゴリズム化する
+\begin{align*}
+アルゴリズム = & 前処理? 相似問題^{+} 後処理?
+\end{align*}
+\item （要求を満たすまで無駄を省く）
+\item プログラムとして実装する
+\item （要求を満たすまで高速化する）
 \end{enumerate}
 \end{frame}
 
-\begin{frame}[fragile]{素数判定：重複を省く}{}
-\[
-\forall k \in [2, n-1] : n \% k \ne 0.
-\]
-
-\begin{itemize}%\itemsep8pt
-\item 6000が2で割れた。3000でも割れる。
-\item Xがkで割れた。$\to$ X/kでも割れる。
-\item Xがkで割れなかった。$\to$ X/kでも割れない？
-\item Xがkで割れるなら$\to$ X/kでも割れなければならない。
-\end{itemize}
-
-\[
-\forall k \in [2, \lceil\sqrt{n}\rceil] : n \% k \ne 0.
-\]
-
-\[
-O(n) \to O(\sqrt{n})
-\]
-\end{frame}
-
-\begin{frame}[fragile]{問題の再帰構造の次元を落とす（線形化）}{}
-どんな例を用意していたのか思い出せない。
-\end{frame}
-
-\begin{frame}[fragile]{動的計画法}{}
-ここでこの術語を出すのがいいかどうか。
-\end{frame}
-
-\begin{frame}[fragile]{メモ化}{
-%\href{https://ja.wikipedia.org/wiki/%E3%83%A1%E3%83%A2%E5%8C%96}%
-%{\beamergotobutton{wikipedia}}
+\begin{frame}[fragile]{問題1.0}{文章題=論理的思考力+アルゴリズム}
+\begin{tikzpicture}[overlay, xshift=0.5\textwidth,yshift=-0.33\textheight]
+\node at (0,0) {\pgfimage[width=1.1\pagewidth]{../04/shuttle.jpg}};
+\end{tikzpicture}
+\begin{spacing}{1.25}
+\textcolor{white}{
+観光用スペースシャトルが高度100キロメートルからツアーを開始します。\\
+乗客は1分ごとに次の1分間上昇するか、下降するかを決めることができます。どちらも1分でちょうど1キロ上昇するか下降します。\\
+30分後（30回の進路変更後）に元の高度に戻ってこなければならないとすると、飛行経路は何通りあるでしょう。
 }
-
-X型の引数からY型の計算結果を求める関数に対してXからYへのメモを作ることで時間計算量を減らす
-\begin{codeof}{language=Rust}{メモ化の一般形}
-fn foo (問題指定) -> 解の型 {
-  static memo: Hash<問題指定の型, 解の型>;
-  // メモの確認
-  if memo[問題指定]が有効な値を持つ {
-    return memo[問題指定];
-  }
-
-   本来の計算：問題指定から解を求める
-
-  // メモする
-  memo[問題指定] = 解;
-  return 解;
-}
-\end{codeof}
-
-\footnotetext[1]{定型化されているので言語によってはこのコードを自動生成する}
-\end{frame}
-
-\begin{frame}[fragile]{fibに対するメモ化の例}{
-%\href{https://ja.wikipedia.org/wiki/%E3%83%A1%E3%83%A2%E5%8C%96}{\beamergotobutton{repl it}}
-}
-\begin{codeof}{language=Rust}{fib (memo.rs)}
-pub fn fib(n: usize) -> usize {
-    if let Ok(hash) = MEMO.read() {
-        if let Some(r) = hash.get(&n) {
-            return *r;
-        }
-    }
-    let n_1 = if n <= 2 { 1 } else { fib(n - 1) };
-    let n_2 = if n <= 2 { 0 } else { fib(n - 2) };
-    let result = n_1 + n_2;
-    if let Ok(mut hash) = MEMO.write() {
-        hash.insert(n, result);
-    }
-    result
-}
-\end{codeof}
-
-\begin{spacing}{0.7}\fontsize{6}{6}\selectfont
-メモは毎回初期化されないようグローバル(static)変数にしたい。
-Rustではグローバル変数への操作は同期操作を使ったスレッド安全なものしか受け付けないので、
-ライブラリのインポートや変数定義（ここでは省略）、アクセス(L.2--6, L.10-12)が面倒になっている。
 \end{spacing}
 \end{frame}
 
-\begin{frame}[fragile]{効果の確認}{}
+\begin{frame}[fragile]{問題1.1}{}
+\begin{tikzpicture}[overlay, xshift=0.5\textwidth,yshift=-0.28\textheight]
+\node at (0,-1) {\pgfimage[width=0.2\pagewidth]{../04/smalltalk.jpg}};
+\end{tikzpicture}
 
-\begin{codeof}{language=Rust}{}
-fn main() {
-    let n = 46;
-    // mainから1回しか呼ばなくても再帰しているのでメモ化は有効
-    println!("fib({:>2}) = {:>11}", n, fib(n));
-    println!("fib({:>2}) = {:>11}", n, slow_fib(n));
-    // メモに残っているので同じ計算では2回目以降はO(1)
-    for i in 30..=48 {
-        println!("fib({:>2}) = {:>11}", n, fib(n));
-        println!("slw({:>2}) = {:>11}", n, slow_fib(n));
-    }
-    // 引数が違ってもメモに残っているので新規分だけ計算
-    for i in 30..=48 {
-        println!("fib({:>2}) = {:>11}", i, fib(i));
-        println!("slw({:>2}) = {:>11}", i, slow_fib(i));
-    }
-}
-\end{codeof}
+\begin{spacing}{1.25}
+観光用飛行船が高度5キロメートルからツアーを開始します。\\
+乗客は1分ごとに次の1分間上昇するか、下降するかを決めることができます。どちらも1分でちょうど1キロ上昇するか下降します。\\
+30分後(30回の進路変更後)に元の高度に戻ってこなければならないとすると、飛行経路は何通りあるでしょう。\\
+高度0キロメートルで墜落します。
+\end{spacing}
 \end{frame}
 
-\begin{frame}[fragile]{最短経路}{}
-
-経路数ではなく最短経路を求めよ。ただし。
-\end{frame}
-
-\begin{frame}[fragile]{最短経路2}{}
-経路数ではなく最短経路を求めよ。
-\end{frame}
-
-\begin{frame}[fragile]{ダイクストラ法}{
-%\href{https://ja.wikipedia.org/wiki/ダイクストラ法}{\beamergotobutton{wikipedia}}
-}
-\begin{quotation}
-\fontsize{9}{12}\selectfont
-最短経路問題は、ビー玉と紐を用いて解くことができる。
-まずビー玉を頂点、紐を辺にするグラフを工作する。
-グラフを板の上に置き、スタートの頂点にあたるビー玉だけをつまむ。
-グラフが置かれている板を取り除くと、グラフは自由落下を始めるが、スタートにあたるビー玉を持っているので、スタート地点から近いビー玉から順に落下が止まる。
-ゴールにあたるビー玉が止まったとき、ゴールにあたるビー玉はスタートにあたるビー玉まで紐で一直線で結ばれている。
-この直線が最短経路である。
-
-ダイクストラのアルゴリズムは、上述の解法をコンピュータ上でシミュレートしたものである。
-\end{quotation}
-\end{frame}
-
-\begin{frame}[fragile]{ダイクストラ法の根幹：相似問題の考え方による説明}{中間目標を設定し相似問題に帰着させたい}
-中間目標の選択：どの頂点が確定できるか
-\begin{itemize}\itemsep8pt
-\item 距離確定頂点から最も「近い」未確定頂点とする
-\begin{itemize}%\itemsep8pt
-\item なぜならこの頂点に限り三角不等式が成立するから
+\begin{frame}[fragile]{問題1.2}{}
+あなたは\textcolor{blue}{Aブロック}でお客を拾ったタクシードライバーです。お客は\textcolor{red}{Bブロック}に行こうとしています。
+リアルタイム混雑情報サービスはブロック内移動時間を以下のように表示しています。
+最短で何分あればBブロックに到着できるでしょう。
+どのブロックも下から上または左から右へ一方通行でつながっています。
 
 \begin{center}
-\begin{tikzpicture}[scale=0.25]
-\draw (0, 0)
-    -- (4, 3) node[near end, above=4pt, anchor=east] {$5$km}
-    -- (5, 0) node[near end, right=2pt] {$3$km}
-    -- (0, 0) node[near start,below] {$4<8$km};
-\draw (20, 0)
-    -- (24, 3) node[near end, above=4pt, anchor=east] {$5$min}
-    -- (24, 0) node[near end, right=2pt] {$2$min}
-    -- (20, 0) node[near start, below] {$1$min};
+\scalebox{0.25}{
+\begin{tikzpicture}[cell/.style = {rectangle,draw=gray,semithick,minimum size=1cm,outer sep=0mm}]
+\node[cell,fill=blue!20] at (0,0) {};
+\node[cell,fill=red!20] at (16,16) {};
+    \foreach \i [count=\j from 0] in {9,9,4,8,7,3,3,4,7,8,4,2,6,1,3,1,6} \node[cell] at (\j, 0) {$\i$};
+    \foreach \i [count=\j from 0] in {2,2,4,8,4,9,9,5,4,3,5,5,7,5,1,7,5} \node[cell] at (\j, 1) {$\i$};
+    \foreach \i [count=\j from 0] in {5,6,1,8,6,5,4,3,6,9,7,1,9,3,9,4,4} \node[cell] at (\j, 2) {$\i$};
+    \foreach \i [count=\j from 0] in {8,2,1,8,3,5,5,6,7,8,1,2,7,5,8,5,4} \node[cell] at (\j, 3) {$\i$};
+    \foreach \i [count=\j from 0] in {3,1,5,7,9,1,6,6,1,8,6,3,3,8,3,9,8} \node[cell] at (\j, 4) {$\i$};
+    \foreach \i [count=\j from 0] in {6,2,9,4,4,9,6,7,6,3,7,2,7,1,7,4,2} \node[cell] at (\j, 5) {$\i$};
+    \foreach \i [count=\j from 0] in {7,3,5,1,9,6,2,3,2,4,7,4,9,7,3,6,2} \node[cell] at (\j, 6) {$\i$};
+    \foreach \i [count=\j from 0] in {7,2,9,3,5,7,9,5,9,6,4,8,8,5,1,8,1} \node[cell] at (\j, 7) {$\i$};
+    \foreach \i [count=\j from 0] in {8,9,7,8,2,7,8,3,8,8,6,2,3,8,4,8,3} \node[cell] at (\j, 8) {$\i$};
+    \foreach \i [count=\j from 0] in {2,1,2,3,6,7,9,2,5,8,5,5,5,6,3,6,4} \node[cell] at (\j, 9) {$\i$};
+    \foreach \i [count=\j from 0] in {2,6,4,7,6,8,2,5,7,4,4,9,8,9,3,6,8} \node[cell] at (\j, 10) {$\i$};
+    \foreach \i [count=\j from 0] in {1,7,8,5,3,7,1,7,3,1,9,7,2,6,9,6,4} \node[cell] at (\j, 11) {$\i$};
+    \foreach \i [count=\j from 0] in {8,6,9,2,6,9,7,8,5,2,6,5,9,9,5,2,4} \node[cell] at (\j, 12) {$\i$};
+    \foreach \i [count=\j from 0] in {6,9,1,5,2,6,5,8,8,4,9,9,2,2,7,3,9} \node[cell] at (\j, 13) {$\i$};
+    \foreach \i [count=\j from 0] in {6,3,5,8,7,2,6,1,6,7,8,6,4,9,8,6,8} \node[cell] at (\j, 14) {$\i$};
+    \foreach \i [count=\j from 0] in {5,3,2,8,5,2,4,6,2,6,1,8,9,5,6,3,2} \node[cell] at (\j, 15) {$\i$};
+    \foreach \i [count=\j from 0] in {7,8,7,2,4,2,1,2,3,2,5,3,2,7,3,9,0} \node[cell] at (\j, 16) {$\i$};
 \end{tikzpicture}
+}
 \end{center}
+\end{frame}
 
-\end{itemize}
-\item この選択の余地の少なさが中間目標の変更を要請する
-\begin{itemize}%\itemsep8pt
-\item これまでの中間目標は終点から；今回は始点から
-\end{itemize}
+\begin{frame}[fragile]{配布ファイル}{toa04-p1.2-routes.txt}
+\begin{codeof}{language=c}{行が列より先：j, i = N}
+ 0, 0 = 9
+ 0, 1 = 9
+ 0, 2 = 4
+ 0, 3 = 8
+ 0, 4 = 7
+...
+ 1, 0 = 2
+ 1, 1 = 2
+ 1, 2 = 4
+ 1, 3 = 8
+...
+ 2, 0 = 5
+\end{codeof}
+
+1行目の意味：座標$(0, 0)$のブロックを（どの方向であれ）通り抜けるには9分かかる。
+従ってそこから座標$(1,0)$や$(0,1)$のブロックにたどり着くには9分が必要。
+\end{frame}
+
+\begin{frame}[fragile]{分解、組み合わせ、抽象化}{問題1.0と問題1.2は別問題か？}
+\begin{itemize}\itemsep20pt
+\item 問題1.0
+\begin{enumerate}%\itemsep8pt
+\item 再帰して
+\item 再帰して
+\item 組み合わせ：\texttt{+}を投入
+\end{enumerate}
+\item 問題1.2
+\begin{enumerate}%\itemsep8pt
+\item 再帰して
+\item 再帰して
+\item 組み合わせ：\texttt{min}を投入
+\end{enumerate}
 \end{itemize}
 
 \vfill
-相似問題：
-\begin{itemize}\itemsep8pt
-\item 頂点数が1減ったもの
-\end{itemize}
+両者は同じ
+\end{frame}
+
+\begin{frame}[fragile]{問題1.2.1}{}
+あなたは\textcolor{blue}{Aブロック}でお客を拾ったタクシードライバーです。お客は\textcolor{red}{Bブロック}に行こうとしています。
+RCISはそれぞれのブロック内移動時間を以下のように表示しています。
+最短で何分あればBブロックに到着できるでしょう。
+どのブロックも下から上、左から右、または左下から右上へ一方通行でつながっています。
+
+\begin{center}
+\scalebox{0.25}{
+\begin{tikzpicture}[cell/.style = {rectangle,draw=gray,semithick,minimum size=1cm,outer sep=0mm}]
+\node[cell,fill=blue!20] at (0,0) {};
+\node[cell,fill=red!20] at (16,16) {};
+    \foreach \i [count=\j from 0] in {9,9,4,8,7,3,3,4,7,8,4,2,6,1,3,1,6} \node[cell] at (\j, 0) {$\i$};
+    \foreach \i [count=\j from 0] in {2,2,4,8,4,9,9,5,4,3,5,5,7,5,1,7,5} \node[cell] at (\j, 1) {$\i$};
+    \foreach \i [count=\j from 0] in {5,6,1,8,6,5,4,3,6,9,7,1,9,3,9,4,4} \node[cell] at (\j, 2) {$\i$};
+    \foreach \i [count=\j from 0] in {8,2,1,8,3,5,5,6,7,8,1,2,7,5,8,5,4} \node[cell] at (\j, 3) {$\i$};
+    \foreach \i [count=\j from 0] in {3,1,5,7,9,1,6,6,1,8,6,3,3,8,3,9,8} \node[cell] at (\j, 4) {$\i$};
+    \foreach \i [count=\j from 0] in {6,2,9,4,4,9,6,7,6,3,7,2,7,1,7,4,2} \node[cell] at (\j, 5) {$\i$};
+    \foreach \i [count=\j from 0] in {7,3,5,1,9,6,2,3,2,4,7,4,9,7,3,6,2} \node[cell] at (\j, 6) {$\i$};
+    \foreach \i [count=\j from 0] in {7,2,9,3,5,7,9,5,9,6,4,8,8,5,1,8,1} \node[cell] at (\j, 7) {$\i$};
+    \foreach \i [count=\j from 0] in {8,9,7,8,2,7,8,3,8,8,6,2,3,8,4,8,3} \node[cell] at (\j, 8) {$\i$};
+    \foreach \i [count=\j from 0] in {2,1,2,3,6,7,9,2,5,8,5,5,5,6,3,6,4} \node[cell] at (\j, 9) {$\i$};
+    \foreach \i [count=\j from 0] in {2,6,4,7,6,8,2,5,7,4,4,9,8,9,3,6,8} \node[cell] at (\j, 10) {$\i$};
+    \foreach \i [count=\j from 0] in {1,7,8,5,3,7,1,7,3,1,9,7,2,6,9,6,4} \node[cell] at (\j, 11) {$\i$};
+    \foreach \i [count=\j from 0] in {8,6,9,2,6,9,7,8,5,2,6,5,9,9,5,2,4} \node[cell] at (\j, 12) {$\i$};
+    \foreach \i [count=\j from 0] in {6,9,1,5,2,6,5,8,8,4,9,9,2,2,7,3,9} \node[cell] at (\j, 13) {$\i$};
+    \foreach \i [count=\j from 0] in {6,3,5,8,7,2,6,1,6,7,8,6,4,9,8,6,8} \node[cell] at (\j, 14) {$\i$};
+    \foreach \i [count=\j from 0] in {5,3,2,8,5,2,4,6,2,6,1,8,9,5,6,3,2} \node[cell] at (\j, 15) {$\i$};
+    \foreach \i [count=\j from 0] in {7,8,7,2,4,2,1,2,3,2,5,3,2,7,3,9,0} \node[cell] at (\j, 16) {$\i$};
+\end{tikzpicture}
+}
+\end{center}
+\end{frame}
+
+\begin{frame}[fragile]{問題1.3}{}
+問題1.2を解くことで\textcolor{blue}{Aブロック}から各ブロックへの最短移動時間が以下に示す配列に格納された。
+\textcolor{blue}{Aブロック}から\textcolor{red}{Bブロック}までの最短経路を次行の形式で出力せよ。
+\begin{codeof}{}{}
+(0,0) -> (1,0) -> ... -> (16,16)
+\end{codeof}
+
+\begin{center}
+\scalebox{0.25}{
+\begin{tikzpicture}[cell/.style = {rectangle,draw=gray,semithick,minimum size=1cm,outer sep=0mm}]
+\node[cell,fill=blue!20] at (0,0) {};
+\node[cell,fill=red!20] at (16,16) {};
+\visible<2>{\foreach \j\i in 
+{ 0/0,1/0,2/0,2/1,3/1,4/1,5/1,6/1,7/1,8/1,9/1,10/1,10/2,10/3,11/3,12/3,13/3,14/3,14/4,14/5,15/5,16/5,16/6,16/7,16/8,16/9,16/10,16/11,16/12,16/13,16/14,16/15,16/16 }
+ \node[cell,fill=green] at (\i, \j) {};}
+\foreach \i [count=\j from 0] in {0,9,18,22,30,37,40,43,47,54,62,66,68,74,75,78,79} \node[cell] at (\j, 0) {$\i$};
+\foreach \i [count=\j from 0] in {9,11,13,17,25,29,38,47,52,56,59,64,69,75,78,79,85} \node[cell] at (\j, 1) {$\i$};
+\foreach \i [count=\j from 0] in {11,13,17,18,26,32,37,41,44,50,59,66,67,76,79,86,90} \node[cell] at (\j, 2) {$\i$};
+\foreach \i [count=\j from 0] in {16,19,18,19,27,30,35,40,46,53,61,62,64,71,76,84,89} \node[cell] at (\j, 3) {$\i$};
+\foreach \i [count=\j from 0] in {24,21,19,24,30,35,36,42,48,49,57,63,66,69,77,80,89} \node[cell] at (\j, 4) {$\i$};
+\foreach \i [count=\j from 0] in {27,22,24,31,35,36,42,48,49,55,58,65,67,74,75,82,86} \node[cell] at (\j, 5) {$\i$};
+\foreach \i [count=\j from 0] in {33,24,27,32,33,42,48,50,53,55,59,66,70,75,82,85,88} \node[cell] at (\j, 6) {$\i$};
+\foreach \i [count=\j from 0] in {40,27,29,33,36,41,48,53,55,59,65,69,77,82,85,86,90} \node[cell] at (\j, 7) {$\i$};
+\foreach \i [count=\j from 0] in {47,29,38,36,41,43,50,58,61,65,69,75,77,80,86,90,91} \node[cell] at (\j, 8) {$\i$};
+\foreach \i [count=\j from 0] in {55,38,39,41,43,49,56,61,63,68,75,77,80,85,90,93,94} \node[cell] at (\j, 9) {$\i$};
+\foreach \i [count=\j from 0] in {57,39,41,44,49,55,63,63,68,75,79,82,85,91,93,96,98} \node[cell] at (\j, 10) {$\i$};
+\foreach \i [count=\j from 0] in {59,45,45,51,55,58,65,66,73,76,77,86,93,95,96,102,106} \node[cell] at (\j, 11) {$\i$};
+\foreach \i [count=\j from 0] in {60,52,53,56,58,64,66,73,76,77,79,85,90,99,105,108,110} \node[cell] at (\j, 12) {$\i$};
+\foreach \i [count=\j from 0] in {68,58,62,58,63,65,71,76,81,79,83,90,99,101,103,110,113} \node[cell] at (\j, 13) {$\i$};
+\foreach \i [count=\j from 0] in {74,67,63,63,65,71,73,79,80,83,90,98,101,103,110,113,119} \node[cell] at (\j, 14) {$\i$};
+\foreach \i [count=\j from 0] in {80,70,68,70,72,73,75,79,85,87,93,94,102,111,116,119,122} \node[cell] at (\j, 15) {$\i$};
+\foreach \i [count=\j from 0] in {85,73,70,77,77,75,77,78,80,83,85,90,93,95,102,105,114} \node[cell] at (\j, 16) {$\i$};
+\end{tikzpicture}
+}
+\end{center}
+\end{frame}
+
+\begin{frame}[fragile]{ここまでの振り返り}{アルゴリズム=自明または「前処理$\to$相似問題$\to$後処理」}
+
+{
+%\fontsize{9}{10}\selectfont
+\begin{tabular}[h]{r l}
+\CL スペースシャトル & $T(n) = () + T(n-1) + T(n-1) + (+)$ \\
+\CL 飛行船  & $T(n) = () + T(n-1) + T(n-1) + (+)$ \\
+\CL 一方向最短経路 & $T(n) = () + T(n-1) + T(n-1) + (min)$ \\
+\CL 最短経路表示 & $T(n) = (if文) + T(n-1) + (画面出力)$ \\
+\end{tabular}
+}
+
+\vfill
+{
+%\fontsize{9}{10}\selectfont
+\begin{tabular}[h]{r l}
+\CL スペースシャトル & 整列（特にマージソート）と同類 \\
+\CL 飛行船 & 整列（特にマージソート）と同類 \\
+\CL 一方向最短時間 & 整列（特にマージソート）と同類 \\
+\CL 最短経路表示 & 探索（特に二分探索）と同類 \\
+\end{tabular}
+}
 
 \end{frame}
 
-\begin{frame}[fragile]{時間が余るなら}{}
-\begin{itemize}\itemsep8pt
-\item 昇圧鎖 (Advent of Code year 2020 day 10)
-\item 変態電卓 (Advent of Code year 2020 day 18)
-\end{itemize}
+\begin{frame}[fragile]{問題2.0}{}
+各点の重みが以下で与えられたとして\textcolor{blue}{A=(j=2,i=5)}から\textcolor{red}{B=(j=13,i=13)}への最短距離を求めよ。
+各点は4近傍（4連結）である。
+
+\begin{center}
+\scalebox{0.3}{
+\begin{tikzpicture}[cell/.style = {rectangle,draw=gray,semithick,minimum size=1cm,outer sep=0mm}]
+\node[cell,fill=blue!20] at (5,2) {};
+\node[cell,fill=red!20] at (13,13) {};
+    \foreach \i [count=\j from 0] in {9,9,4,8,7,3,3,4,7,8,4,2,6,1,3,1,6} \node[cell] at (\j, 0) {$\i$};
+    \foreach \i [count=\j from 0] in {2,2,4,8,4,9,9,5,4,3,5,5,7,5,1,7,5} \node[cell] at (\j, 1) {$\i$};
+    \foreach \i [count=\j from 0] in {5,6,1,8,6,5,4,3,6,9,7,1,9,3,9,4,4} \node[cell] at (\j, 2) {$\i$};
+    \foreach \i [count=\j from 0] in {8,2,1,8,3,5,5,6,7,8,1,2,7,5,8,5,4} \node[cell] at (\j, 3) {$\i$};
+    \foreach \i [count=\j from 0] in {3,1,5,7,9,1,6,6,1,8,6,3,3,8,3,9,8} \node[cell] at (\j, 4) {$\i$};
+    \foreach \i [count=\j from 0] in {6,2,9,4,4,9,6,7,6,3,7,2,7,1,7,4,2} \node[cell] at (\j, 5) {$\i$};
+    \foreach \i [count=\j from 0] in {7,3,5,1,9,6,2,3,2,4,7,4,9,7,3,6,2} \node[cell] at (\j, 6) {$\i$};
+    \foreach \i [count=\j from 0] in {7,2,9,3,5,7,9,5,9,6,4,8,8,5,1,8,1} \node[cell] at (\j, 7) {$\i$};
+    \foreach \i [count=\j from 0] in {8,9,7,8,2,7,8,3,8,8,6,2,3,8,4,8,3} \node[cell] at (\j, 8) {$\i$};
+    \foreach \i [count=\j from 0] in {2,1,2,3,6,7,9,2,5,8,5,5,5,6,3,6,4} \node[cell] at (\j, 9) {$\i$};
+    \foreach \i [count=\j from 0] in {2,6,4,7,6,8,2,5,7,4,4,9,8,9,3,6,8} \node[cell] at (\j, 10) {$\i$};
+    \foreach \i [count=\j from 0] in {1,7,8,5,3,7,1,7,3,1,9,7,2,6,9,6,4} \node[cell] at (\j, 11) {$\i$};
+    \foreach \i [count=\j from 0] in {8,6,9,2,6,9,7,8,5,2,6,5,9,9,5,2,4} \node[cell] at (\j, 12) {$\i$};
+    \foreach \i [count=\j from 0] in {6,9,1,5,2,6,5,8,8,4,9,9,2,2,7,3,9} \node[cell] at (\j, 13) {$\i$};
+    \foreach \i [count=\j from 0] in {6,3,5,8,7,2,6,1,6,7,8,6,4,9,8,6,8} \node[cell] at (\j, 14) {$\i$};
+    \foreach \i [count=\j from 0] in {5,3,2,8,5,2,4,6,2,6,1,8,9,5,6,3,2} \node[cell] at (\j, 15) {$\i$};
+    \foreach \i [count=\j from 0] in {7,8,7,2,4,2,1,2,3,2,5,3,2,7,3,9,0} \node[cell] at (\j, 16) {$\i$};
+\end{tikzpicture}
+}
+\end{center}
 \end{frame}
 
+\begin{frame}[fragile]{}{}
+帰納法の前提が崩れている:Aを求めるためにBを求めるためにAが必要
+\vfill
+検索→ダイクストラ法(Dijkstra's algorithm)
 
-\section{Extra puzzles}		%%%%%%%%
-\subsection{}
+https://ja.wikipedia.org/wiki/ダイクストラ法
 
-\begin{frame}[fragile]{問題3}{Advent of Code: year 2020, day 10}
-\begin{enumerate}\itemsep8pt
-\item 与えられた数列は以下の条件を満たす数列に変換できるか
+\vfill
+名前だけでも覚えて帰るのか、丸暗記するのか
+\end{frame}
+
+\begin{frame}[fragile]{}{}
+\begin{tabular}[h]{r l l}
+\CL 線形探索 & \visible<2->{先頭を選択} & \visible<3->{実装簡単} \\
+\CL 二分探索 & \visible<2->{真ん中を選択} & \visible<3->{実装簡単}\\
+\CL バブルソート & \visible<2->{先頭を処理} & \visible<3->{実装簡単}\\
+\CL クイックソート & \visible<2->{「順序化」分割} & \visible<3->{実装簡単}\\
+\CL マージソート & \visible<2->{無条件分割、マージ} & \visible<3->{実装簡単}\\
+\CL ダイクストラ & \visible<4->{三角不等式で選択} & \visible<5>{実装簡単}\\
+\end{tabular}
+
+\vfill
 \begin{itemize}%\itemsep8pt
-\item 全ての項は、直前の項より1、2、または3大きい
+\item 別ものに見えるならアルゴリズムを覚えるのは大変
+\item \visible<3->{プログラムは覚える価値がない}
+\item \visible<3->{ビー玉の例えはわかるのだが、、、}
+\item \visible<5>{まさか昨日実装することになろうとは}
 \end{itemize}
-\begin{enumerate}%\itemsep8pt
-\item 数列1：\{ 16, 10, 15, 5, 1, 11, 7, 19, 6, 12, 4 \}
-\item 数列2：もっと長い(91項)ので次ページに掲載
-\end{enumerate}
-\item 所与の数列に対し以下の条件を満たす数列の個数を求めよ
-\begin{itemize}%\itemsep8pt
-\item その列中の全ての項は、直前の項より1、2、または3大きい
-\item 与えられた全ての項を使わなくてよい
-\item ただし、所与の数列の最小項は必ず使うこと
-\item ただし、所与の数列の最大項は必ず使うこと
-\end{itemize}
-\begin{enumerate}%\itemsep8pt
-\item 先の数列1
-\begin{enumerate}%\itemsep8pt
-\item 求める数列は1で始まらなければならない
-\item 求める数列は19で終わらなければならない
-\item 例えば\{ 1, 4, 5, 7, 10, 12, 15, 16, 19 \}は条件を満たす
-\item 網羅すると8通りあることがわかるので答えは8
-\end{enumerate}
-\item (64bit CPU所有者のみ)次ページの数列2
-\end{enumerate}
-\end{enumerate}
 \end{frame}
 
-\begin{frame}[fragile]{数列2}{toa04-p3-seq2.txt}
-95
-43
-114
-118
-2
-124
-120
-127
-140
-21
-66
-103
-102
-132
-136
-93
-59
-131
-32
-9
-20
-141
-94
-109
-143
-142
-65
-73
-27
-83
-133
-104
-60
-110
-89
-29
-78
-49
-76
-16
-34
-17
-105
-98
-15
-106
-4
-57
-1
-67
-71
-14
-92
-39
-68
-125
-113
-115
-26
-33
-61
-45
-46
-11
-99
-7
-25
-130
-42
-3
-10
-54
-44
-139
-50
-8
-58
-86
-64
-77
-35
-79
-72
-36
-80
-126
-28
-123
-119
-51
-22
+\begin{frame}[fragile]{}{}
+\begin{itemize}\itemsep8pt
+\item 解ける問題と解けない問題
+\item 解ける問題と解けない問題と解ける問題に似た問題
+\end{itemize}
+
+\vfill
+{\fontsize{4}{6}\selectfont
+\begin{columns}[T]
+\begin{column}{0.3\textwidth}
+プログラミングコンテストチャレンジブック
+\begin{itemize}
+\item 全探索（再帰、スタック、キュー）
+\item 貪欲法
+\item 動的計画法
+\item 木、グラフ,最短経路、最小全域木、ユークリッドの互除法
+\item 二分探索
+\item 尺取り法？
+\item ネットワークフロー、最小カット、被覆問題
+\item 計算幾何
+\item 分枝限定法（min-maxがない）, A*, 文字列探索, 分割統治法
+\end{itemize}
+\end{column}
+\begin{column}{0.3\textwidth}
+プログラミングコンテスト攻略のためのアルゴリズムとデータ構造
+\begin{itemize}
+\item ソートアルゴリズム
+\item データ構造：スタック、キュー、リスト
+\item 探索：線形、二分、ハッシュ
+\item 再帰と分割統治法
+\item 整列：マージ、クイック、計数ソート
+\item 木：二分木探索
+\item ヒープ
+\item 動的計画法
+\item グラフ：BFS, DFS
+\item 高度なデータ構造：お互いに素、トポロジカルソート、最小全域木、計算幾何
+\item 動的計画法、整数論、ヒューリスティック探索
+\end{itemize}
+\end{column}
+\begin{column}{0.3\textwidth}
+最強最速アルゴリズマー養成講座 プログラミングコンテストTopCoder攻略ガイド
+\begin{itemize}
+\item 第4章 シミュレーション
+\item 第5章 全探索
+\item 第6章 計算量
+\item 第7章 動的計画法・メモ化
+\item 第8章 探索範囲を狭めるアルゴリズム
+\item 第9章 応用問題
+\item 第10章 グラフ問題対策
+\item 第11章 数学問題対策
+\end{itemize}
+\end{column}
+\end{columns}
+}
 \end{frame}
+
+\begin{frame}[fragile]{アルゴリズムの高速化}{}
+\begin{itemize}\itemsep20pt
+\item 今回アルゴリズムは考えたが、再帰関数で実装すると遅すぎて現実的ではない
+\item 高速化が必要（その前に観察が必要）
+\item 動的計画法に注目
+\end{itemize}
+\end{frame}
+
 \end{document}
-
