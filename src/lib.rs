@@ -8,5 +8,7 @@ pub mod lsearch;
 pub mod memo;
 /// クイックソート
 pub mod qsort;
+///
+pub mod dijkstra;
 
 pub use qsort::qsort;

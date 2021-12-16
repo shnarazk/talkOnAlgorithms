@@ -16,6 +16,7 @@ pub fn main() {
     // make_map();
 
     let mut map = set_routes();
+    let mut dist = map.clone();
 
     for j in (0..SIZE).rev() {
         for i in 0..SIZE {
@@ -24,19 +25,20 @@ pub fn main() {
         println!();
     }
     // problem 1.2
+    dist[0][0] = 0;
     for j in 0..SIZE {
         for i in 0..SIZE {
             match (j, i) {
                 (0, 0) => (),
-                (0, _) => map[j][i] += map[j][i - 1],
-                (_, 0) => map[j][i] += map[j - 1][i],
-                _ => map[j][i] += map[j - 1][i].min(map[j][i - 1]),
+                (_, 0) => dist[j][i] = map[j - 1][i] + dist[j - 1][i],
+                (0, _) => dist[j][i] = map[j][i - 1] + dist[j][i - 1],
+                _ => dist[j][i] = (map[j - 1][i] + dist[j - 1][i]).min(map[j][i - 1] + dist[j][i - 1]),
             }
         }
     }
     for j in (0..SIZE).rev() {
         for i in 0..SIZE {
-            print!("{:>2} ", map[j][i]);
+            print!("{:>4} ", dist[j][i]);
         }
         println!();
     }
@@ -49,7 +51,7 @@ pub fn main() {
             (0, i) => loc.1 -= 1,
             (j, 0) => loc.0 -= 1,
             (j, i) => {
-                if map[j - 1][i] < map[j][i - 1] {
+                if dist[j - 1][i] < dist[j][i - 1] {
                     loc.0 -= 1;
                 } else {
                     loc.1 -= 1;
@@ -64,12 +66,11 @@ pub fn main() {
     }
     println!("B(16, 16)");
 
-
     // for LaTeX
 
-    for j in 0..SIZE {
+    for (j, v) in dist.iter().enumerate() {
         println!("\\foreach \\i [count=\\j from 0] in {{{}}} \\node[cell] at (\\j, {}) {{$\\i$}};",
-                 (0..SIZE).map(|i| format!("{}", map[j][i])).collect::<Vec<_>>().join(","),
+                 (0..SIZE).map(|i| format!("{}", v[i])).collect::<Vec<_>>().join(","),
                  j);
     }
 
@@ -78,7 +79,6 @@ pub fn main() {
         print!("{}/{},", l.0, l.1);
     }
     println!("16/16 }}");
-
 }
 
 pub fn make_map() {

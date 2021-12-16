@@ -1,24 +1,61 @@
 #![allow(dead_code)]
 #![allow(unused_variables)]
+use toa::dijkstra;
 use rand::prelude::*;
+use std::collections::HashMap;
 
-fn number_of_simple_routes() -> usize {
-    0
+fn min_dist(grid: &[Vec<usize>], j: usize, i: usize) -> usize {
+    if j == 0 && i == 0 {
+        return 1;
+    }
+    let mut npathes = usize::MAX;
+    if 0 < j {
+        npathes = npathes.min(grid[j - 1][i] + min_dist(grid, j - 1, i));
+    }
+    if 0 < i {
+        npathes = npathes.min(grid[j][i - 1] + min_dist(grid, j, i - 1));
+    }
+    npathes
 }
 
-fn pathes_at(x: usize, y: usize) -> usize {
-    0
+fn memoized_min_dist(memo: &mut HashMap<(usize, usize), usize>, grid: &[Vec<usize>], j: usize, i: usize) -> usize {
+    if let Some(v) = memo.get(&(j, i)) {
+        return *v;
+    }
+    let mut npathes = usize::MAX;
+    if 0 < j {
+        npathes = npathes.min(grid[j - 1][i] + memoized_min_dist(memo, grid, j - 1, i));
+    }
+    if 0 < i {
+        npathes = npathes.min(grid[j][i - 1] + memoized_min_dist(memo, grid, j, i - 1));
+    }
+    memo.insert((j, i), npathes);
+    npathes
 }
 
 const SIZE: usize = 17;
 
 pub fn main() {
     // make_map();
-    let mut map = set_routes();
+    let map = set_routes();
     // 問題1.2
-    dbg!(map[16][16]);
-
+    // dbg!(min_dist(&map, 16, 16));
+    let mut memo: HashMap<(usize, usize), usize> = HashMap::new();
+    memo.insert((0, 0), 0);
+    dbg!(memoized_min_dist(&mut memo, &map, 16, 16));
+    for j in (0..SIZE).rev() {
+        for i in 0..SIZE {
+            if let Some(x) = memo.get(&(j, i)) {
+                print!("{:>4}", x);
+            } else {
+                print!("   ");
+            }
+        }
+        println!();
+    }
     // 問題1.2.2
+    let dist = dijkstra::build_up(&map);
+    dbg!(dist[16][16]);
 }
 
 pub fn make_map() {

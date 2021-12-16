@@ -20,7 +20,7 @@ fn ground_routes(horizon: usize) -> [[usize; SIZE]; SIZE] {
     }
     for j in 1..SIZE {
         for i in 1..SIZE {
-            if !(j + horizon <= i) {
+            if i < j + horizon {
                 grid[j][i] = grid[j - 1][i] + grid[j][i - 1];
             } else {
                 grid[j][i] = 0;
