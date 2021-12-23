@@ -15,7 +15,7 @@ const SIZE: usize = 17;
 pub fn main() {
     // make_map();
 
-    let mut map = set_routes();
+    let map = set_routes();
     let mut dist = map.clone();
 
     for j in (0..SIZE).rev() {
