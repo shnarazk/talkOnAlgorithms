@@ -5,7 +5,7 @@
 \usepackage{amsmath}
 \usepackage{setspace}
 \usepackage[07]{../lecture}
-\subtitle{データ構造とアルゴリズム}
+\subtitle{木、グラフ、アルゴリズム}
 \begin{document}
 
 \begin{frame}[fragile]{}
@@ -80,14 +80,15 @@
 \item 末尾に追加する
 \item 親と比べて$\ge$（または$\le$）なら親と入れ替え。この操作を再帰的に実行（高さが$O(\log(n))$）
 \end{enumerate}
-
+\vfill
 先頭要素の削除
 \begin{enumerate}%\itemsep8pt
 \item 先頭がなくなるので、末尾の要素を先頭に持ってくる
 \item 直下の二つの子との関係がおかしくなるので入れ替える（どちらと？）。この操作を再帰的に実行。
 \end{enumerate}
 
-動的に要素が追加される状況で常に最小値（最大値）を$O(\log(n))$で取り出せるので整列、検索の組み合わせよりも高速。OSのプロセススケジューリングが代表例。
+\vfill
+動的に要素が追加される状況で常に最小値（最大値）を$O(\log(n))$で取り出せるので他の整列と検索の組み合わせよりも高速。OSのプロセススケジューリングが代表例。
 \end{frame}
 
 \begin{frame}[fragile]{ヒープは配列に埋め込める}{wikipediaと比較}
