@@ -1,0 +1,168 @@
+\NeedsTeXFormat{LaTeX2e}
+%\PassOptionsToClass{handout}{beamer}
+\documentclass{beamer}
+\usepackage{beamerPack}
+\usepackage{amsmath}
+\usepackage{setspace}
+\usepackage[08]{../lecture}
+\subtitle{appendix}
+\begin{document}
+
+\begin{frame}[fragile]{}
+\titlepage
+\end{frame}
+
+\section{Algorithm C}		%%%%%%%%
+\subsection{}
+
+\begin{frame}[fragile]{R.セジウィック, アルゴリズムC}{
+\href{https://www.amazon.co.jp/セジウィック-アルゴリズムC-第1-4部-―基礎・データ構造・整列・探索―-ロバート/dp/4764905604/ref=sr_1_2_sspa}{\beamergotobutton{Amazon}}}
+
+\begin{block}{分割統治法}
+再帰的に問題を分割する戦略。副問題の共通性を利用しない動的計画法。
+\end{block}
+
+\begin{block}{基数ソート}
+位取り記数法で表現可能な対象について、下の桁から順番にソートしてゆき、最後に最上位桁でソートすると、全体が順序通りに並ぶ、という手法
+\end{block}
+\end{frame}
+
+\begin{frame}[fragile]{文字列探索}{}
+\begin{itemize}%\itemsep8pt
+\item 探索：アイテムを探す
+\item アイテム列を探す専用探索アルゴリズム
+\end{itemize}
+
+\vfill
+途中まで一致したが最後までは一致しなかった場合に違い
+
+\vfill
+Knuth-Morris-Pratt法(1977)
+\end{frame}
+
+\begin{frame}[fragile]{super set, 集合, 列}{}
+\begin{itemize}\itemsep8pt
+\item super set, bag: 同一アイデムを複数回格納可能 \texttt{// implements Collection}
+\item set; 集合: 順序がない \texttt{// extends Bag}
+\item sequence; 列: 順序がある \texttt{// extends Set}
+\item vector; ベクトル: 言語によってまちまち \texttt{// extends Sequence}
+\end{itemize}
+\vfill
+適切な実装を選ぶことが必要なこともある
+\end{frame}
+
+\section{Algorithm Introduction}		%%%%%%%%
+\subsection{}
+
+\begin{frame}[fragile]{アルゴリズムイントロダクション 第3版/1}{
+\href{https://www.amazon.co.jp/アルゴリズムイントロダクション-第3版-総合版：世界標準MIT教科書-Thomas-Cormen-ebook/dp/B078WPYHGN/ref=sr_1_10}{\beamergotobutton{amazon}}}
+
+乱択アルゴリズム
+
+\begin{block}{バケツ（バケット）ソート}
+入力がN種類しかない時の高速($O(n\log(n))$以下)ソート。
+\end{block}
+
+\begin{block}{赤黒木（2色木）}
+深さの平均化を自動で行う木のバリエーション。
+\end{block}
+
+\begin{block}{貪欲法}
+副問題の最良解を常に選択する動的計画法（部分的に見て最良のものが全体でも最良）
+\end{block}
+\end{frame}
+
+\begin{frame}[fragile]{乱択アルゴリズム; randomized algorithm}{}
+\begin{itemize}%\itemsep8pt
+\item モンテカルロ法：ランダムに解候補を選択。よければ採用。最良値である保証はない。
+\item ラスベガス法：調べる順番をランダム化する。最悪を避ける。
+% \item ランダムウォーク (酔歩)：物理学での微細な運動を模倣
+\end{itemize}
+
+\vfill
+探索空間が「いい解のまわりに同程度またはそれ以上によい解が存在」する
+よい性質を持つなら
+これまでの最良解の回りを探すことでもっとよい解が見つかる可能性が高い
+
+\vfill
+\begin{itemize}%\itemsep8pt
+\item モンテカルロ木探索
+\item 焼きなまし法
+\item ルーレット選択
+\item 遺伝的アルゴリズム
+\end{itemize}
+\end{frame}
+
+\begin{frame}[fragile]{アルゴリズムイントロダクション 第3版/2}{
+\href{https://www.amazon.co.jp/アルゴリズムイントロダクション-第3版-総合版：世界標準MIT教科書-Thomas-Cormen-ebook/dp/B078WPYHGN/ref=sr_1_10}{\beamergotobutton{amazon}}}
+
+\begin{block}{フィボナッチヒープ}
+ヒープの集まり。森。
+\end{block}
+
+\begin{block}{全点対最短路}
+全ての点間の最短経路（コスト）を求める問題
+\end{block}
+
+\begin{block}{最大フロー問題}
+許容流量が辺ごとに与えられたグラフにおいて2点間で流すことができる最大流量を求める
+\end{block}
+
+\begin{block}{ならし解析（償却解析）; Amoritized analysis}
+最悪の場合を考えたものが最悪計算量。その出現頻度を「くりこんで」「平均的」な計算量を考える解析。
+\end{block}
+
+\end{frame}
+
+\begin{frame}[fragile]{P, NP}{}
+\begin{block}{Polynomial; P}
+時間計算量が多項式時間。解ける問題と見なされる
+\end{block}
+
+\begin{block}{Non-Polynomial; NP}
+時間計算量が指数関数、階乗。事実上解けない問題（NP完全、NP困難）
+\end{block}
+
+\vfill
+多くの人はNPはPに変換できない(P$\neq$NP)と考えているが証明できてない。
+\vfill
+近似解の求解への方針転換が必要
+\end{frame}
+
+
+\section{others}		%%%%%%%%
+\subsection{}
+
+\begin{frame}[fragile]{プログラミングコンテストチャレンジブック}{}
+\begin{block}{集合被覆問題}
+ある企業はA，B，$\cdots$Gの7つのエリアがある都市での配達事業を始めるため配達員を採用する．配達員候補は10人いて，各人が配達できるエリアおよび配達を依頼した際にかかるコストが次表で与えられる。採用人数を最小にせよ。
+\end{block}
+
+\begin{block}{尺取り法}
+文字列探索の亜種（検索対象が条件で指定されるだけ）。普通の教科書に出てこないので省略。
+\end{block}
+
+\begin{block}{分枝限定法}
+一番よい枝を探す場合、そのよさの範囲が探す前にわかるなら探索対象が限定できる
+\end{block}
+\end{frame}
+
+\begin{frame}[fragile]{その他}{}
+
+\begin{block}{オンラインアルゴリズムとオフラインアルゴリズム}
+\begin{itemize}%\itemsep8pt
+\item オフライン：全てのデータが揃ってから処理
+\item オンライン：全てのデータが揃わなくても処理：現状での最小値など
+\end{itemize}
+\end{block}
+
+\begin{block}{並列アルゴリズム}
+複数の同時処理を前提にしたアルゴリズム
+\end{block}
+
+\begin{block}{分散アルゴリズム}
+ノードの故障や分散の大きな通信遅延、場合によっては悪意ある参加者を考慮した並列アルゴリズム
+\end{block}
+\end{frame}
+
+\end{document}
